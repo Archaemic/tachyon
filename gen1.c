@@ -1,9 +1,5 @@
 #include "gen1.h"
 
-const size_t SIZE_GEN_1 = 0x8000;
-const size_t G10E_TRAINER_NAME = 0x2598;
-const size_t G10E_PARTY_POKEMON = 0x2F2C;
-
 const wchar_t charMapGen1En[0x100] = {
 	// 0x0X
 	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
@@ -69,3 +65,17 @@ const wchar_t charMapGen1En[0x100] = {
 	L'�', L'×', L'�', L'/', L',', L'♀', L'0', L'1',
 	L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9' 
 };
+
+int getPartyPokemon(void* saveblock, struct G1PartyPokemon** pokemon , uint8_t** names, uint8_t** otNames) {
+	int nPokemon = ((uint8_t*) saveblock)[G10E_PARTY_POKEMON];
+	if (pokemon) {
+		*pokemon = (struct G1PartyPokemon*) &saveblock[G10E_PARTY_POKEMON + 2 + 6];
+	}
+	if (names) {
+		*names = &saveblock[G10E_PARTY_POKEMON + 2 + (sizeof(struct G1PartyPokemon) + 12) * 6];
+	}
+	if (otNames) {
+		*otNames = &saveblock[G10E_PARTY_POKEMON + 2 + (sizeof(struct G1PartyPokemon) + 1) * 6];
+	}
+	return nPokemon;
+}

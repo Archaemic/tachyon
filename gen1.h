@@ -4,11 +4,15 @@
 #include <wchar.h>
 #include <stdint.h>
 
-const size_t SIZE_GEN_1;
-const size_t G10E_TRAINER_NAME;
-const size_t G10E_PARTY_POKEMON;
-
 const wchar_t charMapGen1En[0x100];
+
+enum {
+	SIZE_GEN_1 = 0x8000,
+	G10E_TRAINER_NAME = 0x2598,
+	G10E_PARTY_POKEMON = 0x2F2C,
+	G10E_CURRENT_BOX = 0x30C0,
+	G10E_BOX_1 = 0x4000
+};
 
 struct G1PartyPokemon {
 	uint8_t pokemonId;
@@ -41,5 +45,7 @@ struct G1PartyPokemon {
 	uint16_t speed;
 	uint16_t special;
 } __attribute__((packed));
+
+int getPartyPokemon(void* saveblock, struct G1PartyPokemon** pokemon , uint8_t** names, uint8_t** otNames);
 
 #endif
