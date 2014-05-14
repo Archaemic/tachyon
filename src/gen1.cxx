@@ -149,7 +149,7 @@ Pokemon Generation1::boxPokemon(int box, int i) {
 	} else {
 		start = G10E_BOX_1 + (box - 1) * G1_BOX_SIZE;
 	}
-	uint8_t* pstart = &m_memory[start + 2 + 20];
+	uint8_t* pstart = &m_memory[start + 2 + 20 + sizeof(G1BasePokemonData) * i];
 	uint8_t* nstart = &m_memory[start + 2 + (sizeof(G1BasePokemonData) + 12) * 20 + 11 * i];
 	uint8_t* tstart = &m_memory[start + 2 + (sizeof(G1BasePokemonData) + 1) * 20 + 11 * i];
 	return Pokemon(new G1BasePokemon(pstart, nstart, tstart));
