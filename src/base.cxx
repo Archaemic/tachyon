@@ -40,6 +40,13 @@ unsigned Pokemon::currentHp() const {
 	return m_impl->currentHp();
 }
 
+void Pokemon::enumerate() const {
+	printf("\tName: %ls\n", name());
+	printf("\tOT: %ls (%u)\n", otName(), otId());
+	printf("\tExp: %u\n", xp());
+	printf("\tHP: %u\n", currentHp());
+}
+
 PokemonImpl::PokemonImpl()
 	: m_refs(1)
 {

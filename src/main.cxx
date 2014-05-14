@@ -17,10 +17,7 @@ int main(int argc, char** argv) {
 	for (i = 0; i < nPokemon; ++i) {
 		Pokemon pokemon = g1.partyPokemon(i);
 		printf("Pokémon %u:\n", i + 1);
-		printf("\tName: %ls\n", pokemon.name());
-		printf("\tOT: %ls (%u)\n", pokemon.otName(), pokemon.otId());
-		printf("\tExp: %u\n", pokemon.xp());
-		printf("\tHP: %u\n", pokemon.currentHp());
+		pokemon.enumerate();
 	}
 
 	nPokemon = g1.nBoxPokemon(Generation1::BOX_CURRENT);
@@ -28,9 +25,6 @@ int main(int argc, char** argv) {
 	for (i = 0; i < nPokemon; ++i) {
 		Pokemon pokemon = g1.boxPokemon(Generation1::BOX_CURRENT, i);
 		printf("Pokémon %u:\n", i + 1);
-		printf("\tName: %ls\n", pokemon.name());
-		printf("\tOT: %ls (%u)\n", pokemon.otName(), pokemon.otId());
-		printf("\tExp: %u\n", pokemon.xp());
-		printf("\tHP: %u\n", pokemon.currentHp());
+		pokemon.enumerate();
 	}
 }

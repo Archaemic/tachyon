@@ -36,6 +36,8 @@ public:
 	unsigned xp() const;
 	unsigned currentHp() const;
 
+	void enumerate() const;
+
 private:
 	PokemonImpl* m_impl;
 };
