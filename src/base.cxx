@@ -1,5 +1,7 @@
 #include "base.h"
 
+#include <iostream>
+
 const static wchar_t* typeNames[] = {
 	L"???",
 	nullptr,
@@ -103,15 +105,15 @@ Type Pokemon::type2() const {
 }
 
 void Pokemon::enumerate() const {
-	printf("\tName: %ls\n", name());
-	printf("\tOT: %ls (%u)\n", otName(), otId());
-	printf("\tExp: %u\n", xp());
-	printf("\tHP: %u\n", currentHp());
-	if (type1() == type2()) {
-		printf("\tType: %ls\n", TypeReadable(type1()));
-	} else {
-		printf("\tType: %ls/%ls\n", TypeReadable(type1()), TypeReadable(type2()));
+	std::wcout << "\tName: " << name() << std::endl;
+	std::wcout << "\tOT: " << otName() << " (" << otId() << ")" << std::endl;
+	std::wcout << "\tExp: " << xp() << std::endl;
+	std::wcout << "\tHP: " << currentHp() << std::endl;
+	std::wcout << "\tType: " << TypeReadable(type1());
+	if (type1() != type2()) {
+		std::wcout << "/" << TypeReadable(type2());
 	}
+	std::wcout << std::endl;
 }
 
 PokemonImpl::PokemonImpl()

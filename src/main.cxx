@@ -1,6 +1,8 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
+#include <iostream>
+
 #include "gen1.h"
 
 int main(int argc, char** argv) {
@@ -8,23 +10,25 @@ int main(int argc, char** argv) {
 	uint8_t* memory = static_cast<uint8_t*>(mmap(0, SIZE_GEN_1, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0));
 	Generation1 g1(memory);
 
-	printf("Trainer name: %ls\n", g1.trainerName());
+	std::wcout.imbue(std::locale(""));
+
+	std::wcout << "Trainer name: " << g1.trainerName() << std::endl;
 
 	int nPokemon = g1.nPartyPokemon();
-	printf("Party Pokémon: %u\n", nPokemon);
+	std::wcout << L"Party Pokémon: " << nPokemon << std::endl;
 
 	int i;
 	for (i = 0; i < nPokemon; ++i) {
 		Pokemon pokemon = g1.partyPokemon(i);
-		printf("Pokémon %u:\n", i + 1);
+		std::wcout << L"Pokémon " << (i + 1) << ":" << std::endl;
 		pokemon.enumerate();
 	}
 
 	nPokemon = g1.nBoxPokemon(Generation1::BOX_CURRENT);
-	printf("Box Pokémon: %u\n", nPokemon);
+	std::wcout << L"Box Pokémon: " << nPokemon << std::endl;
 	for (i = 0; i < nPokemon; ++i) {
 		Pokemon pokemon = g1.boxPokemon(Generation1::BOX_CURRENT, i);
-		printf("Pokémon %u:\n", i + 1);
+		std::wcout << L"Pokémon " << (i + 1) << ":" << std::endl;
 		pokemon.enumerate();
 	}
 }
