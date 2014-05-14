@@ -26,6 +26,7 @@ int main(int argc, char** argv) {
 	printf("Trainer name: %ls\n", name);
 
 	struct G1PartyPokemon* partyPokemon = 0;
+	struct G1BoxPokemon* boxPokemon = 0;
 	uint8_t* otNameStart = 0;
 	uint8_t* pokemonNameStart = 0;
 	int nPokemon = getPartyPokemon(memory, &partyPokemon, &pokemonNameStart, &otNameStart);
@@ -41,5 +42,17 @@ int main(int argc, char** argv) {
 		printf("\tLv: %u\n", partyPokemon[i].level);
 		printf("\tExp: %u\n", R24(partyPokemon[i].xp));
 		printf("\tHP: %u/%u\n", R16(partyPokemon[i].currentHp), R16(partyPokemon[i].maxHp));
+	}
+
+	nPokemon = getBoxPokemon(memory, G1_BOX_CURRENT, &boxPokemon, &pokemonNameStart, &otNameStart);
+	printf("Box Pokémon: %u\n", nPokemon);
+	for (i = 0; i < nPokemon; ++i) {
+		printf("Pokémon %u:\n", i + 1);
+		gameTextToWchar(name, pokemonNameStart + 11 * i, 10, charMapGen1En);
+		printf("\tName: %ls\n", name);
+		gameTextToWchar(name, otNameStart + 11 * i, 8, charMapGen1En);
+		printf("\tOT: %ls (%u)\n", name, R16(boxPokemon[i].otId));
+		printf("\tExp: %u\n", R24(boxPokemon[i].xp));
+		printf("\tHP: %u\n", R16(boxPokemon[i].currentHp));
 	}
 }
