@@ -48,6 +48,38 @@ enum {
 	G10E_BOX_1 = 0x4000
 };
 
+const static Type typeMapping[256] = {
+	NORMAL,
+	FIGHTING,
+	FLYING,
+	POISON,
+	GROUND,
+	ROCK,
+	QQQ,
+	BUG,
+	GHOST,
+
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+
+	FIRE,
+	WATER,
+	GRASS,
+	ELECTRIC,
+	PSYCHIC,
+	ICE,
+	DRAGON
+};
+
 const wchar_t Generation1::charMapGen1En[0x100] = {
 	// 0x0X
 	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
@@ -190,6 +222,14 @@ unsigned G1BasePokemon::xp() const {
 
 unsigned G1BasePokemon::currentHp() const {
 	return R16(m_data->currentHp);
+}
+
+Type G1BasePokemon::type1() const {
+	return typeMapping[m_data->type1];
+}
+
+Type G1BasePokemon::type2() const {
+	return typeMapping[m_data->type2];
 }
 
 G1PartyPokemon::G1PartyPokemon(uint8_t* data, uint8_t* name, uint8_t* ot)

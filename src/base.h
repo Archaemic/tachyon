@@ -4,6 +4,31 @@
 #include <cwchar>
 #include <cstdint>
 
+enum Type {
+	NORMAL = 0x10,
+	FIGHTING,
+	FLYING,
+	POISON,
+	GROUND,
+	ROCK,
+	BUG,
+	GHOST,
+	STEEL,
+
+	FIRE = 0x20,
+	WATER,
+	GRASS,
+	ELECTRIC,
+	PSYCHIC,
+	ICE,
+	DRAGON,
+	DARK,
+
+	QQQ = 0
+};
+
+const wchar_t* TypeReadable(Type type);
+
 class PokemonImpl {
 public:
 	PokemonImpl();
@@ -17,6 +42,8 @@ public:
 	virtual uint16_t otId() const = 0;
 	virtual unsigned xp() const = 0;
 	virtual unsigned currentHp() const = 0;
+	virtual Type type1() const = 0;
+	virtual Type type2() const = 0;
 
 private:
 	wchar_t m_name[11];
@@ -35,9 +62,10 @@ public:
 	uint16_t otId() const;
 	unsigned xp() const;
 	unsigned currentHp() const;
+	Type type1() const;
+	Type type2() const;
 
 	void enumerate() const;
-
 private:
 	PokemonImpl* m_impl;
 };

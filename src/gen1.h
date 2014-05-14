@@ -19,6 +19,8 @@ public:
 	virtual uint16_t otId() const;
 	virtual unsigned xp() const;
 	virtual unsigned currentHp() const;
+	virtual Type type1() const;
+	virtual Type type2() const;
 
 private:
 	G1BasePokemonData* m_data;

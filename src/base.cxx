@@ -1,5 +1,59 @@
 #include "base.h"
 
+const static wchar_t* typeNames[] = {
+	L"???",
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	L"Normal",
+	L"Fighting",
+	L"Flying",
+	L"Poison",
+	L"Ground",
+	L"Rock",
+	L"Bug",
+	L"Ghost",
+	L"Steel",
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	L"Fire",
+	L"Water",
+	L"Grass",
+	L"Electric",
+	L"Psychic",
+	L"Ice",
+	L"Dragon",
+	L"Dark",
+};
+
+const wchar_t* TypeReadable(Type type) {
+	const wchar_t* readable = nullptr;
+	if (type <= DARK) {
+		readable = typeNames[type];
+	}
+	if (!readable) {
+		readable = L"???";
+	}
+	return readable;
+}
+
 Game::Game(uint8_t* memory)
 	: m_memory(memory)
 {
@@ -40,11 +94,24 @@ unsigned Pokemon::currentHp() const {
 	return m_impl->currentHp();
 }
 
+Type Pokemon::type1() const {
+	return m_impl->type1();
+}
+
+Type Pokemon::type2() const {
+	return m_impl->type2();
+}
+
 void Pokemon::enumerate() const {
 	printf("\tName: %ls\n", name());
 	printf("\tOT: %ls (%u)\n", otName(), otId());
 	printf("\tExp: %u\n", xp());
 	printf("\tHP: %u\n", currentHp());
+	if (type1() == type2()) {
+		printf("\tType: %ls\n", TypeReadable(type1()));
+	} else {
+		printf("\tType: %ls/%ls\n", TypeReadable(type1()), TypeReadable(type2()));
+	}
 }
 
 PokemonImpl::PokemonImpl()
