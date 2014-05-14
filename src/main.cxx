@@ -18,7 +18,7 @@ void gameTextToWchar(wchar_t* out, const uint8_t* gameText, size_t len, const wc
 
 int main(int argc, char** argv) {
 	int fd = open("test.sav", O_RDONLY);
-	uint8_t* memory = mmap(0, SIZE_GEN_1, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0);
+	uint8_t* memory = static_cast<uint8_t*>(mmap(0, SIZE_GEN_1, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0));
 
 	uint8_t* start = &memory[G10E_TRAINER_NAME];
 	wchar_t name[11] = L"";

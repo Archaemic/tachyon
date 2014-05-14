@@ -4,7 +4,7 @@
 #include <wchar.h>
 #include <stdint.h>
 
-const wchar_t charMapGen1En[0x100];
+extern const wchar_t charMapGen1En[0x100];
 
 enum {
 	SIZE_GEN_1 = 0x8000,
@@ -89,7 +89,7 @@ struct G1BoxPokemon {
 	uint8_t ppMove4;
 } __attribute__((packed));
 
-int getPartyPokemon(void* saveblock, struct G1PartyPokemon** pokemon , uint8_t** names, uint8_t** otNames);
-int getBoxPokemon(void* saveblock, enum G1Box box, struct G1BoxPokemon** pokemon , uint8_t** names, uint8_t** otNames);
+int getPartyPokemon(uint8_t* saveblock, struct G1PartyPokemon** pokemon , uint8_t** names, uint8_t** otNames);
+int getBoxPokemon(uint8_t* saveblock, enum G1Box box, struct G1BoxPokemon** pokemon , uint8_t** names, uint8_t** otNames);
 
 #endif

@@ -70,10 +70,10 @@ const wchar_t charMapGen1En[0x100] = {
 	L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9' 
 };
 
-int getPartyPokemon(void* saveblock, struct G1PartyPokemon** pokemon , uint8_t** names, uint8_t** otNames) {
-	int nPokemon = ((uint8_t*) saveblock)[G10E_PARTY_POKEMON];
+int getPartyPokemon(uint8_t* saveblock, struct G1PartyPokemon** pokemon , uint8_t** names, uint8_t** otNames) {
+	int nPokemon = saveblock[G10E_PARTY_POKEMON];
 	if (pokemon) {
-		*pokemon = (struct G1PartyPokemon*) &saveblock[G10E_PARTY_POKEMON + 2 + 6];
+		*pokemon = reinterpret_cast<struct G1PartyPokemon*>(&saveblock[G10E_PARTY_POKEMON + 2 + 6]);
 	}
 	if (names) {
 		*names = &saveblock[G10E_PARTY_POKEMON + 2 + (sizeof(struct G1PartyPokemon) + 12) * 6];
@@ -84,16 +84,16 @@ int getPartyPokemon(void* saveblock, struct G1PartyPokemon** pokemon , uint8_t**
 	return nPokemon;
 }
 
-int getBoxPokemon(void* saveblock, enum G1Box box, struct G1BoxPokemon** pokemon , uint8_t** names, uint8_t** otNames) {
+int getBoxPokemon(uint8_t* saveblock, enum G1Box box, struct G1BoxPokemon** pokemon , uint8_t** names, uint8_t** otNames) {
 	size_t start;
 	if (box == G1_BOX_CURRENT) {
 		start = G10E_CURRENT_BOX;
 	} else {
-		box = G10E_BOX_1 + (box - 1) * G1_BOX_SIZE;
+		start = G10E_BOX_1 + (box - 1) * G1_BOX_SIZE;
 	}
-	int nPokemon = ((uint8_t*) saveblock)[start];
+	int nPokemon = saveblock[start];
 	if (pokemon) {
-		*pokemon = (struct G1BoxPokemon*) &saveblock[start + 2 + 20];
+		*pokemon = reinterpret_cast<struct G1BoxPokemon*>(&saveblock[start + 2 + 20]);
 	}
 	if (names) {
 		*names = &saveblock[start + 2 + (sizeof(struct G1BoxPokemon) + 12) * 20];
