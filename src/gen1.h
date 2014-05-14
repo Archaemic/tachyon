@@ -1,95 +1,73 @@
 #ifndef PTXN_GEN_1_H
 #define PTXN_GEN_1_H
 
-#include <wchar.h>
-#include <stdint.h>
-
-extern const wchar_t charMapGen1En[0x100];
+#include "base.h"
 
 enum {
 	SIZE_GEN_1 = 0x8000,
-	G10E_TRAINER_NAME = 0x2598,
-	G10E_PARTY_POKEMON = 0x2F2C,
-	G10E_CURRENT_BOX = 0x30C0,
-	G10E_BOX_1 = 0x4000
 };
 
+struct G1BasePokemonData;
+struct G1PartyPokemonData;
 
-enum G1Box {
-	G1_BOX_CURRENT,
-	G1_BOX_01,
-	G1_BOX_02,
-	G1_BOX_03,
-	G1_BOX_04,
-	G1_BOX_05,
-	G1_BOX_06,
-	G1_BOX_07,
-	G1_BOX_08,
-	G1_BOX_09,
-	G1_BOX_10,
-	G1_BOX_11,
-	G1_BOX_12
+class G1BasePokemon : public PokemonImpl {
+public:
+	G1BasePokemon(uint8_t* data, uint8_t* name, uint8_t* ot);
+
+	virtual const wchar_t* name() const;
+	virtual const wchar_t* otName() const;
+	virtual uint16_t otId() const;
+	virtual unsigned xp() const;
+	virtual unsigned currentHp() const;
+
+private:
+	G1BasePokemonData* m_data;
+	wchar_t m_ot[8];
+	wchar_t m_name[11];
 };
 
-struct G1PartyPokemon {
-	uint8_t pokemonId;
-	uint16_t currentHp;
-	uint8_t displayLevel;
-	uint8_t status;
-	uint8_t type1;
-	uint8_t type2;
-	uint8_t catchRate;
-	uint8_t move1;
-	uint8_t move2;
-	uint8_t move3;
-	uint8_t move4;
-	uint16_t otId;
-	uint32_t xp : 24;
-	uint16_t evHp;
-	uint16_t evAttack;
-	uint16_t evDefense;
-	uint16_t evSpeed;
-	uint16_t evSpecial;
-	uint16_t ivs;
-	uint8_t ppMove1;
-	uint8_t ppMove2;
-	uint8_t ppMove3;
-	uint8_t ppMove4;
-	uint8_t level;
-	uint16_t maxHp;
-	uint16_t attack;
-	uint16_t defense;
-	uint16_t speed;
-	uint16_t special;
-} __attribute__((packed));
+class G1PartyPokemon : public G1BasePokemon {
+public:
+	G1PartyPokemon(uint8_t* data, uint8_t* name, uint8_t* ot);
 
-struct G1BoxPokemon {
-	uint8_t pokemonId;
-	uint16_t currentHp;
-	uint8_t displayLevel;
-	uint8_t status;
-	uint8_t type1;
-	uint8_t type2;
-	uint8_t catchRate;
-	uint8_t move1;
-	uint8_t move2;
-	uint8_t move3;
-	uint8_t move4;
-	uint16_t otId;
-	uint32_t xp : 24;
-	uint16_t evHp;
-	uint16_t evAttack;
-	uint16_t evDefense;
-	uint16_t evSpeed;
-	uint16_t evSpecial;
-	uint16_t ivs;
-	uint8_t ppMove1;
-	uint8_t ppMove2;
-	uint8_t ppMove3;
-	uint8_t ppMove4;
-} __attribute__((packed));
+private:
+	G1PartyPokemonData* m_data;
+};
 
-int getPartyPokemon(uint8_t* saveblock, struct G1PartyPokemon** pokemon , uint8_t** names, uint8_t** otNames);
-int getBoxPokemon(uint8_t* saveblock, enum G1Box box, struct G1BoxPokemon** pokemon , uint8_t** names, uint8_t** otNames);
+class Generation1 : public Game {
+public:
+	enum Box {
+		BOX_CURRENT,
+		BOX_01,
+		BOX_02,
+		BOX_03,
+		BOX_04,
+		BOX_05,
+		BOX_06,
+		BOX_07,
+		BOX_08,
+		BOX_09,
+		BOX_10,
+		BOX_11,
+		BOX_12
+	};
+
+	Generation1(uint8_t* memory);
+
+	virtual const wchar_t* trainerName() const;
+
+	virtual Pokemon partyPokemon(int i);
+	virtual unsigned nPartyPokemon() const;
+	virtual Pokemon boxPokemon(int box, int i);
+	virtual unsigned nBoxPokemon(int box) const;
+
+private:
+	const static wchar_t charMapGen1En[0x100];
+
+	wchar_t m_trainerName[8];
+
+public:
+	static void gameTextToWchar(wchar_t* out, const uint8_t* gameText, size_t len);
+};
 
 #endif
