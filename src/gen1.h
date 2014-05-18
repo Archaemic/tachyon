@@ -14,13 +14,14 @@ class G1BasePokemon : public PokemonImpl {
 public:
 	G1BasePokemon(uint8_t* data, uint8_t* name, uint8_t* ot);
 
-	virtual const wchar_t* name() const;
-	virtual const wchar_t* otName() const;
-	virtual uint16_t otId() const;
-	virtual unsigned xp() const;
-	virtual unsigned currentHp() const;
-	virtual Type type1() const;
-	virtual Type type2() const;
+	virtual const wchar_t* name() const override;
+	virtual Pokemon::Id species() const override;
+	virtual const wchar_t* otName() const override;
+	virtual uint16_t otId() const override;
+	virtual unsigned xp() const override;
+	virtual unsigned currentHp() const override;
+	virtual Type type1() const override;
+	virtual Type type2() const override;
 
 private:
 	G1BasePokemonData* m_data;
