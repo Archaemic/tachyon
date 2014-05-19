@@ -446,8 +446,9 @@ const wchar_t* TypeReadable(Type type) {
 	return readable;
 }
 
-Game::Game(uint8_t* memory)
+Game::Game(uint8_t* memory, const uint8_t* rom)
 	: m_memory(memory)
+	, m_rom(rom)
 {
 }
 
@@ -470,7 +471,7 @@ const wchar_t* Pokemon::name() const {
 	return m_impl->name();
 }
 
-Pokemon::Id Pokemon::species() const {
+PokemonSpecies Pokemon::species() const {
 	return m_impl->species();
 }
 
@@ -498,13 +499,60 @@ Type Pokemon::type2() const {
 	return m_impl->type2();
 }
 
-const wchar_t* Pokemon::speciesReadable() const {
-	return speciesNames[species()];
+PokemonSpecies::PokemonSpecies(PokemonSpeciesImpl* impl)
+	: m_impl(impl)
+{
+}
+
+PokemonSpecies::PokemonSpecies(const PokemonSpecies& other)
+	: m_impl(other.m_impl)
+{
+	m_impl->ref();
+}
+
+PokemonSpecies::~PokemonSpecies() {
+	m_impl->deref();
+}
+
+PokemonSpecies::Id PokemonSpecies::id() const {
+	return m_impl->id();
+}
+
+unsigned PokemonSpecies::baseAttack() const {
+	return m_impl->baseAttack();
+}
+
+unsigned PokemonSpecies::baseDefense() const {
+	return m_impl->baseDefense();
+}
+
+unsigned PokemonSpecies::baseSpeed() const {
+	return m_impl->baseSpeed();
+}
+
+unsigned PokemonSpecies::baseSpecialAttack() const {
+	return m_impl->baseSpecialAttack();
+}
+
+unsigned PokemonSpecies::baseSpecialDefense() const {
+	return m_impl->baseSpecialDefense();
+}
+
+Type PokemonSpecies::type1() const {
+	return m_impl->type1();
+}
+
+Type PokemonSpecies::type2() const {
+	return m_impl->type2();
+}
+
+const wchar_t* PokemonSpecies::readable() const {
+	return speciesNames[id()];
 }
 
 void Pokemon::enumerate() const {
 	std::wcout << "\tName: " << name() << std::endl;
-	std::wcout << "\tSpecies: " << speciesReadable() << " (" << species() << ")" << std::endl;
+	std::wcout << "\tSpecies: " << species().readable() << " (" << species().id() << ")" << std::endl;
 	std::wcout << "\tOT: " << otName() << " (" << otId() << ")" << std::endl;
 	std::wcout << "\tExp: " << xp() << std::endl;
 	std::wcout << "\tHP: " << currentHp() << std::endl;
@@ -515,16 +563,16 @@ void Pokemon::enumerate() const {
 	std::wcout << std::endl;
 }
 
-PokemonImpl::PokemonImpl()
+RefCounted::RefCounted()
 	: m_refs(1)
 {
 }
 
-void PokemonImpl::ref() {
+void RefCounted::ref() {
 	++m_refs;
 }
 
-void PokemonImpl::deref() {
+void RefCounted::deref() {
 	--m_refs;
 
 	if (m_refs == 0) {

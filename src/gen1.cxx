@@ -1,43 +1,8 @@
-#include "gen1.h"
+#include "gen1-private.h"
 
 #define R16(V) (((V) & 0xFF) << 8) | (((V) & 0xFF00) >> 8)
 #define R24(V) (((V) & 0xFF) << 16) | ((V) & 0xFF00) | (((V) & 0xFF0000) >> 16)
 #define R32(V) (((V) & 0xFF) << 24) | (((V) & 0xFF00) << 8) | (((V) & 0xFF0000) >> 8) | (((V) & 0xFF000000) >> 24)
-
-struct G1BasePokemonData {
-	uint8_t pokemonId;
-	uint16_t currentHp;
-	uint8_t displayLevel;
-	uint8_t status;
-	uint8_t type1;
-	uint8_t type2;
-	uint8_t catchRate;
-	uint8_t move1;
-	uint8_t move2;
-	uint8_t move3;
-	uint8_t move4;
-	uint16_t otId;
-	uint32_t xp : 24;
-	uint16_t evHp;
-	uint16_t evAttack;
-	uint16_t evDefense;
-	uint16_t evSpeed;
-	uint16_t evSpecial;
-	uint16_t ivs;
-	uint8_t ppMove1;
-	uint8_t ppMove2;
-	uint8_t ppMove3;
-	uint8_t ppMove4;
-} __attribute__((packed));
-
-struct G1PartyPokemonData : public G1BasePokemonData {
-	uint8_t level;
-	uint16_t maxHp;
-	uint16_t attack;
-	uint16_t defense;
-	uint16_t speed;
-	uint16_t special;
-} __attribute__((packed));
 
 enum {
 	G1_BOX_SIZE = 1122,
@@ -45,201 +10,214 @@ enum {
 	G10E_TRAINER_NAME = 0x2598,
 	G10E_PARTY_POKEMON = 0x2F2C,
 	G10E_CURRENT_BOX = 0x30C0,
-	G10E_BOX_1 = 0x4000
+	G10E_BOX_1 = 0x4000,
+
+	G10E_BASE_STATS = 0x0383DE,
+	G11E_MEW_STATS = 0x00425B,
 };
 
-const static Pokemon::Id idMapping[256] = {
-	Pokemon::MISSINGNO,
-	Pokemon::RHYDON,
-	Pokemon::KANGASKHAN,
-	Pokemon::NIDORAN_M,
-	Pokemon::CLEFAIRY,
-	Pokemon::SPEAROW,
-	Pokemon::VOLTORB,
-	Pokemon::NIDOKING,
-	Pokemon::SLOWBRO,
-	Pokemon::IVYSAUR,
-	Pokemon::EXEGGUTOR,
-	Pokemon::LICKITUNG,
-	Pokemon::EXEGGCUTE,
-	Pokemon::GRIMER,
-	Pokemon::GENGAR,
-	Pokemon::NIDORAN_M,
-	Pokemon::NIDOQUEEN,
-	Pokemon::CUBONE,
-	Pokemon::RHYHORN,
-	Pokemon::LAPRAS,
-	Pokemon::ARCANINE,
-	Pokemon::MEW,
-	Pokemon::GYARADOS,
-	Pokemon::SHELLDER,
-	Pokemon::TENTACOOL,
-	Pokemon::GASTLY,
-	Pokemon::SCYTHER,
-	Pokemon::STARYU,
-	Pokemon::BLASTOISE,
-	Pokemon::PINSIR,
-	Pokemon::TANGELA,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::GROWLITHE,
-	Pokemon::ONIX,
-	Pokemon::FEAROW,
-	Pokemon::PIDGEY,
-	Pokemon::SLOWPOKE,
-	Pokemon::KADABRA,
-	Pokemon::GRAVELER,
-	Pokemon::CHANSEY,
-	Pokemon::MACHOKE,
-	Pokemon::MR_MIME,
-	Pokemon::HITMONLEE,
-	Pokemon::HITMONCHAN,
-	Pokemon::ARBOK,
-	Pokemon::PARASECT,
-	Pokemon::PSYDUCK,
-	Pokemon::DROWZEE,
-	Pokemon::GOLEM,
-	Pokemon::MISSINGNO,
-	Pokemon::MAGMAR,
-	Pokemon::MISSINGNO,
-	Pokemon::ELECTABUZZ,
-	Pokemon::MAGNETON,
-	Pokemon::KOFFING,
-	Pokemon::MISSINGNO,
-	Pokemon::MANKEY,
-	Pokemon::SEEL,
-	Pokemon::DIGLETT,
-	Pokemon::TAUROS,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::FARFETCH_D,
-	Pokemon::VENONAT,
-	Pokemon::DRAGONITE,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::DODUO,
-	Pokemon::POLIWAG,
-	Pokemon::JYNX,
-	Pokemon::MOLTRES,
-	Pokemon::ARTICUNO,
-	Pokemon::ZAPDOS,
-	Pokemon::DITTO,
-	Pokemon::MEOWTH,
-	Pokemon::KRABBY,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::VULPIX,
-	Pokemon::NINETALES,
-	Pokemon::PIKACHU,
-	Pokemon::RAICHU,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::DRATINI,
-	Pokemon::DRAGONAIR,
-	Pokemon::KABUTO,
-	Pokemon::KABUTOPS,
-	Pokemon::HORSEA,
-	Pokemon::SEADRA,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::SANDSHREW,
-	Pokemon::SANDSLASH,
-	Pokemon::OMANYTE,
-	Pokemon::OMASTAR,
-	Pokemon::JIGGLYPUFF,
-	Pokemon::WIGGLYTUFF,
-	Pokemon::EEVEE,
-	Pokemon::FLAREON,
-	Pokemon::JOLTEON,
-	Pokemon::VAPOREON,
-	Pokemon::MACHOP,
-	Pokemon::ZUBAT,
-	Pokemon::EKANS,
-	Pokemon::PARAS,
-	Pokemon::POLIWHIRL,
-	Pokemon::POLIWRATH,
-	Pokemon::WEEDLE,
-	Pokemon::KAKUNA,
-	Pokemon::BEEDRILL,
-	Pokemon::MISSINGNO,
-	Pokemon::DODRIO,
-	Pokemon::PRIMEAPE,
-	Pokemon::DUGTRIO,
-	Pokemon::VENOMOTH,
-	Pokemon::DEWGONG,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::CATERPIE,
-	Pokemon::METAPOD,
-	Pokemon::BUTTERFREE,
-	Pokemon::MACHAMP,
-	Pokemon::MISSINGNO,
-	Pokemon::GOLDUCK,
-	Pokemon::HYPNO,
-	Pokemon::GOLBAT,
-	Pokemon::MEWTWO,
-	Pokemon::SNORLAX,
-	Pokemon::MAGIKARP,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::MUK,
-	Pokemon::MISSINGNO,
-	Pokemon::KINGLER,
-	Pokemon::CLOYSTER,
-	Pokemon::MISSINGNO,
-	Pokemon::ELECTRODE,
-	Pokemon::CLEFABLE,
-	Pokemon::WEEZING,
-	Pokemon::PERSIAN,
-	Pokemon::MAROWAK,
-	Pokemon::MISSINGNO,
-	Pokemon::HAUNTER,
-	Pokemon::ABRA,
-	Pokemon::ALAKAZAM,
-	Pokemon::PIDGEOTTO,
-	Pokemon::PIDGEOT,
-	Pokemon::STARMIE,
-	Pokemon::BULBASAUR,
-	Pokemon::VENUSAUR,
-	Pokemon::TENTACRUEL,
-	Pokemon::MISSINGNO,
-	Pokemon::GOLDEEN,
-	Pokemon::SEAKING,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::PONYTA,
-	Pokemon::RAPIDASH,
-	Pokemon::RATTATA,
-	Pokemon::RATICATE,
-	Pokemon::NIDORINO,
-	Pokemon::NIDORINA,
-	Pokemon::GEODUDE,
-	Pokemon::PORYGON,
-	Pokemon::AERODACTYL,
-	Pokemon::MISSINGNO,
-	Pokemon::MAGNEMITE,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::CHARMANDER,
-	Pokemon::SQUIRTLE,
-	Pokemon::CHARMELEON,
-	Pokemon::WARTORTLE,
-	Pokemon::CHARIZARD,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::MISSINGNO,
-	Pokemon::ODDISH,
-	Pokemon::GLOOM,
-	Pokemon::VILEPLUME,
-	Pokemon::BELLSPROUT,
-	Pokemon::WEEPINBELL,
-	Pokemon::VICTREEBEL
+const static struct ChecksumMapping {
+	uint16_t checksum;
+	Game::Version version;
+} checksums[] = {
+	{ 0x66B8, Game::G10J_RED },
+	{ 0xC1A2, Game::G10J_RED },
+	{ 0xE691, Game::G10E_RED },
+	{ 0, Game::INVALID }
+};
+
+const static PokemonSpecies::Id idMapping[256] = {
+	PokemonSpecies::MISSINGNO,
+	PokemonSpecies::RHYDON,
+	PokemonSpecies::KANGASKHAN,
+	PokemonSpecies::NIDORAN_M,
+	PokemonSpecies::CLEFAIRY,
+	PokemonSpecies::SPEAROW,
+	PokemonSpecies::VOLTORB,
+	PokemonSpecies::NIDOKING,
+	PokemonSpecies::SLOWBRO,
+	PokemonSpecies::IVYSAUR,
+	PokemonSpecies::EXEGGUTOR,
+	PokemonSpecies::LICKITUNG,
+	PokemonSpecies::EXEGGCUTE,
+	PokemonSpecies::GRIMER,
+	PokemonSpecies::GENGAR,
+	PokemonSpecies::NIDORAN_M,
+	PokemonSpecies::NIDOQUEEN,
+	PokemonSpecies::CUBONE,
+	PokemonSpecies::RHYHORN,
+	PokemonSpecies::LAPRAS,
+	PokemonSpecies::ARCANINE,
+	PokemonSpecies::MEW,
+	PokemonSpecies::GYARADOS,
+	PokemonSpecies::SHELLDER,
+	PokemonSpecies::TENTACOOL,
+	PokemonSpecies::GASTLY,
+	PokemonSpecies::SCYTHER,
+	PokemonSpecies::STARYU,
+	PokemonSpecies::BLASTOISE,
+	PokemonSpecies::PINSIR,
+	PokemonSpecies::TANGELA,
+	PokemonSpecies::SCIZOR,
+	PokemonSpecies::SHUCKLE,
+	PokemonSpecies::GROWLITHE,
+	PokemonSpecies::ONIX,
+	PokemonSpecies::FEAROW,
+	PokemonSpecies::PIDGEY,
+	PokemonSpecies::SLOWPOKE,
+	PokemonSpecies::KADABRA,
+	PokemonSpecies::GRAVELER,
+	PokemonSpecies::CHANSEY,
+	PokemonSpecies::MACHOKE,
+	PokemonSpecies::MR_MIME,
+	PokemonSpecies::HITMONLEE,
+	PokemonSpecies::HITMONCHAN,
+	PokemonSpecies::ARBOK,
+	PokemonSpecies::PARASECT,
+	PokemonSpecies::PSYDUCK,
+	PokemonSpecies::DROWZEE,
+	PokemonSpecies::GOLEM,
+	PokemonSpecies::HERACROSS,
+	PokemonSpecies::MAGMAR,
+	PokemonSpecies::HO_OH,
+	PokemonSpecies::ELECTABUZZ,
+	PokemonSpecies::MAGNETON,
+	PokemonSpecies::KOFFING,
+	PokemonSpecies::SNEASEL,
+	PokemonSpecies::MANKEY,
+	PokemonSpecies::SEEL,
+	PokemonSpecies::DIGLETT,
+	PokemonSpecies::TAUROS,
+	PokemonSpecies::TEDDIURSA,
+	PokemonSpecies::URSARING,
+	PokemonSpecies::SLUGMA,
+	PokemonSpecies::FARFETCH_D,
+	PokemonSpecies::VENONAT,
+	PokemonSpecies::DRAGONITE,
+	PokemonSpecies::MAGCARGO,
+	PokemonSpecies::SWINUB,
+	PokemonSpecies::PILOSWINE,
+	PokemonSpecies::DODUO,
+	PokemonSpecies::POLIWAG,
+	PokemonSpecies::JYNX,
+	PokemonSpecies::MOLTRES,
+	PokemonSpecies::ARTICUNO,
+	PokemonSpecies::ZAPDOS,
+	PokemonSpecies::DITTO,
+	PokemonSpecies::MEOWTH,
+	PokemonSpecies::KRABBY,
+	PokemonSpecies::CORSOLA,
+	PokemonSpecies::REMORAID,
+	PokemonSpecies::OCTILLERY,
+	PokemonSpecies::VULPIX,
+	PokemonSpecies::NINETALES,
+	PokemonSpecies::PIKACHU,
+	PokemonSpecies::RAICHU,
+	PokemonSpecies::DELIBIRD,
+	PokemonSpecies::MANTINE,
+	PokemonSpecies::DRATINI,
+	PokemonSpecies::DRAGONAIR,
+	PokemonSpecies::KABUTO,
+	PokemonSpecies::KABUTOPS,
+	PokemonSpecies::HORSEA,
+	PokemonSpecies::SEADRA,
+	PokemonSpecies::SKARMORY,
+	PokemonSpecies::MISSINGNO,
+	PokemonSpecies::HOUNDOUR,
+	PokemonSpecies::SANDSLASH,
+	PokemonSpecies::OMANYTE,
+	PokemonSpecies::OMASTAR,
+	PokemonSpecies::JIGGLYPUFF,
+	PokemonSpecies::WIGGLYTUFF,
+	PokemonSpecies::EEVEE,
+	PokemonSpecies::FLAREON,
+	PokemonSpecies::JOLTEON,
+	PokemonSpecies::VAPOREON,
+	PokemonSpecies::MACHOP,
+	PokemonSpecies::ZUBAT,
+	PokemonSpecies::EKANS,
+	PokemonSpecies::PARAS,
+	PokemonSpecies::POLIWHIRL,
+	PokemonSpecies::POLIWRATH,
+	PokemonSpecies::WEEDLE,
+	PokemonSpecies::KAKUNA,
+	PokemonSpecies::BEEDRILL,
+	PokemonSpecies::HOUNDOOM,
+	PokemonSpecies::DODRIO,
+	PokemonSpecies::PRIMEAPE,
+	PokemonSpecies::DUGTRIO,
+	PokemonSpecies::VENOMOTH,
+	PokemonSpecies::DEWGONG,
+	PokemonSpecies::KINGDRA,
+	PokemonSpecies::PHANPY,
+	PokemonSpecies::CATERPIE,
+	PokemonSpecies::METAPOD,
+	PokemonSpecies::BUTTERFREE,
+	PokemonSpecies::MACHAMP,
+	PokemonSpecies::DONPHAN,
+	PokemonSpecies::GOLDUCK,
+	PokemonSpecies::HYPNO,
+	PokemonSpecies::GOLBAT,
+	PokemonSpecies::MEWTWO,
+	PokemonSpecies::SNORLAX,
+	PokemonSpecies::MAGIKARP,
+	PokemonSpecies::PORYGON2,
+	PokemonSpecies::STANTLER,
+	PokemonSpecies::MUK,
+	PokemonSpecies::SMEARGLE,
+	PokemonSpecies::KINGLER,
+	PokemonSpecies::CLOYSTER,
+	PokemonSpecies::TYROGUE,
+	PokemonSpecies::ELECTRODE,
+	PokemonSpecies::CLEFABLE,
+	PokemonSpecies::WEEZING,
+	PokemonSpecies::PERSIAN,
+	PokemonSpecies::MAROWAK,
+	PokemonSpecies::HITMONTOP,
+	PokemonSpecies::HAUNTER,
+	PokemonSpecies::ABRA,
+	PokemonSpecies::ALAKAZAM,
+	PokemonSpecies::PIDGEOTTO,
+	PokemonSpecies::PIDGEOT,
+	PokemonSpecies::STARMIE,
+	PokemonSpecies::BULBASAUR,
+	PokemonSpecies::VENUSAUR,
+	PokemonSpecies::TENTACRUEL,
+	PokemonSpecies::SMOOCHUM,
+	PokemonSpecies::GOLDEEN,
+	PokemonSpecies::SEAKING,
+	PokemonSpecies::ELEKID,
+	PokemonSpecies::MAGBY,
+	PokemonSpecies::MILTANK,
+	PokemonSpecies::BLISSEY,
+	PokemonSpecies::PONYTA,
+	PokemonSpecies::RAPIDASH,
+	PokemonSpecies::RATTATA,
+	PokemonSpecies::RATICATE,
+	PokemonSpecies::NIDORINO,
+	PokemonSpecies::NIDORINA,
+	PokemonSpecies::GEODUDE,
+	PokemonSpecies::PORYGON,
+	PokemonSpecies::AERODACTYL,
+	PokemonSpecies::RAIKOU,
+	PokemonSpecies::MAGNEMITE,
+	PokemonSpecies::ENTEI,
+	PokemonSpecies::SUICUNE,
+	PokemonSpecies::CHARMANDER,
+	PokemonSpecies::SQUIRTLE,
+	PokemonSpecies::CHARMELEON,
+	PokemonSpecies::WARTORTLE,
+	PokemonSpecies::CHARIZARD,
+	PokemonSpecies::LARVITAR,
+	PokemonSpecies::PUPITAR,
+	PokemonSpecies::TYRANITAR,
+	PokemonSpecies::LUGIA,
+	PokemonSpecies::ODDISH,
+	PokemonSpecies::GLOOM,
+	PokemonSpecies::VILEPLUME,
+	PokemonSpecies::BELLSPROUT,
+	PokemonSpecies::WEEPINBELL,
+	PokemonSpecies::VICTREEBEL
 };
 
 const static Type typeMapping[256] = {
@@ -340,8 +318,8 @@ const wchar_t Generation1::charMapGen1En[0x100] = {
 	L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9' 
 };
 
-Generation1::Generation1(uint8_t* memory)
-	: Game(memory)
+Generation1::Generation1(uint8_t* memory, const uint8_t* rom)
+	: Game(memory, rom)
 {
 	gameTextToWchar(m_trainerName, &memory[G10E_TRAINER_NAME], sizeof(m_trainerName) / sizeof(*m_trainerName));
 }
@@ -361,7 +339,7 @@ Pokemon Generation1::partyPokemon(int i) {
 	uint8_t* pstart = &m_memory[G10E_PARTY_POKEMON + 2 + 6 + sizeof(G1PartyPokemonData) * i];
 	uint8_t* nstart = &m_memory[G10E_PARTY_POKEMON + 2 + (sizeof(G1PartyPokemonData) + 12) * 6 + 11 * i];
 	uint8_t* tstart = &m_memory[G10E_PARTY_POKEMON + 2 + (sizeof(G1PartyPokemonData) + 1) * 6 + 11 * i];
-	return Pokemon(new G1PartyPokemon(pstart, nstart, tstart));
+	return Pokemon(new G1PartyPokemon(*this, pstart, nstart, tstart));
 }
 
 unsigned Generation1::nPartyPokemon() const {
@@ -378,7 +356,7 @@ Pokemon Generation1::boxPokemon(int box, int i) {
 	uint8_t* pstart = &m_memory[start + 2 + 20 + sizeof(G1BasePokemonData) * i];
 	uint8_t* nstart = &m_memory[start + 2 + (sizeof(G1BasePokemonData) + 12) * 20 + 11 * i];
 	uint8_t* tstart = &m_memory[start + 2 + (sizeof(G1BasePokemonData) + 1) * 20 + 11 * i];
-	return Pokemon(new G1BasePokemon(pstart, nstart, tstart));
+	return Pokemon(new G1BasePokemon(*this, pstart, nstart, tstart));
 }
 
 unsigned Generation1::nBoxPokemon(int box) const {
@@ -391,8 +369,21 @@ unsigned Generation1::nBoxPokemon(int box) const {
 	return m_memory[start];
 }
 
-G1BasePokemon::G1BasePokemon(uint8_t* data, uint8_t* name, uint8_t* ot)
-	: m_data(reinterpret_cast<G1BasePokemonData*>(data))
+Game::Version Generation1::version() const {
+	uint16_t checksum = *(uint16_t*) &m_rom[0x14E];
+	const ChecksumMapping* mapping = checksums;
+	while (mapping->checksum) {
+		if (mapping->checksum == checksum) {
+			break;
+		}
+		++mapping;
+	}
+	return mapping->version;
+}
+
+G1BasePokemon::G1BasePokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
+	: m_gen(gen)
+	, m_data(reinterpret_cast<G1BasePokemonData*>(data))
 {
 	Generation1::gameTextToWchar(m_name, name, sizeof(m_name) / sizeof(*m_name));
 	Generation1::gameTextToWchar(m_ot, ot, sizeof(m_ot) / sizeof(*m_ot));
@@ -402,8 +393,18 @@ const wchar_t* G1BasePokemon::name() const {
 	return m_name;
 }
 
-Pokemon::Id G1BasePokemon::species() const {
-	return idMapping[m_data->pokemonId];
+PokemonSpecies G1BasePokemon::species() const {
+	PokemonSpecies::Id id = idMapping[m_data->pokemonId];
+	if (id == PokemonSpecies::MEW && m_gen.version() == Game::G11E_YELLOW) {
+		G1PokemonBaseStats* stats = (G1PokemonBaseStats*) &m_gen.rom()[G11E_MEW_STATS];
+		return PokemonSpecies(new G1PokemonSpecies(m_gen, stats));
+	} else if (id <= PokemonSpecies::MEW && id != PokemonSpecies::MISSINGNO) {
+		G1PokemonBaseStats* stats = (G1PokemonBaseStats*) &m_gen.rom()[G10E_BASE_STATS];
+		return PokemonSpecies(new G1PokemonSpecies(m_gen, &stats[id - 1]));
+	} else {
+		G1PokemonBaseStats* stats = (G1PokemonBaseStats*) &m_gen.rom()[G10E_BASE_STATS];
+		return PokemonSpecies(new G1PokemonSpecies(m_gen, &stats[-1]));
+	}
 }
 
 const wchar_t* G1BasePokemon::otName() const {
@@ -430,8 +431,54 @@ Type G1BasePokemon::type2() const {
 	return typeMapping[m_data->type2];
 }
 
-G1PartyPokemon::G1PartyPokemon(uint8_t* data, uint8_t* name, uint8_t* ot)
-	: G1BasePokemon(data, name, ot)
+G1PartyPokemon::G1PartyPokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
+	: G1BasePokemon(gen, data, name, ot)
 	, m_data(reinterpret_cast<G1PartyPokemonData*>(data))
 {
+}
+
+G1PokemonSpecies::G1PokemonSpecies(const Generation1& gen, G1PokemonBaseStats* data)
+	: m_gen(gen)
+	, m_data(data)
+{
+}
+
+PokemonSpecies::Id G1PokemonSpecies::id() const {
+	return (PokemonSpecies::Id) m_data->species;
+}
+
+unsigned G1PokemonSpecies::baseAttack() const {
+	return m_data->attack;
+}
+
+unsigned G1PokemonSpecies::baseDefense() const {
+	return m_data->defense;
+}
+
+unsigned G1PokemonSpecies::baseSpeed() const {
+	return m_data->speed;
+}
+
+unsigned G1PokemonSpecies::baseSpecialAttack() const {
+	return m_data->special;
+}
+
+unsigned G1PokemonSpecies::baseSpecialDefense() const {
+	return m_data->special;
+}
+
+Type G1PokemonSpecies::type1() const {
+	return typeMapping[m_data->type1];
+}
+
+Type G1PokemonSpecies::type2() const {
+	return typeMapping[m_data->type2];
+}
+
+bool G1TMSet::containsTM(int tm) const {
+	return m_set[tm >> 8] & (1 << (tm & 0x7));
+}
+
+bool G1TMSet::containsHM(int hm) const {
+	return containsTM(hm + 50);
 }
