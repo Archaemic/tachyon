@@ -13,7 +13,7 @@ enum {
 	G10E_BOX_1 = 0x4000,
 
 	G10E_BASE_STATS = 0x0383DE,
-	G11E_MEW_STATS = 0x00425B,
+	G10E_MEW_STATS = 0x00425B,
 };
 
 const static struct ChecksumMapping {
@@ -395,8 +395,8 @@ const wchar_t* G1BasePokemon::name() const {
 
 PokemonSpecies G1BasePokemon::species() const {
 	PokemonSpecies::Id id = idMapping[m_data->pokemonId];
-	if (id == PokemonSpecies::MEW && m_gen.version() == Game::G11E_YELLOW) {
-		G1PokemonBaseStats* stats = (G1PokemonBaseStats*) &m_gen.rom()[G11E_MEW_STATS];
+	if (id == PokemonSpecies::MEW && m_gen.version() != Game::G11E_YELLOW) {
+		G1PokemonBaseStats* stats = (G1PokemonBaseStats*) &m_gen.rom()[G10E_MEW_STATS];
 		return PokemonSpecies(new G1PokemonSpecies(m_gen, stats));
 	} else if (id <= PokemonSpecies::MEW && id != PokemonSpecies::MISSINGNO) {
 		G1PokemonBaseStats* stats = (G1PokemonBaseStats*) &m_gen.rom()[G10E_BASE_STATS];
