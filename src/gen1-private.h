@@ -38,7 +38,10 @@ struct G1BasePokemonData {
 	uint16_t evDefense;
 	uint16_t evSpeed;
 	uint16_t evSpecial;
-	uint16_t ivs;
+	uint8_t ivDefense : 4;
+	uint8_t ivAttack : 4;
+	uint8_t ivSpecial : 4;
+	uint8_t ivSpeed : 4;
 	G1MoveSet pp;
 } __attribute__((packed));
 
@@ -84,6 +87,12 @@ public:
 	virtual Type type1() const override;
 	virtual Type type2() const override;
 
+	virtual unsigned maxHp() const override;
+
+	virtual unsigned ivHp() const override;
+
+	virtual unsigned evHp() const override;
+
 private:
 	const Generation1& m_gen;
 	G1BasePokemonData* m_data;
@@ -95,6 +104,9 @@ class G1PartyPokemon : public G1BasePokemon {
 public:
 	G1PartyPokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
 
+	virtual unsigned level() const override;
+	virtual unsigned maxHp() const override;
+
 private:
 	G1PartyPokemonData* m_data;
 };
@@ -104,6 +116,7 @@ public:
 	G1PokemonSpecies(const Generation1& gen, G1PokemonBaseStats* data);
 
 	virtual PokemonSpecies::Id id() const override;
+	virtual unsigned baseHp() const override;
 	virtual unsigned baseAttack() const override;
 	virtual unsigned baseDefense() const override;
 	virtual unsigned baseSpeed() const override;
@@ -111,6 +124,7 @@ public:
 	virtual unsigned baseSpecialDefense() const override;
 	virtual Type type1() const override;
 	virtual Type type2() const override;
+	virtual PokemonSpecies::GrowthRate growthRate() const override;
 
 private:
 	const Generation1& m_gen;

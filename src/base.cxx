@@ -1,5 +1,6 @@
 #include "base.h"
 
+#include <cmath>
 #include <iostream>
 
 const static wchar_t* typeNames[] = {
@@ -499,6 +500,57 @@ Type Pokemon::type2() const {
 	return m_impl->type2();
 }
 
+unsigned Pokemon::level() const {
+	return m_impl->level();
+}
+
+unsigned Pokemon::maxHp() const {
+	return m_impl->maxHp();
+}
+
+unsigned Pokemon::ivHp() const {
+	return m_impl->ivHp();
+}
+
+unsigned Pokemon::evHp() const {
+	return m_impl->evHp();
+}
+
+void Pokemon::enumerate() const {
+	std::wcout << "\tName: " << name() << std::endl;
+	std::wcout << "\tSpecies: " << species().readable() << " (" << species().id() << ")" << std::endl;
+	std::wcout << "\tLevel: " << level() << std::endl;
+	std::wcout << "\tOT: " << otName() << " (" << otId() << ")" << std::endl;
+	std::wcout << "\tExp: " << xp() << std::endl;
+	std::wcout << "\tHP: " << currentHp() << "/" << maxHp() << std::endl;
+	std::wcout << "\tType: " << TypeReadable(type1());
+	if (type1() != type2()) {
+		std::wcout << "/" << TypeReadable(type2());
+	}
+	std::wcout << std::endl;
+}
+
+unsigned PokemonImpl::level() const {
+	switch (species().growthRate()) {
+	case PokemonSpecies::LEVEL_FAST:
+		return pow(5 * xp() / 4, 1 / 3.f);
+	case PokemonSpecies::LEVEL_MEDIUM_FAST:
+		return pow(xp(), 1 / 3.f);
+	case PokemonSpecies::LEVEL_MEDIUM_SLOW:
+		// Complex roots make programmers sad
+		for (unsigned i = 2; i <= 100; ++i) {
+			unsigned xpNeeded = 6 * i * i * i / 5 - 15 * i * i + 100 * i - 140;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
+		return 100;
+	case PokemonSpecies::LEVEL_SLOW:
+		return pow(4 * xp() / 5.f, 1 / 3.f);
+	}
+	return 0;
+}
+
 PokemonSpecies::PokemonSpecies(PokemonSpeciesImpl* impl)
 	: m_impl(impl)
 {
@@ -516,6 +568,10 @@ PokemonSpecies::~PokemonSpecies() {
 
 PokemonSpecies::Id PokemonSpecies::id() const {
 	return m_impl->id();
+}
+
+unsigned PokemonSpecies::baseHp() const {
+	return m_impl->baseHp();
 }
 
 unsigned PokemonSpecies::baseAttack() const {
@@ -546,21 +602,12 @@ Type PokemonSpecies::type2() const {
 	return m_impl->type2();
 }
 
-const wchar_t* PokemonSpecies::readable() const {
-	return speciesNames[id()];
+PokemonSpecies::GrowthRate PokemonSpecies::growthRate() const {
+	return m_impl->growthRate();
 }
 
-void Pokemon::enumerate() const {
-	std::wcout << "\tName: " << name() << std::endl;
-	std::wcout << "\tSpecies: " << species().readable() << " (" << species().id() << ")" << std::endl;
-	std::wcout << "\tOT: " << otName() << " (" << otId() << ")" << std::endl;
-	std::wcout << "\tExp: " << xp() << std::endl;
-	std::wcout << "\tHP: " << currentHp() << std::endl;
-	std::wcout << "\tType: " << TypeReadable(type1());
-	if (type1() != type2()) {
-		std::wcout << "/" << TypeReadable(type2());
-	}
-	std::wcout << std::endl;
+const wchar_t* PokemonSpecies::readable() const {
+	return speciesNames[id()];
 }
 
 RefCounted::RefCounted()

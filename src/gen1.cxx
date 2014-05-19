@@ -1,5 +1,7 @@
 #include "gen1-private.h"
 
+#include <cmath>
+
 #define R16(V) (((V) & 0xFF) << 8) | (((V) & 0xFF00) >> 8)
 #define R24(V) (((V) & 0xFF) << 16) | ((V) & 0xFF00) | (((V) & 0xFF0000) >> 16)
 #define R32(V) (((V) & 0xFF) << 24) | (((V) & 0xFF00) << 8) | (((V) & 0xFF0000) >> 8) | (((V) & 0xFF000000) >> 24)
@@ -423,6 +425,18 @@ unsigned G1BasePokemon::currentHp() const {
 	return R16(m_data->currentHp);
 }
 
+unsigned G1BasePokemon::ivHp() const {
+	return
+		((m_data->ivAttack & 1) << 3) |
+		((m_data->ivDefense & 1) << 2) |
+		((m_data->ivSpeed & 1) << 1) |
+		(m_data->ivSpecial & 1);
+}
+
+unsigned G1BasePokemon::evHp() const {
+	return R16(m_data->evHp);
+}
+
 Type G1BasePokemon::type1() const {
 	return typeMapping[m_data->type1];
 }
@@ -431,10 +445,23 @@ Type G1BasePokemon::type2() const {
 	return typeMapping[m_data->type2];
 }
 
+unsigned G1BasePokemon::maxHp() const {
+	PokemonSpecies sp = species();
+	return (ivHp() + sp.baseHp() + int(sqrt(evHp())) / 8 + 50) * level() / 50 + 10;
+}
+
 G1PartyPokemon::G1PartyPokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
 	: G1BasePokemon(gen, data, name, ot)
 	, m_data(reinterpret_cast<G1PartyPokemonData*>(data))
 {
+}
+
+unsigned G1PartyPokemon::level() const {
+	return R16(m_data->level);
+}
+
+unsigned G1PartyPokemon::maxHp() const {
+	return R16(m_data->maxHp);
 }
 
 G1PokemonSpecies::G1PokemonSpecies(const Generation1& gen, G1PokemonBaseStats* data)
@@ -445,6 +472,10 @@ G1PokemonSpecies::G1PokemonSpecies(const Generation1& gen, G1PokemonBaseStats* d
 
 PokemonSpecies::Id G1PokemonSpecies::id() const {
 	return (PokemonSpecies::Id) m_data->species;
+}
+
+unsigned G1PokemonSpecies::baseHp() const {
+	return m_data->hp;
 }
 
 unsigned G1PokemonSpecies::baseAttack() const {
@@ -465,6 +496,21 @@ unsigned G1PokemonSpecies::baseSpecialAttack() const {
 
 unsigned G1PokemonSpecies::baseSpecialDefense() const {
 	return m_data->special;
+}
+
+PokemonSpecies::GrowthRate G1PokemonSpecies::growthRate() const {
+	switch (m_data->growthRate) {
+	case 0:
+		return PokemonSpecies::LEVEL_MEDIUM_FAST;
+	case 3:
+		return PokemonSpecies::LEVEL_MEDIUM_SLOW;
+	case 4:
+		return PokemonSpecies::LEVEL_FAST;
+	case 5:
+		return PokemonSpecies::LEVEL_SLOW;
+	default:
+		return PokemonSpecies::LEVEL_MEDIUM_FAST;
+	}
 }
 
 Type G1PokemonSpecies::type1() const {

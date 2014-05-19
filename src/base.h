@@ -435,11 +435,19 @@ public:
 		DEOXYS
 	};
 
+	enum GrowthRate {
+		LEVEL_FAST,
+		LEVEL_MEDIUM_FAST,
+		LEVEL_MEDIUM_SLOW,
+		LEVEL_SLOW
+	};
+
 	PokemonSpecies(PokemonSpeciesImpl* impl);
 	PokemonSpecies(const PokemonSpecies& other);
 	~PokemonSpecies();
 
 	Id id() const;
+	unsigned baseHp() const;
 	unsigned baseAttack() const;
 	unsigned baseDefense() const;
 	unsigned baseSpeed() const;
@@ -447,6 +455,7 @@ public:
 	unsigned baseSpecialDefense() const;
 	Type type1() const;
 	Type type2() const;
+	GrowthRate growthRate() const;
 
 	const wchar_t* readable() const;
 	static const wchar_t* readable(Id id);
@@ -470,6 +479,13 @@ public:
 	Type type1() const;
 	Type type2() const;
 
+	unsigned level() const;
+	unsigned maxHp() const;
+
+	unsigned ivHp() const;
+
+	unsigned evHp() const;
+
 	void enumerate() const;
 private:
 	PokemonImpl* m_impl;
@@ -488,6 +504,13 @@ public:
 	virtual Type type1() const = 0;
 	virtual Type type2() const = 0;
 
+	virtual unsigned level() const;
+	virtual unsigned maxHp() const = 0;
+
+	virtual unsigned ivHp() const = 0;
+
+	virtual unsigned evHp() const = 0;
+
 private:
 	wchar_t m_name[11];
 	wchar_t m_otName[8];
@@ -498,6 +521,7 @@ public:
 	virtual ~PokemonSpeciesImpl() {}
 
 	virtual PokemonSpecies::Id id() const = 0;
+	virtual unsigned baseHp() const = 0;
 	virtual unsigned baseAttack() const = 0;
 	virtual unsigned baseDefense() const = 0;
 	virtual unsigned baseSpeed() const = 0;
@@ -505,6 +529,7 @@ public:
 	virtual unsigned baseSpecialDefense() const = 0;
 	virtual Type type1() const = 0;
 	virtual Type type2() const = 0;
+	virtual PokemonSpecies::GrowthRate growthRate() const = 0;
 };
 
 class Game {
