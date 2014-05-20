@@ -20,9 +20,6 @@ int main(int argc, char** argv) {
 
 	std::wcout << "Trainer name: " << g1.trainerName() << std::endl;
 
-	int nPokemon = g1.nPartyPokemon();
-	std::wcout << L"Party Pokémon: " << nPokemon << std::endl;
-
 	Table<Pokemon> table;
 	table.addColumn(L"Name", [] (Pokemon p) {
 		return p.name();
@@ -67,14 +64,13 @@ int main(int argc, char** argv) {
 		return buffer.str();
 	}, 18);
 
-	int i;
-	for (i = 0; i < nPokemon; ++i) {
+	for (int i = 0; i < g1.nPartyPokemon(); ++i) {
 		Pokemon pokemon = g1.partyPokemon(i);
 		table.addRow(pokemon);
 	}
 
-	nPokemon = g1.nBoxPokemon(Generation1::BOX_CURRENT);
-	for (i = 0; i < nPokemon; ++i) {
+	int nPokemon = g1.nBoxPokemon(Generation1::BOX_CURRENT);
+	for (int i = 0; i < nPokemon; ++i) {
 		Pokemon pokemon = g1.boxPokemon(Generation1::BOX_CURRENT, i);
 		table.addRow(pokemon);
 	}
