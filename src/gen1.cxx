@@ -302,7 +302,7 @@ const wchar_t Generation1::charMapGen1En[0x100] = {
 
 	// 0xBX
 	L'q', L'r', L's', L't', L'u', L'v', L'w', L'x',
-	L'y', L'z', L'�', L'�', L'�', L'�', L'�', L'�',
+	L'y', L'z', L'é', L'd', L'l', L's', L't', L'v',
 
 	// 0xCX
 	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
@@ -313,11 +313,11 @@ const wchar_t Generation1::charMapGen1En[0x100] = {
 	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
 
 	// 0xEX
-	L'\'', L'P', L'M', L'-', L'�', L'�', L'?', L'!',
-	L'.', L'�', L'�', L'�', L'�', L'�', L'�', L'♂',
+	L'\'', L'ᴾ', L'ᴹ', L'-', L'r', L'm', L'?', L'!',
+	L'.', L'ァ', L'ゥ', L'ェ', L'▹', L'▸', L'▾', L'♂',
 
 	// 0xFX
-	L'�', L'×', L'�', L'/', L',', L'♀', L'0', L'1',
+	L'$', L'×', L'.', L'/', L',', L'♀', L'0', L'1',
 	L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9' 
 };
 
