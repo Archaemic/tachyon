@@ -579,9 +579,19 @@ unsigned Pokemon::evSpecialDefense() const {
 unsigned PokemonImpl::level() const {
 	switch (species().growthRate()) {
 	case PokemonSpecies::LEVEL_FAST:
-		return pow(5 * xp() / 4, 1 / 3.f);
+		for (unsigned i = 2; i <= 100; ++i) {
+			unsigned xpNeeded = 4 * i * i * i / 5;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
 	case PokemonSpecies::LEVEL_MEDIUM_FAST:
-		return pow(xp(), 1 / 3.f);
+		for (unsigned i = 2; i <= 100; ++i) {
+			unsigned xpNeeded = i * i * i;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
 	case PokemonSpecies::LEVEL_MEDIUM_SLOW:
 		// Complex roots make programmers sad
 		for (unsigned i = 2; i <= 100; ++i) {
@@ -590,11 +600,15 @@ unsigned PokemonImpl::level() const {
 				return i - 1;
 			}
 		}
-		return 100;
 	case PokemonSpecies::LEVEL_SLOW:
-		return pow(4 * xp() / 5.f, 1 / 3.f);
+		for (unsigned i = 2; i <= 100; ++i) {
+			unsigned xpNeeded = 5 * i * i * i / 4;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
 	}
-	return 0;
+	return 100;
 }
 
 PokemonSpecies::PokemonSpecies(PokemonSpeciesImpl* impl)
