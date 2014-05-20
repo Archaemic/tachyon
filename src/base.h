@@ -486,6 +486,7 @@ public:
 
 	unsigned evHp() const;
 
+	static void enumerateHeader();
 	void enumerate() const;
 private:
 	PokemonImpl* m_impl;

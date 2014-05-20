@@ -516,20 +516,6 @@ unsigned Pokemon::evHp() const {
 	return m_impl->evHp();
 }
 
-void Pokemon::enumerate() const {
-	std::wcout << "\tName: " << name() << std::endl;
-	std::wcout << "\tSpecies: " << species().readable() << " (" << species().id() << ")" << std::endl;
-	std::wcout << "\tLevel: " << level() << std::endl;
-	std::wcout << "\tOT: " << otName() << " (" << otId() << ")" << std::endl;
-	std::wcout << "\tExp: " << xp() << std::endl;
-	std::wcout << "\tHP: " << currentHp() << "/" << maxHp() << std::endl;
-	std::wcout << "\tType: " << TypeReadable(type1());
-	if (type1() != type2()) {
-		std::wcout << "/" << TypeReadable(type2());
-	}
-	std::wcout << std::endl;
-}
-
 unsigned PokemonImpl::level() const {
 	switch (species().growthRate()) {
 	case PokemonSpecies::LEVEL_FAST:

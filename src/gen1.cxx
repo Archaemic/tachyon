@@ -457,7 +457,7 @@ G1PartyPokemon::G1PartyPokemon(const Generation1& gen, uint8_t* data, uint8_t* n
 }
 
 unsigned G1PartyPokemon::level() const {
-	return R16(m_data->level);
+	return m_data->level;
 }
 
 unsigned G1PartyPokemon::maxHp() const {

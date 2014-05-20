@@ -3,8 +3,11 @@
 #include <unistd.h>
 
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
 #include "gen1.h"
+#include "util.h"
 
 int main(int argc, char** argv) {
 	int fd = open("test.sav", O_RDONLY);
@@ -20,20 +23,62 @@ int main(int argc, char** argv) {
 	int nPokemon = g1.nPartyPokemon();
 	std::wcout << L"Party Pokémon: " << nPokemon << std::endl;
 
+	Table<Pokemon> table;
+	table.addColumn(L"Name", [] (Pokemon p) {
+		return p.name();
+	}, 12);
+
+	table.addColumn(L"Species", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << p.species().readable() << " (" << p.species().id() << ")";
+		return buffer.str();
+	}, 15);
+
+	table.addColumn(L"Level", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << p.level();
+		return buffer.str();
+	}, 5);
+
+	table.addColumn(L"Orig. Trainer", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << p.otName() << " (" << p.otId() << ")";
+		return buffer.str();
+	}, 17);
+
+	table.addColumn(L"Exp", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << p.xp();
+		return buffer.str();
+	}, 8);
+
+	table.addColumn(L"HP", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << p.currentHp() << "/" << p.maxHp();
+		return buffer.str();
+	}, 7);
+
+	table.addColumn(L"Type", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << TypeReadable(p.type1());
+		if (p.type1() != p.type2()) {
+			buffer << "/" << TypeReadable(p.type2());
+		}
+		return buffer.str();
+	}, 18);
+
 	int i;
 	for (i = 0; i < nPokemon; ++i) {
 		Pokemon pokemon = g1.partyPokemon(i);
-		std::wcout << L"Pokémon " << (i + 1) << ":" << std::endl;
-		pokemon.enumerate();
+		table.addRow(pokemon);
 	}
 
 	nPokemon = g1.nBoxPokemon(Generation1::BOX_CURRENT);
-	std::wcout << L"Box Pokémon: " << nPokemon << std::endl;
 	for (i = 0; i < nPokemon; ++i) {
 		Pokemon pokemon = g1.boxPokemon(Generation1::BOX_CURRENT, i);
-		std::wcout << L"Pokémon " << (i + 1) << ":" << std::endl;
-		pokemon.enumerate();
+		table.addRow(pokemon);
 	}
+	table.print();
 
 	munmap(memory, SIZE_GEN_1_SAV);
 	munmap(memory, SIZE_GEN_1_ROM);
