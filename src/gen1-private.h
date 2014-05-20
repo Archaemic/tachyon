@@ -108,6 +108,11 @@ public:
 	virtual unsigned evSpecialAttack() const override;
 	virtual unsigned evSpecialDefense() const override;
 
+	virtual unsigned move1() const override;
+	virtual unsigned move2() const override;
+	virtual unsigned move3() const override;
+	virtual unsigned move4() const override;
+
 	unsigned stat(unsigned iv, unsigned base, unsigned ev) const;
 
 private:

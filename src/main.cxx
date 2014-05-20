@@ -94,6 +94,22 @@ int main(int argc, char** argv) {
 		return buffer.str();
 	}, 4);
 
+	table.addColumn(L"Move 1", [] (Pokemon p) {
+		return MoveReadable(p.move1());
+	}, 15);
+
+	table.addColumn(L"Move 2", [] (Pokemon p) {
+		return MoveReadable(p.move2());
+	}, 15);
+
+	table.addColumn(L"Move 3", [] (Pokemon p) {
+		return MoveReadable(p.move3());
+	}, 15);
+
+	table.addColumn(L"Move 4", [] (Pokemon p) {
+		return MoveReadable(p.move4());
+	}, 15);
+
 	for (int i = 0; i < g1.nPartyPokemon(); ++i) {
 		Pokemon pokemon = g1.partyPokemon(i);
 		table.addRow(pokemon);

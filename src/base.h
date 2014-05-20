@@ -28,6 +28,7 @@ enum Type {
 };
 
 const wchar_t* TypeReadable(Type type);
+const wchar_t* MoveReadable(unsigned move);
 
 class RefCounted {
 public:
@@ -501,8 +502,11 @@ public:
 	unsigned evSpecialAttack() const;
 	unsigned evSpecialDefense() const;
 
-	static void enumerateHeader();
-	void enumerate() const;
+	unsigned move1() const;
+	unsigned move2() const;
+	unsigned move3() const;
+	unsigned move4() const;
+
 private:
 	PokemonImpl* m_impl;
 };
@@ -541,6 +545,11 @@ public:
 	virtual unsigned evSpeed() const = 0;
 	virtual unsigned evSpecialAttack() const = 0;
 	virtual unsigned evSpecialDefense() const = 0;
+
+	virtual unsigned move1() const = 0;
+	virtual unsigned move2() const = 0;
+	virtual unsigned move3() const = 0;
+	virtual unsigned move4() const = 0;
 
 private:
 	wchar_t m_name[11];

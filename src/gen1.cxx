@@ -520,6 +520,22 @@ unsigned G1BasePokemon::specialDefense() const {
 	return stat(ivSpecialDefense(), sp.baseSpecialDefense(), evSpecialDefense());
 }
 
+unsigned G1BasePokemon::move1() const {
+	return m_data->moves.move1;
+}
+
+unsigned G1BasePokemon::move2() const {
+	return m_data->moves.move2;
+}
+
+unsigned G1BasePokemon::move3() const {
+	return m_data->moves.move3;
+}
+
+unsigned G1BasePokemon::move4() const {
+	return m_data->moves.move4;
+}
+
 unsigned G1BasePokemon::stat(unsigned iv, unsigned base, unsigned ev) const {
 	return (iv + base + int(sqrt(ev)) / 8) * level() / 50 + 5;
 }
