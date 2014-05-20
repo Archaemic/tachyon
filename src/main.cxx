@@ -23,31 +23,31 @@ int main(int argc, char** argv) {
 	Table<Pokemon> table;
 	table.addColumn(L"Name", [] (Pokemon p) {
 		return p.name();
-	}, 12);
+	}, 10);
 
 	table.addColumn(L"Species", [] (Pokemon p) {
 		std::wostringstream buffer;
 		buffer << p.species().readable() << " (" << p.species().id() << ")";
 		return buffer.str();
-	}, 15);
+	}, 16);
 
-	table.addColumn(L"Level", [] (Pokemon p) {
+	table.addColumn(L"Lvl", [] (Pokemon p) {
 		std::wostringstream buffer;
 		buffer << p.level();
 		return buffer.str();
-	}, 5);
+	}, 3);
 
-	table.addColumn(L"Orig. Trainer", [] (Pokemon p) {
+	table.addColumn(L"Original Trainer", [] (Pokemon p) {
 		std::wostringstream buffer;
 		buffer << p.otName() << " (" << p.otId() << ")";
 		return buffer.str();
-	}, 17);
+	}, 18);
 
-	table.addColumn(L"Exp", [] (Pokemon p) {
+	table.addColumn(L"Exp.", [] (Pokemon p) {
 		std::wostringstream buffer;
 		buffer << p.xp();
 		return buffer.str();
-	}, 8);
+	}, 7);
 
 	table.addColumn(L"HP", [] (Pokemon p) {
 		std::wostringstream buffer;
