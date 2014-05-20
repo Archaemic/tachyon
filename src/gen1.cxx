@@ -313,7 +313,7 @@ const wchar_t Generation1::charMapGen1En[0x100] = {
 	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
 
 	// 0xEX
-	L'�', L'P', L'M', L'-', L'�', L'�', L'?', L'!',
+	L'\'', L'P', L'M', L'-', L'�', L'�', L'?', L'!',
 	L'.', L'�', L'�', L'�', L'�', L'�', L'�', L'♂',
 
 	// 0xFX
