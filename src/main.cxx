@@ -104,6 +104,14 @@ int main(int argc, char** argv) {
 		Pokemon pokemon = g1.boxPokemon(Generation1::BOX_CURRENT, i);
 		table.addRow(pokemon);
 	}
+
+	for (int box = Generation1::BOX_01; box <= Generation1::BOX_12; ++box) {
+		int nPokemon = g1.nBoxPokemon(box);
+		for (int i = 0; i < nPokemon; ++i) {
+			Pokemon pokemon = g1.boxPokemon(box, i);
+			table.addRow(pokemon);
+		}
+	}
 	table.print();
 
 	munmap(memory, SIZE_GEN_1_SAV);

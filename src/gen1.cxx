@@ -13,6 +13,7 @@ enum {
 	G10E_PARTY_POKEMON = 0x2F2C,
 	G10E_CURRENT_BOX = 0x30C0,
 	G10E_BOX_1 = 0x4000,
+	G10E_BOX_7 = 0x6000,
 
 	G10E_BASE_STATS = 0x0383DE,
 	G10E_MEW_STATS = 0x00425B,
@@ -352,8 +353,10 @@ Pokemon Generation1::boxPokemon(int box, int i) {
 	size_t start;
 	if (box == BOX_CURRENT) {
 		start = G10E_CURRENT_BOX;
-	} else {
+	} else if (box < BOX_07) {
 		start = G10E_BOX_1 + (box - 1) * G1_BOX_SIZE;
+	} else {
+		start = G10E_BOX_7 + (box - 7) * G1_BOX_SIZE;
 	}
 	uint8_t* pstart = &m_memory[start + 2 + 20 + sizeof(G1BasePokemonData) * i];
 	uint8_t* nstart = &m_memory[start + 2 + (sizeof(G1BasePokemonData) + 12) * 20 + 11 * i];
@@ -365,8 +368,10 @@ unsigned Generation1::nBoxPokemon(int box) const {
 	size_t start;
 	if (box == BOX_CURRENT) {
 		start = G10E_CURRENT_BOX;
-	} else {
+	} else if (box < BOX_07) {
 		start = G10E_BOX_1 + (box - 1) * G1_BOX_SIZE;
+	} else {
+		start = G10E_BOX_7 + (box - 7) * G1_BOX_SIZE;
 	}
 	return m_memory[start];
 }
