@@ -481,10 +481,25 @@ public:
 
 	unsigned level() const;
 	unsigned maxHp() const;
+	unsigned attack() const;
+	unsigned defense() const;
+	unsigned speed() const;
+	unsigned specialAttack() const;
+	unsigned specialDefense() const;
 
 	unsigned ivHp() const;
+	unsigned ivAttack() const;
+	unsigned ivDefense() const;
+	unsigned ivSpeed() const;
+	unsigned ivSpecialAttack() const;
+	unsigned ivSpecialDefense() const;
 
 	unsigned evHp() const;
+	unsigned evAttack() const;
+	unsigned evDefense() const;
+	unsigned evSpeed() const;
+	unsigned evSpecialAttack() const;
+	unsigned evSpecialDefense() const;
 
 	static void enumerateHeader();
 	void enumerate() const;
@@ -507,10 +522,25 @@ public:
 
 	virtual unsigned level() const;
 	virtual unsigned maxHp() const = 0;
+	virtual unsigned attack() const = 0;
+	virtual unsigned defense() const = 0;
+	virtual unsigned speed() const = 0;
+	virtual unsigned specialAttack() const = 0;
+	virtual unsigned specialDefense() const = 0;
 
 	virtual unsigned ivHp() const = 0;
+	virtual unsigned ivAttack() const = 0;
+	virtual unsigned ivDefense() const = 0;
+	virtual unsigned ivSpeed() const = 0;
+	virtual unsigned ivSpecialAttack() const = 0;
+	virtual unsigned ivSpecialDefense() const = 0;
 
 	virtual unsigned evHp() const = 0;
+	virtual unsigned evAttack() const = 0;
+	virtual unsigned evDefense() const = 0;
+	virtual unsigned evSpeed() const = 0;
+	virtual unsigned evSpecialAttack() const = 0;
+	virtual unsigned evSpecialDefense() const = 0;
 
 private:
 	wchar_t m_name[11];

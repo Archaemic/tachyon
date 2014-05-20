@@ -88,10 +88,27 @@ public:
 	virtual Type type2() const override;
 
 	virtual unsigned maxHp() const override;
+	virtual unsigned attack() const override;
+	virtual unsigned defense() const override;
+	virtual unsigned speed() const override;
+	virtual unsigned specialAttack() const override;
+	virtual unsigned specialDefense() const override;
 
 	virtual unsigned ivHp() const override;
+	virtual unsigned ivAttack() const override;
+	virtual unsigned ivDefense() const override;
+	virtual unsigned ivSpeed() const override;
+	virtual unsigned ivSpecialAttack() const override;
+	virtual unsigned ivSpecialDefense() const override;
 
 	virtual unsigned evHp() const override;
+	virtual unsigned evAttack() const override;
+	virtual unsigned evDefense() const override;
+	virtual unsigned evSpeed() const override;
+	virtual unsigned evSpecialAttack() const override;
+	virtual unsigned evSpecialDefense() const override;
+
+	unsigned stat(unsigned iv, unsigned base, unsigned ev) const;
 
 private:
 	const Generation1& m_gen;
@@ -106,6 +123,11 @@ public:
 
 	virtual unsigned level() const override;
 	virtual unsigned maxHp() const override;
+	virtual unsigned attack() const override;
+	virtual unsigned defense() const override;
+	virtual unsigned speed() const override;
+	virtual unsigned specialAttack() const override;
+	virtual unsigned specialDefense() const override;
 
 private:
 	G1PartyPokemonData* m_data;

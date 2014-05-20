@@ -433,8 +433,48 @@ unsigned G1BasePokemon::ivHp() const {
 		(m_data->ivSpecial & 1);
 }
 
+unsigned G1BasePokemon::ivAttack() const {
+	return m_data->ivAttack;
+}
+
+unsigned G1BasePokemon::ivDefense() const {
+	return m_data->ivDefense;
+}
+
+unsigned G1BasePokemon::ivSpeed() const {
+	return m_data->ivSpeed;
+}
+
+unsigned G1BasePokemon::ivSpecialAttack() const {
+	return m_data->ivSpecial;
+}
+
+unsigned G1BasePokemon::ivSpecialDefense() const {
+	return m_data->ivSpecial;
+}
+
 unsigned G1BasePokemon::evHp() const {
 	return R16(m_data->evHp);
+}
+
+unsigned G1BasePokemon::evAttack() const {
+	return R16(m_data->evAttack);
+}
+
+unsigned G1BasePokemon::evDefense() const {
+	return R16(m_data->evDefense);
+}
+
+unsigned G1BasePokemon::evSpeed() const {
+	return R16(m_data->evSpeed);
+}
+
+unsigned G1BasePokemon::evSpecialAttack() const {
+	return R16(m_data->evSpecial);
+}
+
+unsigned G1BasePokemon::evSpecialDefense() const {
+	return R16(m_data->evSpecial);
 }
 
 Type G1BasePokemon::type1() const {
@@ -450,6 +490,35 @@ unsigned G1BasePokemon::maxHp() const {
 	return (ivHp() + sp.baseHp() + int(sqrt(evHp())) / 8 + 50) * level() / 50 + 10;
 }
 
+unsigned G1BasePokemon::attack() const {
+	PokemonSpecies sp = species();
+	return stat(ivAttack(), sp.baseAttack(), evAttack());
+}
+
+unsigned G1BasePokemon::defense() const {
+	PokemonSpecies sp = species();
+	return stat(ivDefense(), sp.baseDefense(), evDefense());
+}
+
+unsigned G1BasePokemon::speed() const {
+	PokemonSpecies sp = species();
+	return stat(ivSpeed(), sp.baseSpeed(), evSpeed());
+}
+
+unsigned G1BasePokemon::specialAttack() const {
+	PokemonSpecies sp = species();
+	return stat(ivSpecialAttack(), sp.baseSpecialAttack(), evSpecialAttack());
+}
+
+unsigned G1BasePokemon::specialDefense() const {
+	PokemonSpecies sp = species();
+	return stat(ivSpecialDefense(), sp.baseSpecialDefense(), evSpecialDefense());
+}
+
+unsigned G1BasePokemon::stat(unsigned iv, unsigned base, unsigned ev) const {
+	return (iv + base + int(sqrt(ev)) / 8) * level() / 50 + 5;
+}
+
 G1PartyPokemon::G1PartyPokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
 	: G1BasePokemon(gen, data, name, ot)
 	, m_data(reinterpret_cast<G1PartyPokemonData*>(data))
@@ -462,6 +531,26 @@ unsigned G1PartyPokemon::level() const {
 
 unsigned G1PartyPokemon::maxHp() const {
 	return R16(m_data->maxHp);
+}
+
+unsigned G1PartyPokemon::attack() const {
+	return R16(m_data->attack);
+}
+
+unsigned G1PartyPokemon::defense() const {
+	return R16(m_data->defense);
+}
+
+unsigned G1PartyPokemon::speed() const {
+	return R16(m_data->speed);
+}
+
+unsigned G1PartyPokemon::specialAttack() const {
+	return R16(m_data->special);
+}
+
+unsigned G1PartyPokemon::specialDefense() const {
+	return R16(m_data->special);
 }
 
 G1PokemonSpecies::G1PokemonSpecies(const Generation1& gen, G1PokemonBaseStats* data)

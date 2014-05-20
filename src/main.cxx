@@ -64,6 +64,36 @@ int main(int argc, char** argv) {
 		return buffer.str();
 	}, 18);
 
+	table.addColumn(L"Atk", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << p.attack();
+		return buffer.str();
+	}, 4);
+
+	table.addColumn(L"Def", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << p.defense();
+		return buffer.str();
+	}, 4);
+
+	table.addColumn(L"Spd", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << p.speed();
+		return buffer.str();
+	}, 4);
+
+	table.addColumn(L"SAtk", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << p.specialAttack();
+		return buffer.str();
+	}, 4);
+
+	table.addColumn(L"SDef", [] (Pokemon p) {
+		std::wostringstream buffer;
+		buffer << p.specialDefense();
+		return buffer.str();
+	}, 4);
+
 	for (int i = 0; i < g1.nPartyPokemon(); ++i) {
 		Pokemon pokemon = g1.partyPokemon(i);
 		table.addRow(pokemon);

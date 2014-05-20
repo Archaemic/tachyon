@@ -508,12 +508,72 @@ unsigned Pokemon::maxHp() const {
 	return m_impl->maxHp();
 }
 
+unsigned Pokemon::attack() const {
+	return m_impl->attack();
+}
+
+unsigned Pokemon::defense() const {
+	return m_impl->defense();
+}
+
+unsigned Pokemon::speed() const {
+	return m_impl->speed();
+}
+
+unsigned Pokemon::specialAttack() const {
+	return m_impl->specialAttack();
+}
+
+unsigned Pokemon::specialDefense() const {
+	return m_impl->specialDefense();
+}
+
 unsigned Pokemon::ivHp() const {
 	return m_impl->ivHp();
 }
 
+unsigned Pokemon::ivAttack() const {
+	return m_impl->ivAttack();
+}
+
+unsigned Pokemon::ivDefense() const {
+	return m_impl->ivDefense();
+}
+
+unsigned Pokemon::ivSpeed() const {
+	return m_impl->ivSpeed();
+}
+
+unsigned Pokemon::ivSpecialAttack() const {
+	return m_impl->ivSpecialAttack();
+}
+
+unsigned Pokemon::ivSpecialDefense() const {
+	return m_impl->ivSpecialDefense();
+}
+
 unsigned Pokemon::evHp() const {
 	return m_impl->evHp();
+}
+
+unsigned Pokemon::evAttack() const {
+	return m_impl->evAttack();
+}
+
+unsigned Pokemon::evDefense() const {
+	return m_impl->evDefense();
+}
+
+unsigned Pokemon::evSpeed() const {
+	return m_impl->evSpeed();
+}
+
+unsigned Pokemon::evSpecialAttack() const {
+	return m_impl->evSpecialAttack();
+}
+
+unsigned Pokemon::evSpecialDefense() const {
+	return m_impl->evSpecialDefense();
 }
 
 unsigned PokemonImpl::level() const {
