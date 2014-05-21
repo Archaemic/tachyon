@@ -20,111 +20,111 @@ int main(int argc, char** argv) {
 
 	std::wcout << "Trainer name: " << game.trainerName() << std::endl;
 
-	Table<Pokemon> table;
-	table.addColumn(L"Name", [] (Pokemon p) {
-		return p.name();
+	Table<Pokemon*> table;
+	table.addColumn(L"Name", [] (Pokemon* p) {
+		return p->name();
 	}, 10);
 
-	table.addColumn(L"Species", [] (Pokemon p) {
+	table.addColumn(L"Species", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << p.species().readable() << " (" << p.species().id() << ")";
+		buffer << p->species()->readable() << " (" << p->species()->id() << ")";
 		return buffer.str();
 	}, 16);
 
-	table.addColumn(L"Lvl", [] (Pokemon p) {
+	table.addColumn(L"Lvl", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << p.level();
+		buffer << p->level();
 		return buffer.str();
 	}, 3);
 
-	table.addColumn(L"Original Trainer", [] (Pokemon p) {
+	table.addColumn(L"Original Trainer", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << p.otName() << " (" << p.otId() << ")";
+		buffer << p->otName() << " (" << p->otId() << ")";
 		return buffer.str();
 	}, 18);
 
-	table.addColumn(L"Exp.", [] (Pokemon p) {
+	table.addColumn(L"Exp.", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << p.xp();
+		buffer << p->xp();
 		return buffer.str();
 	}, 7);
 
-	table.addColumn(L"HP", [] (Pokemon p) {
+	table.addColumn(L"HP", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << p.currentHp() << "/" << p.maxHp();
+		buffer << p->currentHp() << "/" << p->maxHp();
 		return buffer.str();
 	}, 7);
 
-	table.addColumn(L"Type", [] (Pokemon p) {
+	table.addColumn(L"Type", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << TypeReadable(p.type1());
-		if (p.type1() != p.type2()) {
-			buffer << "/" << TypeReadable(p.type2());
+		buffer << TypeReadable(p->type1());
+		if (p->type1() != p->type2()) {
+			buffer << "/" << TypeReadable(p->type2());
 		}
 		return buffer.str();
 	}, 18);
 
-	table.addColumn(L"Atk", [] (Pokemon p) {
+	table.addColumn(L"Atk", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << p.attack();
+		buffer << p->attack();
 		return buffer.str();
 	}, 4);
 
-	table.addColumn(L"Def", [] (Pokemon p) {
+	table.addColumn(L"Def", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << p.defense();
+		buffer << p->defense();
 		return buffer.str();
 	}, 4);
 
-	table.addColumn(L"Spd", [] (Pokemon p) {
+	table.addColumn(L"Spd", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << p.speed();
+		buffer << p->speed();
 		return buffer.str();
 	}, 4);
 
-	table.addColumn(L"SAtk", [] (Pokemon p) {
+	table.addColumn(L"SAtk", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << p.specialAttack();
+		buffer << p->specialAttack();
 		return buffer.str();
 	}, 4);
 
-	table.addColumn(L"SDef", [] (Pokemon p) {
+	table.addColumn(L"SDef", [] (Pokemon* p) {
 		std::wostringstream buffer;
-		buffer << p.specialDefense();
+		buffer << p->specialDefense();
 		return buffer.str();
 	}, 4);
 
-	table.addColumn(L"Move 1", [] (Pokemon p) {
-		return MoveReadable(p.move1());
+	table.addColumn(L"Move 1", [] (Pokemon* p) {
+		return MoveReadable(p->move1());
 	}, 15);
 
-	table.addColumn(L"Move 2", [] (Pokemon p) {
-		return MoveReadable(p.move2());
+	table.addColumn(L"Move 2", [] (Pokemon* p) {
+		return MoveReadable(p->move2());
 	}, 15);
 
-	table.addColumn(L"Move 3", [] (Pokemon p) {
-		return MoveReadable(p.move3());
+	table.addColumn(L"Move 3", [] (Pokemon* p) {
+		return MoveReadable(p->move3());
 	}, 15);
 
-	table.addColumn(L"Move 4", [] (Pokemon p) {
-		return MoveReadable(p.move4());
+	table.addColumn(L"Move 4", [] (Pokemon* p) {
+		return MoveReadable(p->move4());
 	}, 15);
 
 	for (int i = 0; i < game.nPartyPokemon(); ++i) {
-		Pokemon pokemon = game.partyPokemon(i);
+		Pokemon* pokemon = game.partyPokemon(i);
 		table.addRow(pokemon);
 	}
 
 	int nPokemon = game.nBoxPokemon(GameBoyGame::BOX_CURRENT);
 	for (int i = 0; i < nPokemon; ++i) {
-		Pokemon pokemon = game.boxPokemon(GameBoyGame::BOX_CURRENT, i);
+		Pokemon* pokemon = game.boxPokemon(GameBoyGame::BOX_CURRENT, i);
 		table.addRow(pokemon);
 	}
 
 	for (int box = GameBoyGame::BOX_01; box <= GameBoyGame::BOX_12; ++box) {
 		int nPokemon = game.nBoxPokemon(box);
 		for (int i = 0; i < nPokemon; ++i) {
-			Pokemon pokemon = game.boxPokemon(box, i);
+			Pokemon* pokemon = game.boxPokemon(box, i);
 			table.addRow(pokemon);
 		}
 	}

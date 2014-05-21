@@ -70,10 +70,10 @@ struct G1PokemonBaseStats {
 
 class G1BasePokemon : public GBPokemon {
 public:
-	G1BasePokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
+	G1BasePokemon(Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
 
 	virtual const wchar_t* name() const override;
-	virtual PokemonSpecies species() const override;
+	virtual PokemonSpecies* species() const override;
 	virtual const wchar_t* otName() const override;
 	virtual uint16_t otId() const override;
 	virtual unsigned xp() const override;
@@ -101,7 +101,7 @@ public:
 	virtual unsigned move4() const override;
 
 private:
-	const Generation1& m_gen;
+	Generation1& m_gen;
 	G1BasePokemonData* m_data;
 	wchar_t m_ot[8];
 	wchar_t m_name[11];
@@ -109,7 +109,7 @@ private:
 
 class G1PartyPokemon : public G1BasePokemon {
 public:
-	G1PartyPokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
+	G1PartyPokemon(Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
 
 	virtual unsigned level() const override;
 	virtual unsigned maxHp() const override;
@@ -123,9 +123,9 @@ private:
 	G1PartyPokemonData* m_data;
 };
 
-class G1PokemonSpecies : public PokemonSpeciesImpl {
+class G1PokemonSpecies : public PokemonSpecies {
 public:
-	G1PokemonSpecies(const Generation1& gen, const G1PokemonBaseStats* data);
+	G1PokemonSpecies(Generation1& gen, const G1PokemonBaseStats* data);
 
 	virtual PokemonSpecies::Id id() const override;
 	virtual unsigned baseHp() const override;
@@ -139,7 +139,7 @@ public:
 	virtual PokemonSpecies::GrowthRate growthRate() const override;
 
 private:
-	const Generation1& m_gen;
+	Generation1& m_gen;
 	const G1PokemonBaseStats* m_data;
 };
 

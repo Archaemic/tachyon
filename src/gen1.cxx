@@ -255,18 +255,18 @@ Generation1::Generation1(uint8_t* memory, const uint8_t* rom)
 	gameTextToWchar(m_trainerName, &memory[G10E_TRAINER_NAME], sizeof(m_trainerName) / sizeof(*m_trainerName));
 }
 
-Pokemon Generation1::partyPokemon(int i) {
+Pokemon* Generation1::partyPokemon(int i) {
 	uint8_t* pstart = &m_memory[G10E_PARTY_POKEMON + 2 + 6 + sizeof(G1PartyPokemonData) * i];
 	uint8_t* nstart = &m_memory[G10E_PARTY_POKEMON + 2 + (sizeof(G1PartyPokemonData) + 12) * 6 + 11 * i];
 	uint8_t* tstart = &m_memory[G10E_PARTY_POKEMON + 2 + (sizeof(G1PartyPokemonData) + 1) * 6 + 11 * i];
-	return Pokemon(new G1PartyPokemon(*this, pstart, nstart, tstart));
+	return new G1PartyPokemon(*this, pstart, nstart, tstart);
 }
 
 unsigned Generation1::nPartyPokemon() const {
 	return m_memory[G10E_PARTY_POKEMON];
 }
 
-Pokemon Generation1::boxPokemon(int box, int i) {
+Pokemon* Generation1::boxPokemon(int box, int i) {
 	size_t start;
 	if (box == BOX_CURRENT) {
 		start = G10E_CURRENT_BOX;
@@ -278,7 +278,7 @@ Pokemon Generation1::boxPokemon(int box, int i) {
 	uint8_t* pstart = &m_memory[start + 2 + 20 + sizeof(G1BasePokemonData) * i];
 	uint8_t* nstart = &m_memory[start + 2 + (sizeof(G1BasePokemonData) + 12) * 20 + 11 * i];
 	uint8_t* tstart = &m_memory[start + 2 + (sizeof(G1BasePokemonData) + 1) * 20 + 11 * i];
-	return Pokemon(new G1BasePokemon(*this, pstart, nstart, tstart));
+	return new G1BasePokemon(*this, pstart, nstart, tstart);
 }
 
 unsigned Generation1::nBoxPokemon(int box) const {
@@ -305,7 +305,25 @@ Game::Version Generation1::version() const {
 	return mapping->version;
 }
 
-G1BasePokemon::G1BasePokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
+PokemonSpecies* Generation1::species(PokemonSpecies::Id id) {
+	PokemonSpecies* species = Game::species(id);
+	if (!species) {
+		if (id == PokemonSpecies::MEW && version() != Game::G11E_YELLOW) {
+			const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_MEW_STATS]);
+			species = new G1PokemonSpecies(*this, stats);
+		} else if (id <= PokemonSpecies::MEW && id != PokemonSpecies::MISSINGNO) {
+			const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_BASE_STATS]);
+			species = new G1PokemonSpecies(*this, &stats[id - 1]);
+		} else {
+			const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_BASE_STATS]);
+			species = new G1PokemonSpecies(*this, &stats[-1]);
+		}
+		putSpecies(id, species);
+	}
+	return species;
+}
+
+G1BasePokemon::G1BasePokemon(Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
 	: m_gen(gen)
 	, m_data(reinterpret_cast<G1BasePokemonData*>(data))
 {
@@ -317,18 +335,9 @@ const wchar_t* G1BasePokemon::name() const {
 	return m_name;
 }
 
-PokemonSpecies G1BasePokemon::species() const {
+PokemonSpecies* G1BasePokemon::species() const {
 	PokemonSpecies::Id id = idMapping[m_data->pokemonId];
-	if (id == PokemonSpecies::MEW && m_gen.version() != Game::G11E_YELLOW) {
-		const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&m_gen.rom()[G10E_MEW_STATS]);
-		return PokemonSpecies(new G1PokemonSpecies(m_gen, stats));
-	} else if (id <= PokemonSpecies::MEW && id != PokemonSpecies::MISSINGNO) {
-		const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&m_gen.rom()[G10E_BASE_STATS]);
-		return PokemonSpecies(new G1PokemonSpecies(m_gen, &stats[id - 1]));
-	} else {
-		const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&m_gen.rom()[G10E_BASE_STATS]);
-		return PokemonSpecies(new G1PokemonSpecies(m_gen, &stats[-1]));
-	}
+	return m_gen.species(id);
 }
 
 const wchar_t* G1BasePokemon::otName() const {
@@ -423,7 +432,7 @@ unsigned G1BasePokemon::move4() const {
 	return m_data->moves.move4;
 }
 
-G1PartyPokemon::G1PartyPokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
+G1PartyPokemon::G1PartyPokemon(Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
 	: G1BasePokemon(gen, data, name, ot)
 	, m_data(reinterpret_cast<G1PartyPokemonData*>(data))
 {
@@ -457,7 +466,7 @@ unsigned G1PartyPokemon::specialDefense() const {
 	return R16(m_data->special);
 }
 
-G1PokemonSpecies::G1PokemonSpecies(const Generation1& gen, const G1PokemonBaseStats* data)
+G1PokemonSpecies::G1PokemonSpecies(Generation1& gen, const G1PokemonBaseStats* data)
 	: m_gen(gen)
 	, m_data(data)
 {

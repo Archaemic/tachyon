@@ -12,12 +12,14 @@ class Generation1 : public GameBoyGame {
 public:
 	Generation1(uint8_t* memory, const uint8_t* rom);
 
-	virtual Pokemon partyPokemon(int i) override;
+	virtual Pokemon* partyPokemon(int i) override;
 	virtual unsigned nPartyPokemon() const override;
-	virtual Pokemon boxPokemon(int box, int i) override;
+	virtual Pokemon* boxPokemon(int box, int i) override;
 	virtual unsigned nBoxPokemon(int box) const override;
 
 	virtual Version version() const override;
+
+	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
 
 private:
 	const static wchar_t charMapGen1En[0x100];

@@ -3,6 +3,8 @@
 
 #include <cwchar>
 #include <cstdint>
+#include <memory>
+#include <unordered_map>
 
 enum Type {
 	NORMAL = 0x10,
@@ -30,20 +32,6 @@ enum Type {
 
 const wchar_t* TypeReadable(Type type);
 const wchar_t* MoveReadable(unsigned move);
-
-class RefCounted {
-public:
-	RefCounted();
-	virtual ~RefCounted() {}
-	void ref();
-	void deref();
-
-private:
-	int m_refs;
-};
-
-class PokemonSpeciesImpl;
-class PokemonImpl;
 
 class PokemonSpecies {
 public:
@@ -444,80 +432,29 @@ public:
 		LEVEL_SLOW
 	};
 
-	PokemonSpecies(PokemonSpeciesImpl* impl);
-	PokemonSpecies(const PokemonSpecies& other);
-	~PokemonSpecies();
+	virtual ~PokemonSpecies() {}
 
-	Id id() const;
-	unsigned baseHp() const;
-	unsigned baseAttack() const;
-	unsigned baseDefense() const;
-	unsigned baseSpeed() const;
-	unsigned baseSpecialAttack() const;
-	unsigned baseSpecialDefense() const;
-	Type type1() const;
-	Type type2() const;
-	GrowthRate growthRate() const;
+	virtual Id id() const = 0;
+	virtual unsigned baseHp() const = 0;
+	virtual unsigned baseAttack() const = 0;
+	virtual unsigned baseDefense() const = 0;
+	virtual unsigned baseSpeed() const = 0;
+	virtual unsigned baseSpecialAttack() const = 0;
+	virtual unsigned baseSpecialDefense() const = 0;
+	virtual Type type1() const = 0;
+	virtual Type type2() const = 0;
+	virtual PokemonSpecies::GrowthRate growthRate() const = 0;
 
 	const wchar_t* readable() const;
 	static const wchar_t* readable(Id id);
-
-private:
-	PokemonSpeciesImpl* m_impl;
 };
 
 class Pokemon {
 public:
-	Pokemon(PokemonImpl* impl);
-	Pokemon(const Pokemon& other);
-	~Pokemon();
-
-	const wchar_t* name() const;
-	PokemonSpecies species() const;
-	const wchar_t* otName() const;
-	uint16_t otId() const;
-	unsigned xp() const;
-	unsigned currentHp() const;
-	Type type1() const;
-	Type type2() const;
-
-	unsigned level() const;
-	unsigned maxHp() const;
-	unsigned attack() const;
-	unsigned defense() const;
-	unsigned speed() const;
-	unsigned specialAttack() const;
-	unsigned specialDefense() const;
-
-	unsigned ivHp() const;
-	unsigned ivAttack() const;
-	unsigned ivDefense() const;
-	unsigned ivSpeed() const;
-	unsigned ivSpecialAttack() const;
-	unsigned ivSpecialDefense() const;
-
-	unsigned evHp() const;
-	unsigned evAttack() const;
-	unsigned evDefense() const;
-	unsigned evSpeed() const;
-	unsigned evSpecialAttack() const;
-	unsigned evSpecialDefense() const;
-
-	unsigned move1() const;
-	unsigned move2() const;
-	unsigned move3() const;
-	unsigned move4() const;
-
-private:
-	PokemonImpl* m_impl;
-};
-
-class PokemonImpl : public RefCounted {
-public:
-	virtual ~PokemonImpl() {}
+	virtual ~Pokemon() {}
 
 	virtual const wchar_t* name() const = 0;
-	virtual PokemonSpecies species() const = 0;
+	virtual PokemonSpecies* species() const = 0;
 	virtual const wchar_t* otName() const = 0;
 	virtual uint16_t otId() const = 0;
 	virtual unsigned xp() const = 0;
@@ -551,26 +488,6 @@ public:
 	virtual unsigned move2() const = 0;
 	virtual unsigned move3() const = 0;
 	virtual unsigned move4() const = 0;
-
-private:
-	wchar_t m_name[11];
-	wchar_t m_otName[8];
-};
-
-class PokemonSpeciesImpl : public RefCounted {
-public:
-	virtual ~PokemonSpeciesImpl() {}
-
-	virtual PokemonSpecies::Id id() const = 0;
-	virtual unsigned baseHp() const = 0;
-	virtual unsigned baseAttack() const = 0;
-	virtual unsigned baseDefense() const = 0;
-	virtual unsigned baseSpeed() const = 0;
-	virtual unsigned baseSpecialAttack() const = 0;
-	virtual unsigned baseSpecialDefense() const = 0;
-	virtual Type type1() const = 0;
-	virtual Type type2() const = 0;
-	virtual PokemonSpecies::GrowthRate growthRate() const = 0;
 };
 
 class Game {
@@ -613,18 +530,27 @@ public:
 
 	virtual const wchar_t* trainerName() const = 0;
 
-	virtual Pokemon partyPokemon(int i) = 0;
+	virtual Pokemon* partyPokemon(int i) = 0;
 	virtual unsigned nPartyPokemon() const = 0;
-	virtual Pokemon boxPokemon(int box, int i) = 0;
+	virtual Pokemon* boxPokemon(int box, int i) = 0;
 	virtual unsigned nBoxPokemon(int box) const = 0;
 
 	virtual Version version() const = 0;
 
 	const uint8_t* rom() const { return m_rom; }
 
+	// This function does lazy evaluation and memoizes the result
+	// Thus it is not const
+	virtual PokemonSpecies* species(PokemonSpecies::Id);
+
 protected:
+	void putSpecies(PokemonSpecies::Id, PokemonSpecies*);
+
 	uint8_t* m_memory;
 	const uint8_t* m_rom;
+
+private:
+	std::unordered_map<int, std::unique_ptr<PokemonSpecies>> m_species;
 };
 
 class TMSet {

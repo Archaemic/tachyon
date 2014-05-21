@@ -822,147 +822,16 @@ Game::Game(uint8_t* memory, const uint8_t* rom)
 {
 }
 
-Pokemon::Pokemon(PokemonImpl* impl)
-	: m_impl(impl)
-{
+PokemonSpecies* Game::species(PokemonSpecies::Id id) {
+	return m_species[id].get();
 }
 
-Pokemon::Pokemon(const Pokemon& other)
-	: m_impl(other.m_impl)
-{
-	m_impl->ref();
-}
-
-Pokemon::~Pokemon() {
-	m_impl->deref();
-}
-
-const wchar_t* Pokemon::name() const {
-	return m_impl->name();
-}
-
-PokemonSpecies Pokemon::species() const {
-	return m_impl->species();
-}
-
-const wchar_t* Pokemon::otName() const {
-	return m_impl->otName();
-}
-
-uint16_t Pokemon::otId() const {
-	return m_impl->otId();
-}
-
-unsigned Pokemon::xp() const {
-	return m_impl->xp();
-}
-
-unsigned Pokemon::currentHp() const {
-	return m_impl->currentHp();
-}
-
-Type Pokemon::type1() const {
-	return m_impl->type1();
-}
-
-Type Pokemon::type2() const {
-	return m_impl->type2();
+void Game::putSpecies(PokemonSpecies::Id id, PokemonSpecies* species) {
+	m_species[id] = std::unique_ptr<PokemonSpecies>(species);
 }
 
 unsigned Pokemon::level() const {
-	return m_impl->level();
-}
-
-unsigned Pokemon::maxHp() const {
-	return m_impl->maxHp();
-}
-
-unsigned Pokemon::attack() const {
-	return m_impl->attack();
-}
-
-unsigned Pokemon::defense() const {
-	return m_impl->defense();
-}
-
-unsigned Pokemon::speed() const {
-	return m_impl->speed();
-}
-
-unsigned Pokemon::specialAttack() const {
-	return m_impl->specialAttack();
-}
-
-unsigned Pokemon::specialDefense() const {
-	return m_impl->specialDefense();
-}
-
-unsigned Pokemon::ivHp() const {
-	return m_impl->ivHp();
-}
-
-unsigned Pokemon::ivAttack() const {
-	return m_impl->ivAttack();
-}
-
-unsigned Pokemon::ivDefense() const {
-	return m_impl->ivDefense();
-}
-
-unsigned Pokemon::ivSpeed() const {
-	return m_impl->ivSpeed();
-}
-
-unsigned Pokemon::ivSpecialAttack() const {
-	return m_impl->ivSpecialAttack();
-}
-
-unsigned Pokemon::ivSpecialDefense() const {
-	return m_impl->ivSpecialDefense();
-}
-
-unsigned Pokemon::evHp() const {
-	return m_impl->evHp();
-}
-
-unsigned Pokemon::evAttack() const {
-	return m_impl->evAttack();
-}
-
-unsigned Pokemon::evDefense() const {
-	return m_impl->evDefense();
-}
-
-unsigned Pokemon::evSpeed() const {
-	return m_impl->evSpeed();
-}
-
-unsigned Pokemon::evSpecialAttack() const {
-	return m_impl->evSpecialAttack();
-}
-
-unsigned Pokemon::evSpecialDefense() const {
-	return m_impl->evSpecialDefense();
-}
-
-unsigned Pokemon::move1() const {
-	return m_impl->move1();
-}
-
-unsigned Pokemon::move2() const {
-	return m_impl->move2();
-}
-
-unsigned Pokemon::move3() const {
-	return m_impl->move3();
-}
-
-unsigned Pokemon::move4() const {
-	return m_impl->move4();
-}
-
-unsigned PokemonImpl::level() const {
-	switch (species().growthRate()) {
+	switch (species()->growthRate()) {
 	case PokemonSpecies::LEVEL_FAST:
 		for (unsigned i = 2; i <= 100; ++i) {
 			unsigned xpNeeded = 4 * i * i * i / 5;
@@ -996,78 +865,6 @@ unsigned PokemonImpl::level() const {
 	return 100;
 }
 
-PokemonSpecies::PokemonSpecies(PokemonSpeciesImpl* impl)
-	: m_impl(impl)
-{
-}
-
-PokemonSpecies::PokemonSpecies(const PokemonSpecies& other)
-	: m_impl(other.m_impl)
-{
-	m_impl->ref();
-}
-
-PokemonSpecies::~PokemonSpecies() {
-	m_impl->deref();
-}
-
-PokemonSpecies::Id PokemonSpecies::id() const {
-	return m_impl->id();
-}
-
-unsigned PokemonSpecies::baseHp() const {
-	return m_impl->baseHp();
-}
-
-unsigned PokemonSpecies::baseAttack() const {
-	return m_impl->baseAttack();
-}
-
-unsigned PokemonSpecies::baseDefense() const {
-	return m_impl->baseDefense();
-}
-
-unsigned PokemonSpecies::baseSpeed() const {
-	return m_impl->baseSpeed();
-}
-
-unsigned PokemonSpecies::baseSpecialAttack() const {
-	return m_impl->baseSpecialAttack();
-}
-
-unsigned PokemonSpecies::baseSpecialDefense() const {
-	return m_impl->baseSpecialDefense();
-}
-
-Type PokemonSpecies::type1() const {
-	return m_impl->type1();
-}
-
-Type PokemonSpecies::type2() const {
-	return m_impl->type2();
-}
-
-PokemonSpecies::GrowthRate PokemonSpecies::growthRate() const {
-	return m_impl->growthRate();
-}
-
 const wchar_t* PokemonSpecies::readable() const {
 	return speciesNames[id()];
-}
-
-RefCounted::RefCounted()
-	: m_refs(1)
-{
-}
-
-void RefCounted::ref() {
-	++m_refs;
-}
-
-void RefCounted::deref() {
-	--m_refs;
-
-	if (m_refs == 0) {
-		delete this;
-	}
 }

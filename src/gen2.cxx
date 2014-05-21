@@ -63,18 +63,18 @@ Generation2::Generation2(uint8_t* memory, const uint8_t* rom)
 	gameTextToWchar(m_trainerName, &memory[G20E_TRAINER_NAME], sizeof(m_trainerName) / sizeof(*m_trainerName));
 }
 
-Pokemon Generation2::partyPokemon(int i) {
+Pokemon* Generation2::partyPokemon(int i) {
 	uint8_t* pstart = &m_memory[G20E_PARTY_POKEMON + 2 + 6 + sizeof(G2PartyPokemonData) * i];
 	uint8_t* nstart = &m_memory[G20E_PARTY_POKEMON + 2 + (sizeof(G2PartyPokemonData) + 12) * 6 + 11 * i];
 	uint8_t* tstart = &m_memory[G20E_PARTY_POKEMON + 2 + (sizeof(G2PartyPokemonData) + 1) * 6 + 11 * i];
-	return Pokemon(new G2PartyPokemon(*this, pstart, nstart, tstart));
+	return new G2PartyPokemon(*this, pstart, nstart, tstart);
 }
 
 unsigned Generation2::nPartyPokemon() const {
 	return m_memory[G20E_PARTY_POKEMON];
 }
 
-Pokemon Generation2::boxPokemon(int box, int i) {
+Pokemon* Generation2::boxPokemon(int box, int i) {
 	size_t start;
 	if (box == BOX_CURRENT) {
 		start = G20E_CURRENT_BOX;
@@ -86,7 +86,7 @@ Pokemon Generation2::boxPokemon(int box, int i) {
 	uint8_t* pstart = &m_memory[start + 2 + 20 + sizeof(G2BasePokemonData) * i];
 	uint8_t* nstart = &m_memory[start + 2 + (sizeof(G2BasePokemonData) + 12) * 20 + 11 * i];
 	uint8_t* tstart = &m_memory[start + 2 + (sizeof(G2BasePokemonData) + 1) * 20 + 11 * i];
-	return Pokemon(new G2BasePokemon(*this, pstart, nstart, tstart));
+	return new G2BasePokemon(*this, pstart, nstart, tstart);
 }
 
 unsigned Generation2::nBoxPokemon(int box) const {
@@ -113,7 +113,7 @@ Game::Version Generation2::version() const {
 	return mapping->version;
 }
 
-G2BasePokemon::G2BasePokemon(const Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
+G2BasePokemon::G2BasePokemon(Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
 	: m_gen(gen)
 	, m_data(reinterpret_cast<G2BasePokemonData*>(data))
 {
@@ -125,12 +125,12 @@ const wchar_t* G2BasePokemon::name() const {
 	return m_name;
 }
 
-PokemonSpecies G2BasePokemon::species() const {
+PokemonSpecies* G2BasePokemon::species() const {
 	const G2PokemonBaseStats* stats = reinterpret_cast<const G2PokemonBaseStats*>(&m_gen.rom()[G20E_BASE_STATS]);
 	if (m_data->species <= 251) {
-		return PokemonSpecies(new G2PokemonSpecies(m_gen, &stats[m_data->species - 1]));
+		return new G2PokemonSpecies(m_gen, &stats[m_data->species - 1]);
 	} else {
-		return PokemonSpecies(new G2PokemonSpecies(m_gen, &stats[-1]));
+		return new G2PokemonSpecies(m_gen, &stats[-1]);
 	}
 }
 
@@ -203,11 +203,11 @@ unsigned G2BasePokemon::evSpecialDefense() const {
 }
 
 Type G2BasePokemon::type1() const {
-	return species().type1();
+	return species()->type1();
 }
 
 Type G2BasePokemon::type2() const {
-	return species().type2();
+	return species()->type2();
 }
 
 unsigned G2BasePokemon::move1() const {
@@ -226,7 +226,7 @@ unsigned G2BasePokemon::move4() const {
 	return m_data->moves.move4;
 }
 
-G2PartyPokemon::G2PartyPokemon(const Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
+G2PartyPokemon::G2PartyPokemon(Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
 	: G2BasePokemon(gen, data, name, ot)
 	, m_data(reinterpret_cast<G2PartyPokemonData*>(data))
 {
@@ -264,7 +264,7 @@ unsigned G2PartyPokemon::specialDefense() const {
 	return R16(m_data->specialDefense);
 }
 
-G2PokemonSpecies::G2PokemonSpecies(const Generation2& gen, const G2PokemonBaseStats* data)
+G2PokemonSpecies::G2PokemonSpecies(Generation2& gen, const G2PokemonBaseStats* data)
 	: m_gen(gen)
 	, m_data(data)
 {
