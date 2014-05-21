@@ -3,4 +3,11 @@ project(Tachyon)
 
 list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
 
-add_executable(ptxn src/main.cxx src/base.cxx src/gen1.cxx src/gen-gb.cxx)
+set(SRC
+	${CMAKE_SOURCE_DIR}/src/main.cxx
+	${CMAKE_SOURCE_DIR}/src/base.cxx
+	${CMAKE_SOURCE_DIR}/src/gen-gb.cxx
+	${CMAKE_SOURCE_DIR}/src/gen1.cxx
+)
+
+add_executable(ptxn ${SRC})

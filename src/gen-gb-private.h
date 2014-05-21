@@ -1,7 +1,7 @@
 #ifndef PTXN_GEN_GB_PRIVATE_H
 #define PTXN_GEN_GB_PRIVATE_H
 
-#include "base.h"
+#include "gen-gb.h"
 
 #define R16(V) (((V) & 0xFF) << 8) | (((V) & 0xFF00) >> 8)
 #define R24(V) (((V) & 0xFF) << 16) | ((V) & 0xFF00) | (((V) & 0xFF0000) >> 16)

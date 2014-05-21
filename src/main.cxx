@@ -14,11 +14,11 @@ int main(int argc, char** argv) {
 	int romfd = open("game.bin", O_RDONLY);
 	uint8_t* memory = static_cast<uint8_t*>(mmap(0, SIZE_GEN_1_SAV, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0));
 	uint8_t* rom = static_cast<uint8_t*>(mmap(0, SIZE_GEN_1_ROM, PROT_READ, MAP_FILE | MAP_PRIVATE, romfd, 0));
-	Generation1 g1(memory, rom);
+	Generation1 game(memory, rom);
 
 	std::wcout.imbue(std::locale(""));
 
-	std::wcout << "Trainer name: " << g1.trainerName() << std::endl;
+	std::wcout << "Trainer name: " << game.trainerName() << std::endl;
 
 	Table<Pokemon> table;
 	table.addColumn(L"Name", [] (Pokemon p) {
@@ -110,21 +110,21 @@ int main(int argc, char** argv) {
 		return MoveReadable(p.move4());
 	}, 15);
 
-	for (int i = 0; i < g1.nPartyPokemon(); ++i) {
-		Pokemon pokemon = g1.partyPokemon(i);
+	for (int i = 0; i < game.nPartyPokemon(); ++i) {
+		Pokemon pokemon = game.partyPokemon(i);
 		table.addRow(pokemon);
 	}
 
-	int nPokemon = g1.nBoxPokemon(Generation1::BOX_CURRENT);
+	int nPokemon = game.nBoxPokemon(GameBoyGame::BOX_CURRENT);
 	for (int i = 0; i < nPokemon; ++i) {
-		Pokemon pokemon = g1.boxPokemon(Generation1::BOX_CURRENT, i);
+		Pokemon pokemon = game.boxPokemon(GameBoyGame::BOX_CURRENT, i);
 		table.addRow(pokemon);
 	}
 
-	for (int box = Generation1::BOX_01; box <= Generation1::BOX_12; ++box) {
-		int nPokemon = g1.nBoxPokemon(box);
+	for (int box = GameBoyGame::BOX_01; box <= GameBoyGame::BOX_12; ++box) {
+		int nPokemon = game.nBoxPokemon(box);
 		for (int i = 0; i < nPokemon; ++i) {
-			Pokemon pokemon = g1.boxPokemon(box, i);
+			Pokemon pokemon = game.boxPokemon(box, i);
 			table.addRow(pokemon);
 		}
 	}
