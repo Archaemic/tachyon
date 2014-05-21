@@ -110,22 +110,27 @@ int main(int argc, char** argv) {
 		return MoveReadable(p->move4());
 	}, 15);
 
+	std::vector<std::unique_ptr<Pokemon>> pokemonRefs;
+
 	for (int i = 0; i < game.nPartyPokemon(); ++i) {
-		Pokemon* pokemon = game.partyPokemon(i);
-		table.addRow(pokemon);
+		std::unique_ptr<Pokemon> pokemon = game.partyPokemon(i);
+		table.addRow(pokemon.get());
+		pokemonRefs.push_back(std::move(pokemon));
 	}
 
 	int nPokemon = game.nBoxPokemon(GameBoyGame::BOX_CURRENT);
 	for (int i = 0; i < nPokemon; ++i) {
-		Pokemon* pokemon = game.boxPokemon(GameBoyGame::BOX_CURRENT, i);
-		table.addRow(pokemon);
+		std::unique_ptr<Pokemon> pokemon = game.boxPokemon(GameBoyGame::BOX_CURRENT, i);
+		table.addRow(pokemon.get());
+		pokemonRefs.push_back(std::move(pokemon));
 	}
 
 	for (int box = GameBoyGame::BOX_01; box <= GameBoyGame::BOX_12; ++box) {
 		int nPokemon = game.nBoxPokemon(box);
 		for (int i = 0; i < nPokemon; ++i) {
-			Pokemon* pokemon = game.boxPokemon(box, i);
-			table.addRow(pokemon);
+			std::unique_ptr<Pokemon> pokemon = game.boxPokemon(box, i);
+			table.addRow(pokemon.get());
+			pokemonRefs.push_back(std::move(pokemon));
 		}
 	}
 	table.print();

@@ -530,9 +530,9 @@ public:
 
 	virtual const wchar_t* trainerName() const = 0;
 
-	virtual Pokemon* partyPokemon(int i) = 0;
+	virtual std::unique_ptr<Pokemon> partyPokemon(int i) = 0;
 	virtual unsigned nPartyPokemon() const = 0;
-	virtual Pokemon* boxPokemon(int box, int i) = 0;
+	virtual std::unique_ptr<Pokemon> boxPokemon(int box, int i) = 0;
 	virtual unsigned nBoxPokemon(int box) const = 0;
 
 	virtual Version version() const = 0;
@@ -540,7 +540,7 @@ public:
 	const uint8_t* rom() const { return m_rom; }
 
 	// This function does lazy evaluation and memoizes the result
-	// Thus it is not const
+	// Thus it is not const. PokemonSpecies objects are own by the Game
 	virtual PokemonSpecies* species(PokemonSpecies::Id);
 
 protected:

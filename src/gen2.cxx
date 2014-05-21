@@ -63,18 +63,18 @@ Generation2::Generation2(uint8_t* memory, const uint8_t* rom)
 	gameTextToWchar(m_trainerName, &memory[G20E_TRAINER_NAME], sizeof(m_trainerName) / sizeof(*m_trainerName));
 }
 
-Pokemon* Generation2::partyPokemon(int i) {
+std::unique_ptr<Pokemon> Generation2::partyPokemon(int i) {
 	uint8_t* pstart = &m_memory[G20E_PARTY_POKEMON + 2 + 6 + sizeof(G2PartyPokemonData) * i];
 	uint8_t* nstart = &m_memory[G20E_PARTY_POKEMON + 2 + (sizeof(G2PartyPokemonData) + 12) * 6 + 11 * i];
 	uint8_t* tstart = &m_memory[G20E_PARTY_POKEMON + 2 + (sizeof(G2PartyPokemonData) + 1) * 6 + 11 * i];
-	return new G2PartyPokemon(*this, pstart, nstart, tstart);
+	return std::unique_ptr<Pokemon>(new G2PartyPokemon(*this, pstart, nstart, tstart));
 }
 
 unsigned Generation2::nPartyPokemon() const {
 	return m_memory[G20E_PARTY_POKEMON];
 }
 
-Pokemon* Generation2::boxPokemon(int box, int i) {
+std::unique_ptr<Pokemon> Generation2::boxPokemon(int box, int i) {
 	size_t start;
 	if (box == BOX_CURRENT) {
 		start = G20E_CURRENT_BOX;
@@ -86,7 +86,7 @@ Pokemon* Generation2::boxPokemon(int box, int i) {
 	uint8_t* pstart = &m_memory[start + 2 + 20 + sizeof(G2BasePokemonData) * i];
 	uint8_t* nstart = &m_memory[start + 2 + (sizeof(G2BasePokemonData) + 12) * 20 + 11 * i];
 	uint8_t* tstart = &m_memory[start + 2 + (sizeof(G2BasePokemonData) + 1) * 20 + 11 * i];
-	return new G2BasePokemon(*this, pstart, nstart, tstart);
+	return std::unique_ptr<Pokemon>(new G2BasePokemon(*this, pstart, nstart, tstart));
 }
 
 unsigned Generation2::nBoxPokemon(int box) const {
