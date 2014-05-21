@@ -23,8 +23,6 @@ public:
 
 private:
 	const static wchar_t charMapGen1En[0x100];
-
-	wchar_t m_trainerName[8];
 };
 
 #endif
