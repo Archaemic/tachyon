@@ -5,7 +5,7 @@
 
 GBPokemon::GBPokemon(const uint8_t* name, const uint8_t* ot) {
 	setName(GameBoyGame::gameTextToUTF8(name, 11));
-	setOtName(GameBoyGame::gameTextToUTF8(name, 8));
+	setOtName(GameBoyGame::gameTextToUTF8(ot, 8));
 }
 
 unsigned GBPokemon::maxHp() const {
@@ -114,9 +114,8 @@ GameBoyGame::GameBoyGame(uint8_t* memory, const uint8_t* rom)
 }
 
 std::string GameBoyGame::gameTextToUTF8(const uint8_t* gameText, size_t len) {
-	int i;
 	std::stringstream stream;
-	for (i = 0; i < len; ++i) {
+	for (size_t i = 0; i < len; ++i) {
 		stream << charMapGBEn[gameText[i]];
 	}
 	return stream.str();

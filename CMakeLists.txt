@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(Tachyon)
 
-list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -fno-rtti -Wall -Wextra")
 
 set(SRC
 	${CMAKE_SOURCE_DIR}/src/main.cxx

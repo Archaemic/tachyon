@@ -129,7 +129,7 @@ private:
 
 class G2PokemonSpecies : public PokemonSpecies {
 public:
-	G2PokemonSpecies(Generation2& gen, const G2PokemonBaseStats* data);
+	G2PokemonSpecies(const G2PokemonBaseStats* data);
 
 	virtual PokemonSpecies::Id id() const override;
 	virtual unsigned baseHp() const override;
@@ -143,7 +143,6 @@ public:
 	virtual PokemonSpecies::GrowthRate growthRate() const override;
 
 private:
-	Generation2& m_gen;
 	const G2PokemonBaseStats* m_data;
 };
 #endif

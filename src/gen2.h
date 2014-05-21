@@ -19,6 +19,8 @@ public:
 
 	virtual Version version() const override;
 
+	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
+
 private:
 	const static char charMapGen2En[0x100];
 };

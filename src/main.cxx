@@ -9,7 +9,7 @@
 #include "gen2.h"
 #include "util.h"
 
-int main(int argc, char** argv) {
+int main(int, char**) {
 	int fd = open("test.sav", O_RDONLY);
 	int romfd = open("game.bin", O_RDONLY);
 	uint8_t* memory = static_cast<uint8_t*>(mmap(0, SIZE_GEN_2_SAV, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0));
@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
 
 	std::vector<std::unique_ptr<Pokemon>> pokemonRefs;
 
-	for (int i = 0; i < game.nPartyPokemon(); ++i) {
+	for (unsigned i = 0; i < game.nPartyPokemon(); ++i) {
 		std::unique_ptr<Pokemon> pokemon = game.partyPokemon(i);
 		table.addRow(pokemon.get());
 		pokemonRefs.push_back(std::move(pokemon));

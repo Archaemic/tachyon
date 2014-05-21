@@ -310,13 +310,13 @@ PokemonSpecies* Generation1::species(PokemonSpecies::Id id) {
 	if (!species) {
 		if (id == PokemonSpecies::MEW && version() != Game::G11E_YELLOW) {
 			const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_MEW_STATS]);
-			species = new G1PokemonSpecies(*this, stats);
+			species = new G1PokemonSpecies(stats);
 		} else if (id <= PokemonSpecies::MEW && id != PokemonSpecies::MISSINGNO) {
 			const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_BASE_STATS]);
-			species = new G1PokemonSpecies(*this, &stats[id - 1]);
+			species = new G1PokemonSpecies(&stats[id - 1]);
 		} else {
 			const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_BASE_STATS]);
-			species = new G1PokemonSpecies(*this, &stats[-1]);
+			species = new G1PokemonSpecies(&stats[-1]);
 		}
 		putSpecies(id, species);
 	}
@@ -457,9 +457,8 @@ unsigned G1PartyPokemon::specialDefense() const {
 	return R16(m_data->special);
 }
 
-G1PokemonSpecies::G1PokemonSpecies(Generation1& gen, const G1PokemonBaseStats* data)
-	: m_gen(gen)
-	, m_data(data)
+G1PokemonSpecies::G1PokemonSpecies(const G1PokemonBaseStats* data)
+	: m_data(data)
 {
 }
 

@@ -113,6 +113,20 @@ Game::Version Generation2::version() const {
 	return mapping->version;
 }
 
+PokemonSpecies* Generation2::species(PokemonSpecies::Id id) {
+	PokemonSpecies* species = Game::species(id);
+	if (!species) {
+		const G2PokemonBaseStats* stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20E_BASE_STATS]);
+		if (id <= 251) {
+			species = new G2PokemonSpecies(&stats[id - 1]);
+		} else {
+			species = new G2PokemonSpecies(&stats[-1]);
+		}
+		putSpecies(id, species);
+	}
+	return species;
+}
+
 G2BasePokemon::G2BasePokemon(Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
 	: GBPokemon(name, ot)
 	, m_gen(gen)
@@ -121,13 +135,9 @@ G2BasePokemon::G2BasePokemon(Generation2& gen, uint8_t* data, uint8_t* name, uin
 }
 
 PokemonSpecies* G2BasePokemon::species() const {
-	const G2PokemonBaseStats* stats = reinterpret_cast<const G2PokemonBaseStats*>(&m_gen.rom()[G20E_BASE_STATS]);
-	if (m_data->species <= 251) {
-		return new G2PokemonSpecies(m_gen, &stats[m_data->species - 1]);
-	} else {
-		return new G2PokemonSpecies(m_gen, &stats[-1]);
-	}
+	return m_gen.species(static_cast<PokemonSpecies::Id>(m_data->species));
 }
+
 uint16_t G2BasePokemon::otId() const {
 	return R16(m_data->otId);
 }
@@ -254,9 +264,8 @@ unsigned G2PartyPokemon::specialDefense() const {
 	return R16(m_data->specialDefense);
 }
 
-G2PokemonSpecies::G2PokemonSpecies(Generation2& gen, const G2PokemonBaseStats* data)
-	: m_gen(gen)
-	, m_data(data)
+G2PokemonSpecies::G2PokemonSpecies(const G2PokemonBaseStats* data)
+	: m_data(data)
 {
 }
 
