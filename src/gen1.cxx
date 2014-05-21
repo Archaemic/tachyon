@@ -1,11 +1,5 @@
 #include "gen1-private.h"
 
-#include <cmath>
-
-#define R16(V) (((V) & 0xFF) << 8) | (((V) & 0xFF00) >> 8)
-#define R24(V) (((V) & 0xFF) << 16) | ((V) & 0xFF00) | (((V) & 0xFF0000) >> 16)
-#define R32(V) (((V) & 0xFF) << 24) | (((V) & 0xFF00) << 8) | (((V) & 0xFF0000) >> 8) | (((V) & 0xFF000000) >> 24)
-
 enum {
 	G1_BOX_SIZE = 1122,
 
@@ -490,36 +484,6 @@ Type G1BasePokemon::type2() const {
 	return typeMapping[m_data->type2];
 }
 
-unsigned G1BasePokemon::maxHp() const {
-	PokemonSpecies sp = species();
-	return (ivHp() + sp.baseHp() + int(sqrt(evHp())) / 8 + 50) * level() / 50 + 10;
-}
-
-unsigned G1BasePokemon::attack() const {
-	PokemonSpecies sp = species();
-	return stat(ivAttack(), sp.baseAttack(), evAttack());
-}
-
-unsigned G1BasePokemon::defense() const {
-	PokemonSpecies sp = species();
-	return stat(ivDefense(), sp.baseDefense(), evDefense());
-}
-
-unsigned G1BasePokemon::speed() const {
-	PokemonSpecies sp = species();
-	return stat(ivSpeed(), sp.baseSpeed(), evSpeed());
-}
-
-unsigned G1BasePokemon::specialAttack() const {
-	PokemonSpecies sp = species();
-	return stat(ivSpecialAttack(), sp.baseSpecialAttack(), evSpecialAttack());
-}
-
-unsigned G1BasePokemon::specialDefense() const {
-	PokemonSpecies sp = species();
-	return stat(ivSpecialDefense(), sp.baseSpecialDefense(), evSpecialDefense());
-}
-
 unsigned G1BasePokemon::move1() const {
 	return m_data->moves.move1;
 }
@@ -534,10 +498,6 @@ unsigned G1BasePokemon::move3() const {
 
 unsigned G1BasePokemon::move4() const {
 	return m_data->moves.move4;
-}
-
-unsigned G1BasePokemon::stat(unsigned iv, unsigned base, unsigned ev) const {
-	return (iv + base + int(sqrt(ev)) / 8) * level() / 50 + 5;
 }
 
 G1PartyPokemon::G1PartyPokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot)

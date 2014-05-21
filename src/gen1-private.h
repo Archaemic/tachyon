@@ -2,13 +2,7 @@
 #define PTXN_GEN_1_PRIVATE_H
 
 #include "gen1.h"
-
-struct G1MoveSet {
-	uint8_t move1;
-	uint8_t move2;
-	uint8_t move3;
-	uint8_t move4;
-};
+#include "gen-gb-private.h"
 
 struct G1TMSet {
 public:
@@ -30,7 +24,7 @@ struct G1BasePokemonData {
 	uint8_t type1;
 	uint8_t type2;
 	uint8_t catchRate;
-	G1MoveSet moves;
+	GBMoveSet moves;
 	uint16_t otId;
 	uint32_t xp : 24;
 	uint16_t evHp;
@@ -42,7 +36,7 @@ struct G1BasePokemonData {
 	uint8_t ivAttack : 4;
 	uint8_t ivSpecial : 4;
 	uint8_t ivSpeed : 4;
-	G1MoveSet pp;
+	GBMoveSet pp;
 } __attribute__((packed));
 
 struct G1PartyPokemonData : public G1BasePokemonData {
@@ -68,13 +62,13 @@ struct G1PokemonBaseStats {
 	uint8_t spriteDim;
 	uint16_t frontSprite;
 	uint16_t backSprite;
-	G1MoveSet baseMoveSet;
+	GBMoveSet baseMoveSet;
 	uint8_t growthRate;
 	G1TMSet tmFlags;
 	uint8_t padding;
 } __attribute__((packed));
 
-class G1BasePokemon : public PokemonImpl {
+class G1BasePokemon : public GBPokemon {
 public:
 	G1BasePokemon(const Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
 
@@ -86,13 +80,6 @@ public:
 	virtual unsigned currentHp() const override;
 	virtual Type type1() const override;
 	virtual Type type2() const override;
-
-	virtual unsigned maxHp() const override;
-	virtual unsigned attack() const override;
-	virtual unsigned defense() const override;
-	virtual unsigned speed() const override;
-	virtual unsigned specialAttack() const override;
-	virtual unsigned specialDefense() const override;
 
 	virtual unsigned ivHp() const override;
 	virtual unsigned ivAttack() const override;
@@ -112,8 +99,6 @@ public:
 	virtual unsigned move2() const override;
 	virtual unsigned move3() const override;
 	virtual unsigned move4() const override;
-
-	unsigned stat(unsigned iv, unsigned base, unsigned ev) const;
 
 private:
 	const Generation1& m_gen;
