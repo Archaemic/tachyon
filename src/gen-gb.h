@@ -23,16 +23,11 @@ public:
 
 	GameBoyGame(uint8_t* memory, const uint8_t* rom);
 
-	virtual const wchar_t* trainerName() const override;
-
 private:
-	const static wchar_t charMapGBEn[0x100];
-
-protected:
-	wchar_t m_trainerName[8];
+	const static char* charMapGBEn[0x100];
 
 public:
-	static void gameTextToWchar(wchar_t* out, const uint8_t* gameText, size_t len);
+	static std::string gameTextToUTF8(const uint8_t* gameText, size_t len);
 };
 
 #endif

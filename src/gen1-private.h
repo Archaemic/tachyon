@@ -72,9 +72,7 @@ class G1BasePokemon : public GBPokemon {
 public:
 	G1BasePokemon(Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
 
-	virtual const wchar_t* name() const override;
 	virtual PokemonSpecies* species() const override;
-	virtual const wchar_t* otName() const override;
 	virtual uint16_t otId() const override;
 	virtual unsigned xp() const override;
 	virtual unsigned currentHp() const override;
@@ -103,8 +101,6 @@ public:
 private:
 	Generation1& m_gen;
 	G1BasePokemonData* m_data;
-	wchar_t m_ot[8];
-	wchar_t m_name[11];
 };
 
 class G1PartyPokemon : public G1BasePokemon {

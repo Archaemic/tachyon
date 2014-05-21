@@ -20,7 +20,7 @@ public:
 	virtual Version version() const override;
 
 private:
-	const static wchar_t charMapGen2En[0x100];
+	const static char charMapGen2En[0x100];
 };
 
 #endif

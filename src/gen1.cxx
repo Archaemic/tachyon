@@ -252,7 +252,7 @@ const static Type typeMapping[256] = {
 Generation1::Generation1(uint8_t* memory, const uint8_t* rom)
 	: GameBoyGame(memory, rom)
 {
-	gameTextToWchar(m_trainerName, &memory[G10E_TRAINER_NAME], sizeof(m_trainerName) / sizeof(*m_trainerName));
+	setTrainerName(gameTextToUTF8(&memory[G10E_TRAINER_NAME], 8));
 }
 
 std::unique_ptr<Pokemon> Generation1::partyPokemon(int i) {
@@ -324,24 +324,15 @@ PokemonSpecies* Generation1::species(PokemonSpecies::Id id) {
 }
 
 G1BasePokemon::G1BasePokemon(Generation1& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
-	: m_gen(gen)
+	: GBPokemon(name, ot)
+	, m_gen(gen)
 	, m_data(reinterpret_cast<G1BasePokemonData*>(data))
 {
-	GameBoyGame::gameTextToWchar(m_name, name, sizeof(m_name) / sizeof(*m_name));
-	GameBoyGame::gameTextToWchar(m_ot, ot, sizeof(m_ot) / sizeof(*m_ot));
-}
-
-const wchar_t* G1BasePokemon::name() const {
-	return m_name;
 }
 
 PokemonSpecies* G1BasePokemon::species() const {
 	PokemonSpecies::Id id = idMapping[m_data->pokemonId];
 	return m_gen.species(id);
-}
-
-const wchar_t* G1BasePokemon::otName() const {
-	return m_ot;
 }
 
 uint16_t G1BasePokemon::otId() const {

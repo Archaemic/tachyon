@@ -16,6 +16,7 @@ struct GBMoveSet {
 
 class GBPokemon : public Pokemon {
 public:
+	GBPokemon(const uint8_t* name, const uint8_t* ot);
 	virtual unsigned maxHp() const override;
 	virtual unsigned attack() const override;
 	virtual unsigned defense() const override;
@@ -25,9 +26,6 @@ public:
 
 	unsigned stat(unsigned iv, unsigned base, unsigned ev) const;
 
-private:
-	wchar_t m_name[11];
-	wchar_t m_otName[8];
 };
 
 #endif

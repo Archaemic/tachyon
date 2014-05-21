@@ -16,47 +16,47 @@ int main(int argc, char** argv) {
 	uint8_t* rom = static_cast<uint8_t*>(mmap(0, SIZE_GEN_2_ROM, PROT_READ, MAP_FILE | MAP_PRIVATE, romfd, 0));
 	Generation2 game(memory, rom);
 
-	std::wcout.imbue(std::locale(""));
+	std::cout.imbue(std::locale(""));
 
-	std::wcout << "Trainer name: " << game.trainerName() << std::endl;
+	std::cout << "Trainer name: " << game.trainerName() << std::endl;
 
 	Table<Pokemon*> table;
-	table.addColumn(L"Name", [] (Pokemon* p) {
+	table.addColumn(u8"Name", [] (Pokemon* p) {
 		return p->name();
 	}, 10);
 
-	table.addColumn(L"Species", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"Species", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << p->species()->readable() << " (" << p->species()->id() << ")";
 		return buffer.str();
 	}, 16);
 
-	table.addColumn(L"Lvl", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"Lvl", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << p->level();
 		return buffer.str();
 	}, 3);
 
-	table.addColumn(L"Original Trainer", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"Original Trainer", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << p->otName() << " (" << p->otId() << ")";
 		return buffer.str();
 	}, 18);
 
-	table.addColumn(L"Exp.", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"Exp.", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << p->xp();
 		return buffer.str();
 	}, 7);
 
-	table.addColumn(L"HP", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"HP", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << p->currentHp() << "/" << p->maxHp();
 		return buffer.str();
 	}, 7);
 
-	table.addColumn(L"Type", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"Type", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << TypeReadable(p->type1());
 		if (p->type1() != p->type2()) {
 			buffer << "/" << TypeReadable(p->type2());
@@ -64,49 +64,49 @@ int main(int argc, char** argv) {
 		return buffer.str();
 	}, 18);
 
-	table.addColumn(L"Atk", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"Atk", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << p->attack();
 		return buffer.str();
 	}, 4);
 
-	table.addColumn(L"Def", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"Def", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << p->defense();
 		return buffer.str();
 	}, 4);
 
-	table.addColumn(L"Spd", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"Spd", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << p->speed();
 		return buffer.str();
 	}, 4);
 
-	table.addColumn(L"SAtk", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"SAtk", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << p->specialAttack();
 		return buffer.str();
 	}, 4);
 
-	table.addColumn(L"SDef", [] (Pokemon* p) {
-		std::wostringstream buffer;
+	table.addColumn(u8"SDef", [] (Pokemon* p) {
+		std::stringstream buffer;
 		buffer << p->specialDefense();
 		return buffer.str();
 	}, 4);
 
-	table.addColumn(L"Move 1", [] (Pokemon* p) {
+	table.addColumn(u8"Move 1", [] (Pokemon* p) {
 		return MoveReadable(p->move1());
 	}, 15);
 
-	table.addColumn(L"Move 2", [] (Pokemon* p) {
+	table.addColumn(u8"Move 2", [] (Pokemon* p) {
 		return MoveReadable(p->move2());
 	}, 15);
 
-	table.addColumn(L"Move 3", [] (Pokemon* p) {
+	table.addColumn(u8"Move 3", [] (Pokemon* p) {
 		return MoveReadable(p->move3());
 	}, 15);
 
-	table.addColumn(L"Move 4", [] (Pokemon* p) {
+	table.addColumn(u8"Move 4", [] (Pokemon* p) {
 		return MoveReadable(p->move4());
 	}, 15);
 

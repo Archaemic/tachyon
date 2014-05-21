@@ -4,6 +4,7 @@
 #include <cwchar>
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <unordered_map>
 
 enum Type {
@@ -30,8 +31,8 @@ enum Type {
 	BIRD = 1
 };
 
-const wchar_t* TypeReadable(Type type);
-const wchar_t* MoveReadable(unsigned move);
+const char* TypeReadable(Type type);
+const char* MoveReadable(unsigned move);
 
 class PokemonSpecies {
 public:
@@ -445,17 +446,17 @@ public:
 	virtual Type type2() const = 0;
 	virtual PokemonSpecies::GrowthRate growthRate() const = 0;
 
-	const wchar_t* readable() const;
-	static const wchar_t* readable(Id id);
+	const char* readable() const;
+	static const char* readable(Id id);
 };
 
 class Pokemon {
 public:
 	virtual ~Pokemon() {}
 
-	virtual const wchar_t* name() const = 0;
+	const std::string& name() const;
 	virtual PokemonSpecies* species() const = 0;
-	virtual const wchar_t* otName() const = 0;
+	const std::string& otName() const;
 	virtual uint16_t otId() const = 0;
 	virtual unsigned xp() const = 0;
 	virtual unsigned currentHp() const = 0;
@@ -488,6 +489,14 @@ public:
 	virtual unsigned move2() const = 0;
 	virtual unsigned move3() const = 0;
 	virtual unsigned move4() const = 0;
+
+protected:
+	void setName(const std::string& name);
+	void setOtName(const std::string& otName);
+
+private:
+	std::string m_name;
+	std::string m_otName;
 };
 
 class Game {
@@ -528,7 +537,7 @@ public:
 	Game(uint8_t* memory, const uint8_t* rom);
 	virtual ~Game() {}
 
-	virtual const wchar_t* trainerName() const = 0;
+	const std::string& trainerName() const;
 
 	virtual std::unique_ptr<Pokemon> partyPokemon(int i) = 0;
 	virtual unsigned nPartyPokemon() const = 0;
@@ -544,7 +553,10 @@ public:
 	virtual PokemonSpecies* species(PokemonSpecies::Id);
 
 protected:
+	void setTrainerName(const std::string& name);
 	void putSpecies(PokemonSpecies::Id, PokemonSpecies*);
+
+	std::string m_trainerName;
 
 	uint8_t* m_memory;
 	const uint8_t* m_rom;

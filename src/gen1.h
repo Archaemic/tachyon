@@ -22,7 +22,7 @@ public:
 	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
 
 private:
-	const static wchar_t charMapGen1En[0x100];
+	const static char charMapGen1En[0x100];
 };
 
 #endif

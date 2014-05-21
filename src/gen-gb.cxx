@@ -1,6 +1,12 @@
 #include "gen-gb-private.h"
 
 #include <cmath>
+#include <sstream>
+
+GBPokemon::GBPokemon(const uint8_t* name, const uint8_t* ot) {
+	setName(GameBoyGame::gameTextToUTF8(name, 11));
+	setOtName(GameBoyGame::gameTextToUTF8(name, 8));
+}
 
 unsigned GBPokemon::maxHp() const {
 	PokemonSpecies* sp = species();
@@ -36,70 +42,70 @@ unsigned GBPokemon::stat(unsigned iv, unsigned base, unsigned ev) const {
 	return (iv + base + int(sqrt(ev)) / 8) * level() / 50 + 5;
 }
 
-const wchar_t GameBoyGame::charMapGBEn[0x100] = {
+const char* GameBoyGame::charMapGBEn[0x100] = {
 	// 0x0X
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0x1X
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0x2X
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0x3X
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0x4X
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0x5X
-	L'\0', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
+	u8"", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0x6X
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0x7X
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L' ',
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8" ",
 
 	// 0x8X
-	L'A', L'B', L'C', L'D', L'E', L'F', L'G', L'H',
-	L'I', L'J', L'K', L'L', L'M', L'N', L'O', L'P',
+	u8"A", u8"B", u8"C", u8"D", u8"E", u8"F", u8"G", u8"H",
+	u8"I", u8"J", u8"K", u8"L", u8"M", u8"N", u8"O", u8"P",
 
 	// 0x9X
-	L'Q', L'R', L'S', L'T', L'U', L'V', L'W', L'X',
-	L'Y', L'Z', L'(', L')', L':', L';', L'[', L']',
+	u8"Q", u8"R", u8"S", u8"T", u8"U", u8"V", u8"W", u8"X",
+	u8"Y", u8"Z", u8"(", u8")", u8":", u8";", u8"[", u8"]",
 
 	// 0xAX
-	L'a', L'b', L'c', L'd', L'e', L'f', L'g', L'h',
-	L'i', L'j', L'k', L'l', L'm', L'n', L'o', L'p',
+	u8"a", u8"b", u8"c", u8"d", u8"e", u8"f", u8"g", u8"h",
+	u8"i", u8"j", u8"k", u8"l", u8"m", u8"n", u8"o", u8"p",
 
 	// 0xBX
-	L'q', L'r', L's', L't', L'u', L'v', L'w', L'x',
-	L'y', L'z', L'é', L'd', L'l', L's', L't', L'v',
+	u8"q", u8"r", u8"s", u8"t", u8"u", u8"v", u8"w", u8"x",
+	u8"y", u8"z", u8"é", u8"d", u8"l", u8"s", u8"t", u8"v",
 
 	// 0xCX
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0xDX
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
-	L'�', L'�', L'�', L'�', L'�', L'�', L'�', L'�',
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
+	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0xEX
-	L'\'', L'ᴾ', L'ᴹ', L'-', L'r', L'm', L'?', L'!',
-	L'.', L'ァ', L'ゥ', L'ェ', L'▹', L'▸', L'▾', L'♂',
+	u8"\'", u8"ᴾ", u8"ᴹ", u8"-", u8"r", u8"m", u8"?", u8"!",
+	u8".", u8"ァ", u8"ゥ", u8"ェ", u8"▹", u8"▸", u8"▾", u8"♂",
 
 	// 0xFX
-	L'$', L'×', L'.', L'/', L',', L'♀', L'0', L'1',
-	L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9'
+	u8"$", u8"×", u8".", u8"/", u8",", u8"♀", u8"0", u8"1",
+	u8"2", u8"3", u8"4", u8"5", u8"6", u8"7", u8"8", u8"9"
 };
 
 GameBoyGame::GameBoyGame(uint8_t* memory, const uint8_t* rom)
@@ -107,13 +113,11 @@ GameBoyGame::GameBoyGame(uint8_t* memory, const uint8_t* rom)
 {
 }
 
-void GameBoyGame::gameTextToWchar(wchar_t* out, const uint8_t* gameText, size_t len) {
+std::string GameBoyGame::gameTextToUTF8(const uint8_t* gameText, size_t len) {
 	int i;
+	std::stringstream stream;
 	for (i = 0; i < len; ++i) {
-		out[i] = charMapGBEn[gameText[i]];
+		stream << charMapGBEn[gameText[i]];
 	}
-}
-
-const wchar_t* GameBoyGame::trainerName() const {
-	return m_trainerName;
+	return stream.str();
 }

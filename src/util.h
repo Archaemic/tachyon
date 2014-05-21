@@ -11,13 +11,13 @@ template <typename T>
 class Table {
 private:
 	struct Column {
-		std::wstring name;
+		std::string name;
 		unsigned width;
-		std::function<std::wstring(T)> accessor;
+		std::function<std::string(T)> accessor;
 	};
 
 public:
-	void addColumn(const std::wstring& name, std::function<std::wstring(T)> accessor, unsigned width = 0);
+	void addColumn(const std::string& name, std::function<std::string(T)> accessor, unsigned width = 0);
 	void addRow(T row);
 	void print() const;
 
@@ -26,7 +26,7 @@ private:
 	std::vector<T> m_rows;
 };
 
-template <typename T> void Table<T>::addColumn(const std::wstring& name, std::function<std::wstring(T)> accessor, unsigned width) {
+template <typename T> void Table<T>::addColumn(const std::string& name, std::function<std::string(T)> accessor, unsigned width) {
 	Column column = {
 		.name = name,
 		.width = width,
@@ -40,22 +40,22 @@ template <typename T> void Table<T>::addRow(T row) {
 }
 
 template <typename T> void Table<T>::print() const {
-	std::wcout << std::left << "|";
+	std::cout << std::left << "|";
 	for (Column column : m_columns) {
-		std::wcout << " " << std::setw(column.width) << column.name << std::setw(0) << " |";
+		std::cout << " " << std::setw(column.width) << column.name << std::setw(0) << " |";
 	}
-	std::wcout << std::endl;
-	std::wcout << "+";
+	std::cout << std::endl;
+	std::cout << "+";
 	for (Column column : m_columns) {
-		std::wcout << std::setw(column.width + 1) << std::setfill(L'-') << "-" << std::setw(0) << "-+";
+		std::cout << std::setw(column.width + 1) << std::setfill('-') << "-" << std::setw(0) << "-+";
 	}
-	std::wcout << std::setfill(L' ') << std::endl;
+	std::cout << std::setfill(' ') << std::endl;
 	for (const T& row : m_rows) {
-		std::wcout << "|";
+		std::cout << "|";
 		for (Column column : m_columns) {
-			std::wcout << " " << std::setw(column.width) << column.accessor(row) << std::setw(0) << " |";
+			std::cout << " " << std::setw(column.width) << column.accessor(row) << std::setw(0) << " |";
 		}
-		std::wcout << std::endl;
+		std::cout << std::endl;
 	}
 }
 
