@@ -320,13 +320,13 @@ const wchar_t* G1BasePokemon::name() const {
 PokemonSpecies G1BasePokemon::species() const {
 	PokemonSpecies::Id id = idMapping[m_data->pokemonId];
 	if (id == PokemonSpecies::MEW && m_gen.version() != Game::G11E_YELLOW) {
-		G1PokemonBaseStats* stats = (G1PokemonBaseStats*) &m_gen.rom()[G10E_MEW_STATS];
+		const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&m_gen.rom()[G10E_MEW_STATS]);
 		return PokemonSpecies(new G1PokemonSpecies(m_gen, stats));
 	} else if (id <= PokemonSpecies::MEW && id != PokemonSpecies::MISSINGNO) {
-		G1PokemonBaseStats* stats = (G1PokemonBaseStats*) &m_gen.rom()[G10E_BASE_STATS];
+		const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&m_gen.rom()[G10E_BASE_STATS]);
 		return PokemonSpecies(new G1PokemonSpecies(m_gen, &stats[id - 1]));
 	} else {
-		G1PokemonBaseStats* stats = (G1PokemonBaseStats*) &m_gen.rom()[G10E_BASE_STATS];
+		const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&m_gen.rom()[G10E_BASE_STATS]);
 		return PokemonSpecies(new G1PokemonSpecies(m_gen, &stats[-1]));
 	}
 }
@@ -457,7 +457,7 @@ unsigned G1PartyPokemon::specialDefense() const {
 	return R16(m_data->special);
 }
 
-G1PokemonSpecies::G1PokemonSpecies(const Generation1& gen, G1PokemonBaseStats* data)
+G1PokemonSpecies::G1PokemonSpecies(const Generation1& gen, const G1PokemonBaseStats* data)
 	: m_gen(gen)
 	, m_data(data)
 {

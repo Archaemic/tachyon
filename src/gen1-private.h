@@ -125,7 +125,7 @@ private:
 
 class G1PokemonSpecies : public PokemonSpeciesImpl {
 public:
-	G1PokemonSpecies(const Generation1& gen, G1PokemonBaseStats* data);
+	G1PokemonSpecies(const Generation1& gen, const G1PokemonBaseStats* data);
 
 	virtual PokemonSpecies::Id id() const override;
 	virtual unsigned baseHp() const override;
@@ -140,7 +140,7 @@ public:
 
 private:
 	const Generation1& m_gen;
-	G1PokemonBaseStats* m_data;
+	const G1PokemonBaseStats* m_data;
 };
 
 #endif
