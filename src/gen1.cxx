@@ -224,7 +224,7 @@ const static Type typeMapping[256] = {
 	POISON,
 	GROUND,
 	ROCK,
-	QQQ,
+	BIRD,
 	BUG,
 	GHOST,
 

@@ -6,15 +6,15 @@
 #include <iomanip>
 #include <sstream>
 
-#include "gen1.h"
+#include "gen2.h"
 #include "util.h"
 
 int main(int argc, char** argv) {
 	int fd = open("test.sav", O_RDONLY);
 	int romfd = open("game.bin", O_RDONLY);
-	uint8_t* memory = static_cast<uint8_t*>(mmap(0, SIZE_GEN_1_SAV, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0));
-	uint8_t* rom = static_cast<uint8_t*>(mmap(0, SIZE_GEN_1_ROM, PROT_READ, MAP_FILE | MAP_PRIVATE, romfd, 0));
-	Generation1 game(memory, rom);
+	uint8_t* memory = static_cast<uint8_t*>(mmap(0, SIZE_GEN_2_SAV, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0));
+	uint8_t* rom = static_cast<uint8_t*>(mmap(0, SIZE_GEN_2_ROM, PROT_READ, MAP_FILE | MAP_PRIVATE, romfd, 0));
+	Generation2 game(memory, rom);
 
 	std::wcout.imbue(std::locale(""));
 
@@ -130,8 +130,8 @@ int main(int argc, char** argv) {
 	}
 	table.print();
 
-	munmap(memory, SIZE_GEN_1_SAV);
-	munmap(memory, SIZE_GEN_1_ROM);
+	munmap(memory, SIZE_GEN_2_SAV);
+	munmap(memory, SIZE_GEN_2_ROM);
 	close(fd);
 	close(romfd);
 }

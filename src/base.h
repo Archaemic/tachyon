@@ -24,7 +24,8 @@ enum Type {
 	DRAGON,
 	DARK,
 
-	QQQ = 0
+	QQQ = 0,
+	BIRD = 1
 };
 
 const wchar_t* TypeReadable(Type type);

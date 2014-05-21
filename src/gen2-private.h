@@ -1,0 +1,153 @@
+#ifndef PTXN_GEN_2_PRIVATE_H
+#define PTXN_GEN_2_PRIVATE_H
+
+#include "gen2.h"
+#include "gen-gb-private.h"
+
+struct G2TMSet {
+public:
+	G2TMSet();
+	G2TMSet(uint64_t tmset);
+
+	bool containsTM(int tm) const;
+	bool containsHM(int hm) const;
+
+private:
+	uint8_t m_set[8];
+} __attribute__((packed));
+
+struct G2BasePokemonData {
+	uint8_t species;
+	uint8_t heldItem;
+	GBMoveSet moves;
+	uint16_t otId;
+	uint32_t xp : 24;
+	uint16_t evHp;
+	uint16_t evAttack;
+	uint16_t evDefense;
+	uint16_t evSpeed;
+	uint16_t evSpecial;
+	uint8_t ivDefense : 4;
+	uint8_t ivAttack : 4;
+	uint8_t ivSpecial : 4;
+	uint8_t ivSpeed : 4;
+	GBMoveSet pp;
+	uint8_t friendship;
+	uint8_t pokerus;
+	uint16_t caughtData;
+	uint8_t level;
+} __attribute__((packed));
+
+struct G2PartyPokemonData : public G2BasePokemonData {
+	uint8_t status;
+	uint8_t padding;
+	uint16_t currentHp;
+	uint16_t maxHp;
+	uint16_t attack;
+	uint16_t defense;
+	uint16_t speed;
+	uint16_t specialAttack;
+	uint16_t specialDefense;
+} __attribute__((packed));
+
+struct G2PokemonBaseStats {
+	uint8_t species;
+	uint8_t hp;
+	uint8_t attack;
+	uint8_t defense;
+	uint8_t speed;
+	uint8_t specialAttack;
+	uint8_t specialDefense;
+	uint8_t type1;
+	uint8_t type2;
+	uint8_t catchRate;
+	uint8_t baseExpYield;
+	uint8_t heldItem1;
+	uint8_t heldItem2;
+	uint8_t genderRatio;
+	uint8_t unknown1;
+	uint8_t eggCycles;
+	uint8_t unknown2;
+	uint8_t spriteDim;
+	uint32_t padding;
+	uint8_t growthRate;
+	uint8_t eggGroups;
+	G2TMSet tmFlags;
+} __attribute__((packed));
+
+class G2BasePokemon : public GBPokemon {
+public:
+	G2BasePokemon(const Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
+
+	virtual const wchar_t* name() const override;
+	virtual PokemonSpecies species() const override;
+	virtual const wchar_t* otName() const override;
+	virtual uint16_t otId() const override;
+	virtual unsigned xp() const override;
+	virtual unsigned currentHp() const override;
+	virtual Type type1() const override;
+	virtual Type type2() const override;
+
+	virtual unsigned ivHp() const override;
+	virtual unsigned ivAttack() const override;
+	virtual unsigned ivDefense() const override;
+	virtual unsigned ivSpeed() const override;
+	virtual unsigned ivSpecialAttack() const override;
+	virtual unsigned ivSpecialDefense() const override;
+
+	virtual unsigned evHp() const override;
+	virtual unsigned evAttack() const override;
+	virtual unsigned evDefense() const override;
+	virtual unsigned evSpeed() const override;
+	virtual unsigned evSpecialAttack() const override;
+	virtual unsigned evSpecialDefense() const override;
+
+	virtual unsigned move1() const override;
+	virtual unsigned move2() const override;
+	virtual unsigned move3() const override;
+	virtual unsigned move4() const override;
+
+private:
+	const Generation2& m_gen;
+	G2BasePokemonData* m_data;
+	wchar_t m_ot[8];
+	wchar_t m_name[11];
+};
+
+class G2PartyPokemon : public G2BasePokemon {
+public:
+	G2PartyPokemon(const Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
+
+	virtual unsigned level() const override;
+	virtual unsigned currentHp() const override;
+	virtual unsigned maxHp() const override;
+	virtual unsigned attack() const override;
+	virtual unsigned defense() const override;
+	virtual unsigned speed() const override;
+	virtual unsigned specialAttack() const override;
+	virtual unsigned specialDefense() const override;
+
+private:
+	G2PartyPokemonData* m_data;
+};
+
+class G2PokemonSpecies : public PokemonSpeciesImpl {
+public:
+	G2PokemonSpecies(const Generation2& gen, const G2PokemonBaseStats* data);
+
+	virtual PokemonSpecies::Id id() const override;
+	virtual unsigned baseHp() const override;
+	virtual unsigned baseAttack() const override;
+	virtual unsigned baseDefense() const override;
+	virtual unsigned baseSpeed() const override;
+	virtual unsigned baseSpecialAttack() const override;
+	virtual unsigned baseSpecialDefense() const override;
+	virtual Type type1() const override;
+	virtual Type type2() const override;
+	virtual PokemonSpecies::GrowthRate growthRate() const override;
+
+private:
+	const Generation2& m_gen;
+	const G2PokemonBaseStats* m_data;
+};
+#endif

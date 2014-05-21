@@ -8,6 +8,7 @@ set(SRC
 	${CMAKE_SOURCE_DIR}/src/base.cxx
 	${CMAKE_SOURCE_DIR}/src/gen-gb.cxx
 	${CMAKE_SOURCE_DIR}/src/gen1.cxx
+	${CMAKE_SOURCE_DIR}/src/gen2.cxx
 )
 
 add_executable(ptxn ${SRC})
