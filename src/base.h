@@ -26,6 +26,7 @@ enum Type {
 	ICE,
 	DRAGON,
 	DARK,
+	FAIRY,
 
 	QQQ = 0,
 	BIRD = 1

@@ -5,7 +5,7 @@
 
 const static char* typeNames[] = {
 	u8"???",
-	nullptr,
+	u8"Bird",
 	nullptr,
 	nullptr,
 	nullptr,
@@ -44,6 +44,7 @@ const static char* typeNames[] = {
 	u8"Ice",
 	u8"Dragon",
 	u8"Dark",
+	u8"Fairy"
 };
 
 const static char* speciesNames[] = {
