@@ -217,38 +217,6 @@ const static PokemonSpecies::Id idMapping[256] = {
 	PokemonSpecies::VICTREEBEL
 };
 
-const static Type typeMapping[256] = {
-	NORMAL,
-	FIGHTING,
-	FLYING,
-	POISON,
-	GROUND,
-	ROCK,
-	BIRD,
-	BUG,
-	GHOST,
-
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-
-	FIRE,
-	WATER,
-	GRASS,
-	ELECTRIC,
-	PSYCHIC,
-	ICE,
-	DRAGON
-};
-
 Generation1::Generation1(uint8_t* memory, const uint8_t* rom)
 	: GameBoyGame(memory, rom)
 {
@@ -294,103 +262,29 @@ PokemonSpecies* Generation1::species(PokemonSpecies::Id id) {
 }
 
 G1BasePokemon::G1BasePokemon(Generation1* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
-	: GBPokemon(name, ot)
-	, m_gen(gen)
-	, m_data(reinterpret_cast<G1BasePokemonData*>(data))
+	: GBPokemon<G1BasePokemonData>(gen, data, name, ot)
 {
 }
 
-PokemonSpecies* G1BasePokemon::species() const {
+template <>
+PokemonSpecies* GBPokemon<G1BasePokemonData>::species() const {
 	PokemonSpecies::Id id = idMapping[m_data->pokemonId];
 	return m_gen->species(id);
 }
 
-uint16_t G1BasePokemon::otId() const {
-	return R16(m_data->otId);
-}
-
-unsigned G1BasePokemon::xp() const {
-	return R24(m_data->xp);
-}
-
-unsigned G1BasePokemon::currentHp() const {
+template <>
+unsigned GBPokemon<G1BasePokemonData>::currentHp() const {
 	return R16(m_data->currentHp);
 }
 
-unsigned G1BasePokemon::ivHp() const {
-	return
-		((m_data->ivAttack & 1) << 3) |
-		((m_data->ivDefense & 1) << 2) |
-		((m_data->ivSpeed & 1) << 1) |
-		(m_data->ivSpecial & 1);
-}
-
-unsigned G1BasePokemon::ivAttack() const {
-	return m_data->ivAttack;
-}
-
-unsigned G1BasePokemon::ivDefense() const {
-	return m_data->ivDefense;
-}
-
-unsigned G1BasePokemon::ivSpeed() const {
-	return m_data->ivSpeed;
-}
-
-unsigned G1BasePokemon::ivSpecialAttack() const {
-	return m_data->ivSpecial;
-}
-
-unsigned G1BasePokemon::ivSpecialDefense() const {
-	return m_data->ivSpecial;
-}
-
-unsigned G1BasePokemon::evHp() const {
-	return R16(m_data->evHp);
-}
-
-unsigned G1BasePokemon::evAttack() const {
-	return R16(m_data->evAttack);
-}
-
-unsigned G1BasePokemon::evDefense() const {
-	return R16(m_data->evDefense);
-}
-
-unsigned G1BasePokemon::evSpeed() const {
-	return R16(m_data->evSpeed);
-}
-
-unsigned G1BasePokemon::evSpecialAttack() const {
-	return R16(m_data->evSpecial);
-}
-
-unsigned G1BasePokemon::evSpecialDefense() const {
-	return R16(m_data->evSpecial);
-}
-
-Type G1BasePokemon::type1() const {
+template <>
+Type GBPokemon<G1BasePokemonData>::type1() const {
 	return typeMapping[m_data->type1];
 }
 
-Type G1BasePokemon::type2() const {
+template <>
+Type GBPokemon<G1BasePokemonData>::type2() const {
 	return typeMapping[m_data->type2];
-}
-
-unsigned G1BasePokemon::move1() const {
-	return m_data->moves.move1;
-}
-
-unsigned G1BasePokemon::move2() const {
-	return m_data->moves.move2;
-}
-
-unsigned G1BasePokemon::move3() const {
-	return m_data->moves.move3;
-}
-
-unsigned G1BasePokemon::move4() const {
-	return m_data->moves.move4;
 }
 
 G1PartyPokemon::G1PartyPokemon(Generation1* gen, uint8_t* data, uint8_t* name, uint8_t* ot)

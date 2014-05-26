@@ -68,39 +68,9 @@ struct G1PokemonBaseStats {
 	uint8_t padding;
 } __attribute__((packed));
 
-class G1BasePokemon : public GBPokemon {
+class G1BasePokemon : public GBPokemon<G1BasePokemonData> {
 public:
 	G1BasePokemon(Generation1* gen, uint8_t* data, uint8_t* name, uint8_t* ot);
-
-	virtual PokemonSpecies* species() const override;
-	virtual uint16_t otId() const override;
-	virtual unsigned xp() const override;
-	virtual unsigned currentHp() const override;
-	virtual Type type1() const override;
-	virtual Type type2() const override;
-
-	virtual unsigned ivHp() const override;
-	virtual unsigned ivAttack() const override;
-	virtual unsigned ivDefense() const override;
-	virtual unsigned ivSpeed() const override;
-	virtual unsigned ivSpecialAttack() const override;
-	virtual unsigned ivSpecialDefense() const override;
-
-	virtual unsigned evHp() const override;
-	virtual unsigned evAttack() const override;
-	virtual unsigned evDefense() const override;
-	virtual unsigned evSpeed() const override;
-	virtual unsigned evSpecialAttack() const override;
-	virtual unsigned evSpecialDefense() const override;
-
-	virtual unsigned move1() const override;
-	virtual unsigned move2() const override;
-	virtual unsigned move3() const override;
-	virtual unsigned move4() const override;
-
-private:
-	Generation1* m_gen;
-	G1BasePokemonData* m_data;
 };
 
 class G1PartyPokemon : public G1BasePokemon {

@@ -24,39 +24,6 @@ const static struct ChecksumMapping {
 	{ 0, Game::INVALID }
 };
 
-const static Type typeMapping[256] = {
-	NORMAL,
-	FIGHTING,
-	FLYING,
-	POISON,
-	GROUND,
-	ROCK,
-	BIRD,
-	BUG,
-	GHOST,
-	STEEL,
-
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-	QQQ,
-
-	QQQ,
-	FIRE,
-	WATER,
-	GRASS,
-	ELECTRIC,
-	PSYCHIC,
-	ICE,
-	DRAGON,
-	DARK
-};
-
 Generation2::Generation2(uint8_t* memory, const uint8_t* rom)
 	: GameBoyGame(memory, rom)
 {
@@ -98,102 +65,8 @@ PokemonSpecies* Generation2::species(PokemonSpecies::Id id) {
 }
 
 G2BasePokemon::G2BasePokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
-	: GBPokemon(name, ot)
-	, m_gen(gen)
-	, m_data(reinterpret_cast<G2BasePokemonData*>(data))
+	: GBPokemon<G2BasePokemonData>(gen, data, name, ot)
 {
-}
-
-PokemonSpecies* G2BasePokemon::species() const {
-	return m_gen->species(static_cast<PokemonSpecies::Id>(m_data->species));
-}
-
-uint16_t G2BasePokemon::otId() const {
-	return R16(m_data->otId);
-}
-
-unsigned G2BasePokemon::xp() const {
-	return R24(m_data->xp);
-}
-
-unsigned G2BasePokemon::currentHp() const {
-	return maxHp();
-}
-
-unsigned G2BasePokemon::ivHp() const {
-	return
-		((m_data->ivAttack & 1) << 3) |
-		((m_data->ivDefense & 1) << 2) |
-		((m_data->ivSpeed & 1) << 1) |
-		(m_data->ivSpecial & 1);
-}
-
-unsigned G2BasePokemon::ivAttack() const {
-	return m_data->ivAttack;
-}
-
-unsigned G2BasePokemon::ivDefense() const {
-	return m_data->ivDefense;
-}
-
-unsigned G2BasePokemon::ivSpeed() const {
-	return m_data->ivSpeed;
-}
-
-unsigned G2BasePokemon::ivSpecialAttack() const {
-	return m_data->ivSpecial;
-}
-
-unsigned G2BasePokemon::ivSpecialDefense() const {
-	return m_data->ivSpecial;
-}
-
-unsigned G2BasePokemon::evHp() const {
-	return R16(m_data->evHp);
-}
-
-unsigned G2BasePokemon::evAttack() const {
-	return R16(m_data->evAttack);
-}
-
-unsigned G2BasePokemon::evDefense() const {
-	return R16(m_data->evDefense);
-}
-
-unsigned G2BasePokemon::evSpeed() const {
-	return R16(m_data->evSpeed);
-}
-
-unsigned G2BasePokemon::evSpecialAttack() const {
-	return R16(m_data->evSpecial);
-}
-
-unsigned G2BasePokemon::evSpecialDefense() const {
-	return R16(m_data->evSpecial);
-}
-
-Type G2BasePokemon::type1() const {
-	return species()->type1();
-}
-
-Type G2BasePokemon::type2() const {
-	return species()->type2();
-}
-
-unsigned G2BasePokemon::move1() const {
-	return m_data->moves.move1;
-}
-
-unsigned G2BasePokemon::move2() const {
-	return m_data->moves.move2;
-}
-
-unsigned G2BasePokemon::move3() const {
-	return m_data->moves.move3;
-}
-
-unsigned G2BasePokemon::move4() const {
-	return m_data->moves.move4;
 }
 
 G2PartyPokemon::G2PartyPokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
