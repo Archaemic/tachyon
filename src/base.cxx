@@ -1223,7 +1223,6 @@ void Pokemon::setOtName(const std::string& otName) {
 	m_otName = otName;
 }
 
-
 const char* PokemonSpecies::readable() const {
 	return speciesNames[id()];
 }

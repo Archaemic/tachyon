@@ -111,28 +111,21 @@ int main(int, char**) {
 	}, 15);
 
 	std::vector<std::unique_ptr<Pokemon>> pokemonRefs;
+	std::vector<std::unique_ptr<Group>> groups;
 
-	for (unsigned i = 0; i < game.nPartyPokemon(); ++i) {
-		std::unique_ptr<Pokemon> pokemon = game.partyPokemon(i);
-		table.addRow(pokemon.get());
-		pokemonRefs.push_back(std::move(pokemon));
+	groups.push_back(game.party());
+	for (unsigned b = 0; b < GameBoyGame::BOX_12; ++b) {
+		groups.push_back(game.box(b));
 	}
 
-	int nPokemon = game.nBoxPokemon(GameBoyGame::BOX_CURRENT);
-	for (int i = 0; i < nPokemon; ++i) {
-		std::unique_ptr<Pokemon> pokemon = game.boxPokemon(GameBoyGame::BOX_CURRENT, i);
-		table.addRow(pokemon.get());
-		pokemonRefs.push_back(std::move(pokemon));
-	}
-
-	for (int box = GameBoyGame::BOX_01; box <= GameBoyGame::BOX_12; ++box) {
-		int nPokemon = game.nBoxPokemon(box);
-		for (int i = 0; i < nPokemon; ++i) {
-			std::unique_ptr<Pokemon> pokemon = game.boxPokemon(box, i);
+	for (auto iter = groups.begin(); iter < groups.end(); ++iter) {
+		for (unsigned i = 0; i < (*iter)->length(); ++i) {
+			std::unique_ptr<Pokemon> pokemon = (*iter)->at(i);
 			table.addRow(pokemon.get());
 			pokemonRefs.push_back(std::move(pokemon));
 		}
 	}
+
 	table.print();
 
 	munmap(memory, SIZE_GEN_2_SAV);

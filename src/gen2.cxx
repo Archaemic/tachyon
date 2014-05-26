@@ -63,42 +63,12 @@ Generation2::Generation2(uint8_t* memory, const uint8_t* rom)
 	setTrainerName(gameTextToUTF8(&memory[G20E_TRAINER_NAME], 8));
 }
 
-std::unique_ptr<Pokemon> Generation2::partyPokemon(int i) {
-	uint8_t* pstart = &m_memory[G20E_PARTY_POKEMON + 2 + 6 + sizeof(G2PartyPokemonData) * i];
-	uint8_t* nstart = &m_memory[G20E_PARTY_POKEMON + 2 + (sizeof(G2PartyPokemonData) + 12) * 6 + 11 * i];
-	uint8_t* tstart = &m_memory[G20E_PARTY_POKEMON + 2 + (sizeof(G2PartyPokemonData) + 1) * 6 + 11 * i];
-	return std::unique_ptr<Pokemon>(new G2PartyPokemon(*this, pstart, nstart, tstart));
+std::unique_ptr<Group> Generation2::party() {
+	return std::unique_ptr<Group>(new G2Party(this));
 }
 
-unsigned Generation2::nPartyPokemon() const {
-	return m_memory[G20E_PARTY_POKEMON];
-}
-
-std::unique_ptr<Pokemon> Generation2::boxPokemon(int box, int i) {
-	size_t start;
-	if (box == BOX_CURRENT) {
-		start = G20E_CURRENT_BOX;
-	} else if (box < BOX_08) {
-		start = G20E_BOX_1 + (box - 1) * G2_BOX_SIZE;
-	} else {
-		start = G20E_BOX_8 + (box - 8) * G2_BOX_SIZE;
-	}
-	uint8_t* pstart = &m_memory[start + 2 + 20 + sizeof(G2BasePokemonData) * i];
-	uint8_t* nstart = &m_memory[start + 2 + (sizeof(G2BasePokemonData) + 12) * 20 + 11 * i];
-	uint8_t* tstart = &m_memory[start + 2 + (sizeof(G2BasePokemonData) + 1) * 20 + 11 * i];
-	return std::unique_ptr<Pokemon>(new G2BasePokemon(*this, pstart, nstart, tstart));
-}
-
-unsigned Generation2::nBoxPokemon(int box) const {
-	size_t start;
-	if (box == BOX_CURRENT) {
-		start = G20E_CURRENT_BOX;
-	} else if (box < BOX_08) {
-		start = G20E_BOX_1 + (box - 1) * G2_BOX_SIZE;
-	} else {
-		start = G20E_BOX_8 + (box - 8) * G2_BOX_SIZE;
-	}
-	return m_memory[start];
+std::unique_ptr<Group> Generation2::box(unsigned box) {
+	return std::unique_ptr<Group>(new G2Box(this, static_cast<GameBoyGame::Box>(box)));
 }
 
 Game::Version Generation2::version() const {
@@ -127,7 +97,7 @@ PokemonSpecies* Generation2::species(PokemonSpecies::Id id) {
 	return species;
 }
 
-G2BasePokemon::G2BasePokemon(Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
+G2BasePokemon::G2BasePokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
 	: GBPokemon(name, ot)
 	, m_gen(gen)
 	, m_data(reinterpret_cast<G2BasePokemonData*>(data))
@@ -135,7 +105,7 @@ G2BasePokemon::G2BasePokemon(Generation2& gen, uint8_t* data, uint8_t* name, uin
 }
 
 PokemonSpecies* G2BasePokemon::species() const {
-	return m_gen.species(static_cast<PokemonSpecies::Id>(m_data->species));
+	return m_gen->species(static_cast<PokemonSpecies::Id>(m_data->species));
 }
 
 uint16_t G2BasePokemon::otId() const {
@@ -226,7 +196,7 @@ unsigned G2BasePokemon::move4() const {
 	return m_data->moves.move4;
 }
 
-G2PartyPokemon::G2PartyPokemon(Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot)
+G2PartyPokemon::G2PartyPokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
 	: G2BasePokemon(gen, data, name, ot)
 	, m_data(reinterpret_cast<G2PartyPokemonData*>(data))
 {
@@ -318,6 +288,48 @@ Type G2PokemonSpecies::type1() const {
 
 Type G2PokemonSpecies::type2() const {
 	return typeMapping[m_data->type2];
+}
+
+
+G2Party::G2Party(Generation2* gen)
+	: m_gen(gen)
+	, m_start(&gen->ram()[G20E_PARTY_POKEMON])
+{
+}
+
+std::unique_ptr<Pokemon> G2Party::at(unsigned i) {
+	uint8_t* pstart = &m_start[2 + 6 + sizeof(G2PartyPokemonData) * i];
+	uint8_t* nstart = &m_start[2 + (sizeof(G2PartyPokemonData) + 12) * 6 + 11 * i];
+	uint8_t* tstart = &m_start[2 + (sizeof(G2PartyPokemonData) + 1) * 6 + 11 * i];
+	return std::unique_ptr<Pokemon>(new G2PartyPokemon(m_gen, pstart, nstart, tstart));
+}
+
+unsigned G2Party::length() const {
+	return m_start[0];
+}
+
+G2Box::G2Box(Generation2* gen, GameBoyGame::Box box)
+	: m_gen(gen)
+	, m_start(gen->ram())
+{
+	if (box == GameBoyGame::BOX_CURRENT) {
+		m_start += G20E_CURRENT_BOX;
+	} else if (box < GameBoyGame::BOX_08) {
+		m_start += G20E_BOX_1 + (box - 1) * G2_BOX_SIZE;
+	} else {
+		m_start += G20E_BOX_8 + (box - 8) * G2_BOX_SIZE;
+	}
+}
+
+std::unique_ptr<Pokemon> G2Box::at(unsigned i) {
+	uint8_t* pstart = &m_start[2 + 20 + sizeof(G2BasePokemonData) * i];
+	uint8_t* nstart = &m_start[2 + (sizeof(G2BasePokemonData) + 12) * 20 + 11 * i];
+	uint8_t* tstart = &m_start[2 + (sizeof(G2BasePokemonData) + 1) * 20 + 11 * i];
+	return std::unique_ptr<Pokemon>(new G2BasePokemon(m_gen, pstart, nstart, tstart));
+}
+
+unsigned G2Box::length() const {
+	return m_start[0];
 }
 
 bool G2TMSet::containsTM(int tm) const {

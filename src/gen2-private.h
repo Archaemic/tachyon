@@ -77,7 +77,7 @@ struct G2PokemonBaseStats {
 
 class G2BasePokemon : public GBPokemon {
 public:
-	G2BasePokemon(Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
+	G2BasePokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot);
 
 	virtual PokemonSpecies* species() const override;
 	virtual uint16_t otId() const override;
@@ -106,13 +106,13 @@ public:
 	virtual unsigned move4() const override;
 
 private:
-	Generation2& m_gen;
+	Generation2* m_gen;
 	G2BasePokemonData* m_data;
 };
 
 class G2PartyPokemon : public G2BasePokemon {
 public:
-	G2PartyPokemon(Generation2& gen, uint8_t* data, uint8_t* name, uint8_t* ot);
+	G2PartyPokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot);
 
 	virtual unsigned level() const override;
 	virtual unsigned currentHp() const override;
@@ -145,4 +145,29 @@ public:
 private:
 	const G2PokemonBaseStats* m_data;
 };
+
+class G2Party : public Group {
+public:
+	G2Party(Generation2* gen);
+
+	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
+	virtual unsigned length() const override;
+
+private:
+	Generation2* m_gen;
+	uint8_t* m_start;
+};
+
+class G2Box : public Group {
+public:
+	G2Box(Generation2* gen, GameBoyGame::Box box);
+
+	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
+	virtual unsigned length() const override;
+
+private:
+	Generation2* m_gen;
+	uint8_t* m_start;
+};
+
 #endif

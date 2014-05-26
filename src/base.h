@@ -833,6 +833,12 @@ private:
 	std::string m_otName;
 };
 
+class Group {
+public:
+	virtual std::unique_ptr<Pokemon> at(unsigned i) = 0;
+	virtual unsigned length() const = 0;
+};
+
 class Game {
 public:
 	enum Version {
@@ -873,14 +879,13 @@ public:
 
 	const std::string& trainerName() const;
 
-	virtual std::unique_ptr<Pokemon> partyPokemon(int i) = 0;
-	virtual unsigned nPartyPokemon() const = 0;
-	virtual std::unique_ptr<Pokemon> boxPokemon(int box, int i) = 0;
-	virtual unsigned nBoxPokemon(int box) const = 0;
+	virtual std::unique_ptr<Group> party() = 0;
+	virtual std::unique_ptr<Group> box(unsigned box) = 0;
 
 	virtual Version version() const = 0;
 
 	const uint8_t* rom() const { return m_rom; }
+	uint8_t* ram() { return m_memory; }
 
 	// This function does lazy evaluation and memoizes the result
 	// Thus it is not const. PokemonSpecies objects are own by the Game

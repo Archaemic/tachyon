@@ -12,10 +12,8 @@ class Generation2 : public GameBoyGame {
 public:
 	Generation2(uint8_t* memory, const uint8_t* rom);
 
-	virtual std::unique_ptr<Pokemon> partyPokemon(int i) override;
-	virtual unsigned nPartyPokemon() const override;
-	virtual std::unique_ptr<Pokemon> boxPokemon(int box, int i) override;
-	virtual unsigned nBoxPokemon(int box) const override;
+	virtual std::unique_ptr<Group> party() override;
+	virtual std::unique_ptr<Group> box(unsigned box) override;
 
 	virtual Version version() const override;
 
