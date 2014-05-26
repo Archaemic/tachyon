@@ -77,6 +77,9 @@ GameBoyGame::GameBoyGame(uint8_t* memory, const uint8_t* rom)
 std::string GameBoyGame::gameTextToUTF8(const uint8_t* gameText, size_t len) {
 	std::stringstream stream;
 	for (size_t i = 0; i < len; ++i) {
+		if (gameText[i] == 0x50) {
+			break;
+		}
 		stream << charMapGBEn[gameText[i]];
 	}
 	return stream.str();
