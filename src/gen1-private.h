@@ -73,20 +73,9 @@ public:
 	G1BasePokemon(Generation1* gen, uint8_t* data, uint8_t* name, uint8_t* ot);
 };
 
-class G1PartyPokemon : public G1BasePokemon {
+class G1PartyPokemon : public GBPartyPokemon<G1PartyPokemonData> {
 public:
 	G1PartyPokemon(Generation1* gen, uint8_t* data, uint8_t* name, uint8_t* ot);
-
-	virtual unsigned level() const override;
-	virtual unsigned maxHp() const override;
-	virtual unsigned attack() const override;
-	virtual unsigned defense() const override;
-	virtual unsigned speed() const override;
-	virtual unsigned specialAttack() const override;
-	virtual unsigned specialDefense() const override;
-
-private:
-	G1PartyPokemonData* m_data;
 };
 
 class G1PokemonSpecies : public PokemonSpecies {

@@ -70,41 +70,8 @@ G2BasePokemon::G2BasePokemon(Generation2* gen, uint8_t* data, uint8_t* name, uin
 }
 
 G2PartyPokemon::G2PartyPokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
-	: G2BasePokemon(gen, data, name, ot)
-	, m_data(reinterpret_cast<G2PartyPokemonData*>(data))
+	: GBPartyPokemon<G2PartyPokemonData>(gen, data, name, ot)
 {
-}
-
-unsigned G2PartyPokemon::level() const {
-	return m_data->level;
-}
-
-unsigned G2PartyPokemon::currentHp() const {
-	return R16(m_data->currentHp);
-}
-
-unsigned G2PartyPokemon::maxHp() const {
-	return R16(m_data->maxHp);
-}
-
-unsigned G2PartyPokemon::attack() const {
-	return R16(m_data->attack);
-}
-
-unsigned G2PartyPokemon::defense() const {
-	return R16(m_data->defense);
-}
-
-unsigned G2PartyPokemon::speed() const {
-	return R16(m_data->speed);
-}
-
-unsigned G2PartyPokemon::specialAttack() const {
-	return R16(m_data->specialAttack);
-}
-
-unsigned G2PartyPokemon::specialDefense() const {
-	return R16(m_data->specialDefense);
 }
 
 G2PokemonSpecies::G2PokemonSpecies(const G2PokemonBaseStats* data)

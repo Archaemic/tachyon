@@ -88,8 +88,23 @@ public:
 
 	unsigned stat(unsigned iv, unsigned base, unsigned ev) const;
 
-protected:
+private:
 	GameBoyGame* m_gen;
+	T* m_data;
+};
+
+template<typename T>
+class GBPartyPokemon : public GBPokemon<T> {
+public:
+	GBPartyPokemon(GameBoyGame* gen, uint8_t* data, const uint8_t* name, const uint8_t* ot);
+
+	virtual unsigned level() const override;
+	virtual unsigned maxHp() const override;
+	virtual unsigned attack() const override;
+	virtual unsigned defense() const override;
+	virtual unsigned speed() const override;
+	virtual unsigned specialAttack() const override;
+	virtual unsigned specialDefense() const override;
 
 private:
 	T* m_data;
@@ -257,6 +272,48 @@ unsigned GBPokemon<T>::move3() const {
 template <typename T>
 unsigned GBPokemon<T>::move4() const {
 	return m_data->moves.move4;
+}
+
+template <typename T>
+GBPartyPokemon<T>::GBPartyPokemon(GameBoyGame* gen, uint8_t* data, const uint8_t* name, const uint8_t* ot)
+	: GBPokemon<T>(gen, data, name, ot)
+	, m_data(reinterpret_cast<T*>(data))
+{
+}
+
+template <typename T>
+unsigned GBPartyPokemon<T>::level() const {
+	return m_data->level;
+}
+
+template <typename T>
+unsigned GBPartyPokemon<T>::maxHp() const {
+	return R16(m_data->maxHp);
+}
+
+template <typename T>
+unsigned GBPartyPokemon<T>::attack() const {
+	return R16(m_data->attack);
+}
+
+template <typename T>
+unsigned GBPartyPokemon<T>::defense() const {
+	return R16(m_data->defense);
+}
+
+template <typename T>
+unsigned GBPartyPokemon<T>::speed() const {
+	return R16(m_data->speed);
+}
+
+template <typename T>
+unsigned GBPartyPokemon<T>::specialAttack() const {
+	return R16(m_data->specialAttack);
+}
+
+template <typename T>
+unsigned GBPartyPokemon<T>::specialDefense() const {
+	return R16(m_data->specialDefense);
 }
 
 #endif

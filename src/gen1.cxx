@@ -273,6 +273,12 @@ PokemonSpecies* GBPokemon<G1BasePokemonData>::species() const {
 }
 
 template <>
+PokemonSpecies* GBPokemon<G1PartyPokemonData>::species() const {
+	PokemonSpecies::Id id = idMapping[m_data->pokemonId];
+	return m_gen->species(id);
+}
+
+template <>
 unsigned GBPokemon<G1BasePokemonData>::currentHp() const {
 	return R16(m_data->currentHp);
 }
@@ -288,36 +294,17 @@ Type GBPokemon<G1BasePokemonData>::type2() const {
 }
 
 G1PartyPokemon::G1PartyPokemon(Generation1* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
-	: G1BasePokemon(gen, data, name, ot)
-	, m_data(reinterpret_cast<G1PartyPokemonData*>(data))
+	: GBPartyPokemon<G1PartyPokemonData>(gen, data, name, ot)
 {
 }
 
-unsigned G1PartyPokemon::level() const {
-	return m_data->level;
-}
-
-unsigned G1PartyPokemon::maxHp() const {
-	return R16(m_data->maxHp);
-}
-
-unsigned G1PartyPokemon::attack() const {
-	return R16(m_data->attack);
-}
-
-unsigned G1PartyPokemon::defense() const {
-	return R16(m_data->defense);
-}
-
-unsigned G1PartyPokemon::speed() const {
-	return R16(m_data->speed);
-}
-
-unsigned G1PartyPokemon::specialAttack() const {
+template <>
+unsigned GBPartyPokemon<G1PartyPokemonData>::specialAttack() const {
 	return R16(m_data->special);
 }
 
-unsigned G1PartyPokemon::specialDefense() const {
+template <>
+unsigned GBPartyPokemon<G1PartyPokemonData>::specialDefense() const {
 	return R16(m_data->special);
 }
 
