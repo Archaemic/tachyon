@@ -68,11 +68,6 @@ PokemonSpecies* Generation1::species(PokemonSpecies::Id id) {
 	return species;
 }
 
-G1BasePokemon::G1BasePokemon(Generation1* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
-	: GBPokemon<G1BasePokemonData>(gen, data, name, ot)
-{
-}
-
 template <>
 PokemonSpecies* GBPokemon<G1BasePokemonData>::species() const {
 	const uint8_t* idMapping = &m_gen->rom()[G10E_ID_MAPPING];
@@ -100,11 +95,6 @@ Type GBPokemon<G1BasePokemonData>::type1() const {
 template <>
 Type GBPokemon<G1BasePokemonData>::type2() const {
 	return typeMapping[m_data->type2];
-}
-
-G1PartyPokemon::G1PartyPokemon(Generation1* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
-	: GBPartyPokemon<G1PartyPokemonData>(gen, data, name, ot)
-{
 }
 
 template <>

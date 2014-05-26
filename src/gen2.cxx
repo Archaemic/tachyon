@@ -64,16 +64,6 @@ PokemonSpecies* Generation2::species(PokemonSpecies::Id id) {
 	return species;
 }
 
-G2BasePokemon::G2BasePokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
-	: GBPokemon<G2BasePokemonData>(gen, data, name, ot)
-{
-}
-
-G2PartyPokemon::G2PartyPokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot)
-	: GBPartyPokemon<G2PartyPokemonData>(gen, data, name, ot)
-{
-}
-
 G2PokemonSpecies::G2PokemonSpecies(const G2PokemonBaseStats* data)
 	: m_data(data)
 {

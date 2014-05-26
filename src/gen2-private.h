@@ -75,15 +75,8 @@ struct G2PokemonBaseStats {
 	G2TMSet tmFlags;
 } __attribute__((packed));
 
-class G2BasePokemon : public GBPokemon<G2BasePokemonData> {
-public:
-	G2BasePokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot);
-};
-
-class G2PartyPokemon : public GBPartyPokemon<G2PartyPokemonData> {
-public:
-	G2PartyPokemon(Generation2* gen, uint8_t* data, uint8_t* name, uint8_t* ot);
-};
+typedef GBPokemon<G2BasePokemonData> G2BasePokemon;
+typedef GBPartyPokemon<G2PartyPokemonData> G2PartyPokemon;
 
 class G2PokemonSpecies : public PokemonSpecies {
 public:

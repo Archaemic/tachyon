@@ -68,15 +68,8 @@ struct G1PokemonBaseStats {
 	uint8_t padding;
 } __attribute__((packed));
 
-class G1BasePokemon : public GBPokemon<G1BasePokemonData> {
-public:
-	G1BasePokemon(Generation1* gen, uint8_t* data, uint8_t* name, uint8_t* ot);
-};
-
-class G1PartyPokemon : public GBPartyPokemon<G1PartyPokemonData> {
-public:
-	G1PartyPokemon(Generation1* gen, uint8_t* data, uint8_t* name, uint8_t* ot);
-};
+typedef GBPokemon<G1BasePokemonData> G1BasePokemon;
+typedef GBPartyPokemon<G1PartyPokemonData> G1PartyPokemon;
 
 class G1PokemonSpecies : public PokemonSpecies {
 public:
