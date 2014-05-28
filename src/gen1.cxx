@@ -58,12 +58,9 @@ PokemonSpecies* Generation1::species(PokemonSpecies::Id id) {
 		if (id == PokemonSpecies::MEW && version() != Game::G11E_YELLOW) {
 			const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_MEW_STATS]);
 			species = new G1PokemonSpecies(stats);
-		} else if (id <= PokemonSpecies::MEW && id != PokemonSpecies::MISSINGNO) {
-			const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_BASE_STATS]);
-			species = new G1PokemonSpecies(&stats[id - 1]);
 		} else {
 			const G1PokemonBaseStats* stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_BASE_STATS]);
-			species = new G1PokemonSpecies(&stats[-1]);
+			species = new G1PokemonSpecies(&stats[id - 1]);
 		}
 		putSpecies(id, species);
 	}
