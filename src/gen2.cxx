@@ -16,10 +16,7 @@ enum {
 	G21E_BASE_STATS = 0x051424,
 };
 
-const static struct ChecksumMapping {
-	uint16_t checksum;
-	Game::Version version;
-} checksums[] = {
+const GameBoyGame::ChecksumMapping Generation2::s_checksums[] = {
 	{ 0x2D68, Game::G20E_GOLD },
 	{ 0, Game::INVALID }
 };
@@ -28,6 +25,18 @@ Generation2::Generation2(uint8_t* memory, const uint8_t* rom)
 	: GameBoyGame(memory, rom)
 {
 	setTrainerName(gameTextToUTF8(&memory[G20E_TRAINER_NAME], 8));
+}
+
+void Generation2::registerLoader() {
+	Game::Loader::registerLoader(std::unique_ptr<Loader>(new Loader()));
+}
+
+Game* Generation2::Loader::load(uint8_t* memory, const uint8_t* rom) const {
+	uint16_t checksum = *(uint16_t*) &rom[0x14E];
+	if (GameBoyGame::version(Generation2::s_checksums, checksum)) {
+		return new Generation2(memory, rom);
+	}
+	return nullptr;
 }
 
 std::unique_ptr<Group> Generation2::party() {
@@ -40,14 +49,7 @@ std::unique_ptr<Group> Generation2::box(unsigned box) {
 
 Game::Version Generation2::version() const {
 	uint16_t checksum = *(uint16_t*) &m_rom[0x14E];
-	const ChecksumMapping* mapping = checksums;
-	while (mapping->checksum) {
-		if (mapping->checksum == checksum) {
-			break;
-		}
-		++mapping;
-	}
-	return mapping->version;
+	return GameBoyGame::version(s_checksums, checksum);
 }
 
 PokemonSpecies* Generation2::species(PokemonSpecies::Id id) {

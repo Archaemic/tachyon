@@ -26,6 +26,14 @@ public:
 private:
 	const static char* charMapGBEn[0x100];
 
+protected:
+	struct ChecksumMapping {
+		uint16_t checksum;
+		Game::Version version;
+	};
+
+	static Version version(const ChecksumMapping* checksums, uint16_t checksum);
+
 public:
 	static std::string gameTextToUTF8(const uint8_t* gameText, size_t len);
 };

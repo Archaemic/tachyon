@@ -6,19 +6,23 @@
 #include <iomanip>
 #include <sstream>
 
+#include "gen1.h"
 #include "gen2.h"
 #include "util.h"
 
 int main(int, char**) {
+	Generation1::registerLoader();
+	Generation2::registerLoader();
+
 	int fd = open("test.sav", O_RDONLY);
 	int romfd = open("game.bin", O_RDONLY);
 	uint8_t* memory = static_cast<uint8_t*>(mmap(0, SIZE_GEN_2_SAV, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0));
 	uint8_t* rom = static_cast<uint8_t*>(mmap(0, SIZE_GEN_2_ROM, PROT_READ, MAP_FILE | MAP_PRIVATE, romfd, 0));
-	Generation2 game(memory, rom);
+	std::unique_ptr<Game> game(Game::load(memory, rom));
 
 	std::cout.imbue(std::locale(""));
 
-	std::cout << "Trainer name: " << game.trainerName() << std::endl;
+	std::cout << "Trainer name: " << game->trainerName() << std::endl;
 
 	Table<Pokemon*> table;
 	table.addColumn(u8"Name", [] (Pokemon* p) {
@@ -113,9 +117,9 @@ int main(int, char**) {
 	std::vector<std::unique_ptr<Pokemon>> pokemonRefs;
 	std::vector<std::unique_ptr<Group>> groups;
 
-	groups.push_back(game.party());
+	groups.push_back(game->party());
 	for (unsigned b = 0; b < GameBoyGame::BOX_12; ++b) {
-		groups.push_back(game.box(b));
+		groups.push_back(game->box(b));
 	}
 
 	for (auto iter = groups.begin(); iter < groups.end(); ++iter) {

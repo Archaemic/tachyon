@@ -18,6 +18,16 @@ public:
 	virtual Version version() const override;
 
 	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
+
+	static void registerLoader();
+
+private:
+	const static ChecksumMapping s_checksums[];
+
+	class Loader : public Game::Loader {
+	public:
+		virtual Game* load(uint8_t* memory, const uint8_t* rom) const override;
+	};
 };
 
 #endif

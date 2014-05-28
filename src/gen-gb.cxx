@@ -84,3 +84,13 @@ std::string GameBoyGame::gameTextToUTF8(const uint8_t* gameText, size_t len) {
 	}
 	return stream.str();
 }
+
+Game::Version GameBoyGame::version(const ChecksumMapping* mapping, uint16_t checksum) {
+	while (mapping->checksum) {
+		if (mapping->checksum == checksum) {
+			break;
+		}
+		++mapping;
+	}
+	return mapping->version;
+}

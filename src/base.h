@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 enum Type {
 	NORMAL = 0x10,
@@ -874,7 +875,13 @@ public:
 		G32E_LEAF_GREEN
 	};
 
-	Game(uint8_t* memory, const uint8_t* rom);
+	class Loader {
+	public:
+		virtual Game* load(uint8_t* memory, const uint8_t* rom) const = 0;
+		static void registerLoader(std::unique_ptr<Loader> loader);
+	};
+
+	static std::unique_ptr<Game> load(uint8_t* memory, const uint8_t* rom);
 	virtual ~Game() {}
 
 	const std::string& trainerName() const;
@@ -892,6 +899,8 @@ public:
 	virtual PokemonSpecies* species(PokemonSpecies::Id);
 
 protected:
+	Game(uint8_t* memory, const uint8_t* rom);
+
 	void setTrainerName(const std::string& name);
 	void putSpecies(PokemonSpecies::Id, PokemonSpecies*);
 
@@ -901,6 +910,7 @@ protected:
 	const uint8_t* m_rom;
 
 private:
+	static std::vector<std::unique_ptr<Loader>> s_loaders;
 	std::unordered_map<int, std::unique_ptr<PokemonSpecies>> m_species;
 };
 

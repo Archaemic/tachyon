@@ -1150,10 +1150,27 @@ const char* MoveReadable(unsigned move) {
 	return readable;
 }
 
+std::vector<std::unique_ptr<Game::Loader>> Game::s_loaders;
+
 Game::Game(uint8_t* memory, const uint8_t* rom)
 	: m_memory(memory)
 	, m_rom(rom)
 {
+}
+
+void Game::Loader::registerLoader(std::unique_ptr<Game::Loader> loader) {
+	s_loaders.push_back(std::move(loader));
+}
+
+std::unique_ptr<Game> Game::load(uint8_t* memory, const uint8_t* rom) {
+	Game* game;
+	for (auto iter = s_loaders.begin(); iter < s_loaders.end(); ++iter) {
+		game = (*iter)->load(memory, rom);
+		if (game) {
+			return std::unique_ptr<Game>(game);
+		}
+	}
+	return nullptr;
 }
 
 const std::string& Game::trainerName() const {
