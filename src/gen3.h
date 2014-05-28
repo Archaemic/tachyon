@@ -10,6 +10,32 @@ enum {
 
 class Generation3 : public Game {
 public:
+	struct Section {
+		enum ID {
+			TRAINER,
+			BAG,
+			UNKNOWN_0,
+			UNKNOWN_1,
+			RIVAL,
+			PC_0,
+			PC_1,
+			PC_2,
+			PC_3,
+			PC_4,
+			PC_5,
+			PC_6,
+			PC_7,
+			PC_8,
+			MAX_SECTIONS
+		};
+
+		uint8_t data[0xFF4];
+		uint16_t id;
+		uint16_t checksum;
+		uint32_t padding;
+		uint32_t index;
+	};
+
 	Generation3(uint8_t* memory, const uint8_t* rom);
 
 	virtual std::unique_ptr<Group> party() override;
@@ -19,27 +45,19 @@ public:
 
 	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
 
+	Section* section(Section::ID sectionID);
+
 	static void registerLoader();
 
 private:
-	const static unsigned MAX_SECTIONS = 14;
-
 	struct NameMapping {
 		uint32_t name;
 		Game::Version version;
 	};
 
-	struct Section {
-		uint8_t data[0xFF4];
-		uint16_t id;
-		uint16_t checksum;
-		uint32_t padding;
-		uint32_t index;
-	};
-
 	const static NameMapping s_names[];
 
-	Section* m_sections[MAX_SECTIONS];
+	Section* m_sections[Section::MAX_SECTIONS];
 	uint32_t m_version;
 
 	static Version version(const struct NameMapping* names, uint32_t name);

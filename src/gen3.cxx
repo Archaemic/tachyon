@@ -44,18 +44,18 @@ Generation3::Generation3(uint8_t* memory, const uint8_t* rom)
 {
 	Section* section = reinterpret_cast<Section*>(memory);
 	m_version = section->index;
-	if (section[MAX_SECTIONS].index > m_version) {
-		section = &section[MAX_SECTIONS];
+	if (section[Section::MAX_SECTIONS].index > m_version) {
+		section = &section[Section::MAX_SECTIONS];
 		m_version = section->index;
 	}
 
-	for (unsigned i = 0; i < MAX_SECTIONS; ++i) {
+	for (unsigned i = 0; i < Section::MAX_SECTIONS; ++i) {
 		m_sections[i] = nullptr;
 	}
 
-	for (unsigned i = 0; i < MAX_SECTIONS; ++i) {
+	for (unsigned i = 0; i < Section::MAX_SECTIONS; ++i) {
 		unsigned sectionID = section[i].id;
-		if (sectionID < MAX_SECTIONS) {
+		if (sectionID < Section::MAX_SECTIONS) {
 			m_sections[sectionID] = &section[i];
 		}
 	}
@@ -112,4 +112,11 @@ Game::Version Generation3::version(const NameMapping* mapping, uint32_t name) {
 		++mapping;
 	}
 	return mapping->version;
+}
+
+Generation3::Section* Generation3::section(Section::ID sectionID) {
+	if (sectionID >= Section::MAX_SECTIONS) {
+		return nullptr;
+	}
+	return m_sections[sectionID];
 }
