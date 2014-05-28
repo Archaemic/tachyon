@@ -1,6 +1,5 @@
 #include "gen-gb-private.h"
 
-#include <cmath>
 #include <sstream>
 
 const char* GameBoyGame::charMapGBEn[0x100] = {
@@ -61,7 +60,7 @@ const char* GameBoyGame::charMapGBEn[0x100] = {
 	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0xEX
-	u8"\'", u8"ᴾ", u8"ᴹ", u8"-", u8"r", u8"m", u8"?", u8"!",
+	u8"\'", u8"ᴾK", u8"ᴹN", u8"-", u8"r", u8"m", u8"?", u8"!",
 	u8".", u8"ァ", u8"ゥ", u8"ェ", u8"▹", u8"▸", u8"▾", u8"♂",
 
 	// 0xFX
