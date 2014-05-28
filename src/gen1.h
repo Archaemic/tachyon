@@ -3,13 +3,13 @@
 
 #include "gen-gb.h"
 
-enum {
-	SIZE_GEN_1_SAV = 0x8000,
-	SIZE_GEN_1_ROM = 0x100000,
-};
-
 class Generation1 : public GameBoyGame {
 public:
+	enum {
+		SIZE_SAV = 0x8000,
+		SIZE_ROM = 0x100000,
+	};
+
 	Generation1(uint8_t* memory, const uint8_t* rom);
 
 	virtual std::unique_ptr<Group> party() override;

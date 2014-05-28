@@ -3,13 +3,13 @@
 
 #include "base.h"
 
-enum {
-	SIZE_GEN_3_SAV = 0x20000,
-	SIZE_GEN_3_ROM = 0x1000000,
-};
-
 class Generation3 : public Game {
 public:
+	enum {
+		SIZE_SAV = 0x20000,
+		SIZE_ROM = 0x1000000,
+	};
+
 	struct Section {
 		enum ID {
 			TRAINER,

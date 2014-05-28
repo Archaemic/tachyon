@@ -18,8 +18,8 @@ int main(int, char**) {
 
 	int fd = open("test.sav", O_RDONLY);
 	int romfd = open("game.bin", O_RDONLY);
-	uint8_t* memory = static_cast<uint8_t*>(mmap(0, SIZE_GEN_3_SAV, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0));
-	uint8_t* rom = static_cast<uint8_t*>(mmap(0, SIZE_GEN_3_ROM, PROT_READ, MAP_FILE | MAP_PRIVATE, romfd, 0));
+	uint8_t* memory = static_cast<uint8_t*>(mmap(0, Generation3::SIZE_SAV, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0));
+	uint8_t* rom = static_cast<uint8_t*>(mmap(0, Generation3::SIZE_ROM, PROT_READ, MAP_FILE | MAP_PRIVATE, romfd, 0));
 	std::unique_ptr<Game> game(Game::load(memory, rom));
 
 	std::cout.imbue(std::locale(""));
@@ -134,8 +134,8 @@ int main(int, char**) {
 
 	table.print();
 
-	munmap(memory, SIZE_GEN_2_SAV);
-	munmap(memory, SIZE_GEN_2_ROM);
+	munmap(memory, Generation3::SIZE_SAV);
+	munmap(rom, Generation3::SIZE_ROM);
 	close(fd);
 	close(romfd);
 }
