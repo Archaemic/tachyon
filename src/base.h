@@ -39,6 +39,7 @@ const char* MoveReadable(unsigned move);
 class PokemonSpecies {
 public:
 	enum Id {
+		EGG = -1,
 		MISSINGNO = 0,
 		BULBASAUR,
 		IVYSAUR,
@@ -765,7 +766,9 @@ public:
 		LEVEL_FAST,
 		LEVEL_MEDIUM_FAST,
 		LEVEL_MEDIUM_SLOW,
-		LEVEL_SLOW
+		LEVEL_SLOW,
+		LEVEL_ERRATIC,
+		LEVEL_FLUCTUATING
 	};
 
 	virtual ~PokemonSpecies() {}

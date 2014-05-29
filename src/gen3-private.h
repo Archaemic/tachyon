@@ -109,6 +109,39 @@ struct G3PartyPokemonData : public G3BasePokemonData {
 	uint16_t specialDefense;
 } __attribute__((packed));
 
+struct G3PokemonBaseStats {
+	uint8_t hp;
+	uint8_t attack;
+	uint8_t defense;
+	uint8_t speed;
+	uint8_t specialAttack;
+	uint8_t specialDefense;
+	uint8_t type1;
+	uint8_t type2;
+	uint8_t catchRate;
+	uint8_t baseExpYield;
+	uint16_t evYieldHp : 2;
+	uint16_t evYieldAttack : 2;
+	uint16_t evYieldDefense : 2;
+	uint16_t evYieldSpeed : 2;
+	uint16_t evYieldSpecialAttack : 2;
+	uint16_t evYieldSpecialDefense : 2;
+	uint16_t item1;
+	uint16_t item2;
+	uint8_t gender;
+	uint8_t eggCycles;
+	uint8_t baseFriendship;
+	uint8_t growthRate;
+	uint8_t eggGroup1;
+	uint8_t eggGroup2;
+	uint8_t ability1;
+	uint8_t ability2;
+	uint8_t safariZoneRate;
+	uint8_t color : 7;
+	uint8_t flip : 1;
+	uint16_t padding;
+} __attribute__((packed));
+
 class G3PartyPokemon : public Pokemon {
 public:
 	G3PartyPokemon(Generation3* gen, uint8_t* data);
@@ -156,6 +189,26 @@ private:
 	Generation3* m_gen;
 	std::unique_ptr<G3PartyPokemonData> m_data;
 	bool m_dirty;
+};
+
+class G3PokemonSpecies : public PokemonSpecies {
+public:
+	G3PokemonSpecies(const G3PokemonBaseStats* data, PokemonSpecies::Id id);
+
+	virtual PokemonSpecies::Id id() const override;
+	virtual unsigned baseHp() const override;
+	virtual unsigned baseAttack() const override;
+	virtual unsigned baseDefense() const override;
+	virtual unsigned baseSpeed() const override;
+	virtual unsigned baseSpecialAttack() const override;
+	virtual unsigned baseSpecialDefense() const override;
+	virtual Type type1() const override;
+	virtual Type type2() const override;
+	virtual PokemonSpecies::GrowthRate growthRate() const override;
+
+private:
+	const G3PokemonBaseStats* m_data;
+	PokemonSpecies::Id m_id;
 };
 
 class G3Party : public Group {

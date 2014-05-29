@@ -1192,14 +1192,14 @@ void Game::putSpecies(PokemonSpecies::Id id, PokemonSpecies* species) {
 unsigned Pokemon::level() const {
 	switch (species()->growthRate()) {
 	case PokemonSpecies::LEVEL_FAST:
-		for (unsigned i = 2; i <= 100; ++i) {
+		for (unsigned i = 0; i <= 100; ++i) {
 			unsigned xpNeeded = 4 * i * i * i / 5;
 			if (xpNeeded > xp()) {
 				return i - 1;
 			}
 		}
 	case PokemonSpecies::LEVEL_MEDIUM_FAST:
-		for (unsigned i = 2; i <= 100; ++i) {
+		for (unsigned i = 0; i <= 100; ++i) {
 			unsigned xpNeeded = i * i * i;
 			if (xpNeeded > xp()) {
 				return i - 1;
@@ -1214,8 +1214,52 @@ unsigned Pokemon::level() const {
 			}
 		}
 	case PokemonSpecies::LEVEL_SLOW:
-		for (unsigned i = 2; i <= 100; ++i) {
+		for (unsigned i = 0; i <= 100; ++i) {
 			unsigned xpNeeded = 5 * i * i * i / 4;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
+	case PokemonSpecies::LEVEL_ERRATIC:
+		for (unsigned i = 0; i <= 50; ++i) {
+			unsigned xpNeeded = (i * i * i * (100 - i)) / 50;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
+		for (unsigned i = 51; i <= 68; ++i) {
+			unsigned xpNeeded = (i * i * i * (150 - i)) / 100;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
+		for (unsigned i = 69; i <= 98; ++i) {
+			unsigned xpNeeded = (i * i * i * (1911 - 10 * i) / 3) / 500;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
+		for (unsigned i = 99; i <= 100; ++i) {
+			unsigned xpNeeded = (i * i * i * (160 - i)) / 100;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
+	case PokemonSpecies::LEVEL_FLUCTUATING:
+		for (unsigned i = 0; i <= 15; ++i) {
+			unsigned xpNeeded = i * i * i * ((i + 1) / 3 + 24) / 50;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
+		for (unsigned i = 16; i <= 36; ++i) {
+			unsigned xpNeeded = (i * i * i * (i + 14)) / 50;
+			if (xpNeeded > xp()) {
+				return i - 1;
+			}
+		}
+		for (unsigned i = 37; i <= 100; ++i) {
+			unsigned xpNeeded = i * i * i * (i / 2 + 32) / 50;
 			if (xpNeeded > xp()) {
 				return i - 1;
 			}
