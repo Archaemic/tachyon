@@ -55,6 +55,7 @@ public:
 	virtual PokemonSpecies* species() const override;
 
 	virtual uint16_t otId() const override;
+	virtual uint16_t otSecretId() const override;
 	virtual unsigned xp() const override;
 	virtual unsigned currentHp() const override;
 	virtual Type type1() const override;
@@ -168,6 +169,11 @@ unsigned GBPokemon<T>::stat(unsigned iv, unsigned base, unsigned ev) const {
 template <typename T>
 uint16_t GBPokemon<T>::otId() const {
 	return R16(m_data->otId);
+}
+
+template <typename T>
+uint16_t GBPokemon<T>::otSecretId() const {
+	return 0;
 }
 
 template <typename T>

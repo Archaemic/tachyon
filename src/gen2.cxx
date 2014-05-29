@@ -122,7 +122,6 @@ Type G2PokemonSpecies::type2() const {
 	return typeMapping[m_data->type2];
 }
 
-
 G2Party::G2Party(Generation2* gen)
 	: m_gen(gen)
 	, m_start(&gen->ram()[G20E_PARTY_POKEMON])

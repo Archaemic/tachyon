@@ -1,4 +1,4 @@
-#include "gen3.h"
+#include "gen3-private.h"
 
 #include <sstream>
 
@@ -87,7 +87,7 @@ std::string Generation3::gameTextToUTF8(const uint8_t* gameText, size_t len) {
 }
 
 std::unique_ptr<Group> Generation3::party() {
-	return std::unique_ptr<Group>(nullptr);
+	return std::unique_ptr<Group>(new G3Party(this));
 }
 
 std::unique_ptr<Group> Generation3::box(unsigned box) {
@@ -119,4 +119,305 @@ Generation3::Section* Generation3::section(Section::ID sectionID) {
 		return nullptr;
 	}
 	return m_sections[sectionID];
+}
+
+G3PokemonGrowth* G3BasePokemonData::growth() {
+	switch (personality % 24) {
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+		return &data.f0.g;
+	case 6:
+	case 7:
+	case 12:
+	case 13:
+	case 18:
+	case 19:
+		return &data.f1.g;
+	case 8:
+	case 10:
+	case 14:
+	case 16:
+	case 20:
+	case 22:
+		return &data.f2.g;
+	case 9:
+	case 11:
+	case 15:
+	case 17:
+	case 21:
+	case 23:
+		return &data.f3.g;
+	default:
+		return nullptr;
+	}
+}
+
+G3PokemonAttacks* G3BasePokemonData::attacks() {
+	switch (personality % 24) {
+	case 6:
+	case 7:
+	case 8:
+	case 9:
+	case 10:
+	case 11:
+		return &data.f0.a;
+	case 0:
+	case 1:
+	case 14:
+	case 15:
+	case 20:
+	case 21:
+		return &data.f1.a;
+	case 2:
+	case 4:
+	case 12:
+	case 17:
+	case 18:
+	case 23:
+		return &data.f2.a;
+	case 3:
+	case 5:
+	case 13:
+	case 16:
+	case 19:
+	case 22:
+		return &data.f3.a;
+	default:
+		return nullptr;
+	}
+}
+
+G3PokemonEVs* G3BasePokemonData::evs() {
+	switch (personality % 24) {
+	case 12:
+	case 13:
+	case 14:
+	case 15:
+	case 16:
+	case 17:
+		return &data.f0.e;
+	case 2:
+	case 3:
+	case 8:
+	case 9:
+	case 22:
+	case 23:
+		return &data.f1.e;
+	case 0:
+	case 5:
+	case 6:
+	case 11:
+	case 19:
+	case 21:
+		return &data.f2.e;
+	case 1:
+	case 4:
+	case 7:
+	case 10:
+	case 18:
+	case 20:
+		return &data.f3.e;
+	default:
+		return nullptr;
+	}
+}
+
+G3PokemonMisc* G3BasePokemonData::misc() {
+	switch (personality % 24) {
+	case 18:
+	case 19:
+	case 20:
+	case 21:
+	case 22:
+	case 23:
+		return &data.f0.m;
+	case 4:
+	case 5:
+	case 10:
+	case 11:
+	case 16:
+	case 17:
+		return &data.f1.m;
+	case 1:
+	case 3:
+	case 7:
+	case 9:
+	case 13:
+	case 15:
+		return &data.f2.m;
+	case 0:
+	case 2:
+	case 6:
+	case 8:
+	case 12:
+	case 14:
+		return &data.f3.m;
+	default:
+		return nullptr;
+	}
+}
+
+G3PartyPokemon::G3PartyPokemon(Generation3* gen, uint8_t* data)
+	: m_gen(gen)
+	, m_data(new G3PartyPokemonData)
+	, m_dirty(false)
+{
+	G3PartyPokemonData* base = reinterpret_cast<G3PartyPokemonData*>(data);
+	memcpy(m_data.get(), base, sizeof(*m_data));
+	decrypt();
+	setName(Generation3::gameTextToUTF8(m_data->name, 10));
+	setOtName(Generation3::gameTextToUTF8(m_data->otName, 7));
+}
+
+PokemonSpecies* G3PartyPokemon::species() const {
+	return nullptr;
+}
+
+uint16_t G3PartyPokemon::otId() const {
+	return m_data->otId & 0xFFFF;
+}
+
+uint16_t G3PartyPokemon::otSecretId() const {
+	return m_data->otId >> 16;
+}
+
+unsigned G3PartyPokemon::xp() const {
+	return m_data->growth()->xp;
+}
+
+unsigned G3PartyPokemon::currentHp() const {
+	return m_data->currentHp;
+}
+
+Type G3PartyPokemon::type1() const {
+	return NORMAL;
+}
+
+Type G3PartyPokemon::type2() const {
+	return NORMAL;
+}
+
+unsigned G3PartyPokemon::level() const {
+	return m_data->level;
+}
+
+unsigned G3PartyPokemon::maxHp() const {
+	return m_data->maxHp;
+}
+
+unsigned G3PartyPokemon::attack() const {
+	return m_data->attack;
+}
+
+unsigned G3PartyPokemon::defense() const {
+	return m_data->defense;
+}
+
+unsigned G3PartyPokemon::speed() const {
+	return m_data->speed;
+}
+
+unsigned G3PartyPokemon::specialAttack() const {
+	return m_data->specialAttack;
+}
+
+unsigned G3PartyPokemon::specialDefense() const {
+	return m_data->specialDefense;
+}
+
+unsigned G3PartyPokemon::ivHp() const {
+	return m_data->misc()->ivHp;
+}
+
+unsigned G3PartyPokemon::ivAttack() const {
+	return m_data->misc()->ivAttack;
+}
+
+unsigned G3PartyPokemon::ivDefense() const {
+	return m_data->misc()->ivDefense;
+}
+
+unsigned G3PartyPokemon::ivSpeed() const {
+	return m_data->misc()->ivSpeed;
+}
+
+unsigned G3PartyPokemon::ivSpecialAttack() const {
+	return m_data->misc()->ivSpecialAttack;
+}
+
+unsigned G3PartyPokemon::ivSpecialDefense() const {
+	return m_data->misc()->ivSpecialDefense;
+}
+
+unsigned G3PartyPokemon::evHp() const {
+	return m_data->evs()->hp;
+}
+
+unsigned G3PartyPokemon::evAttack() const {
+	return m_data->evs()->attack;
+}
+
+unsigned G3PartyPokemon::evDefense() const {
+	return m_data->evs()->defense;
+}
+
+unsigned G3PartyPokemon::evSpeed() const {
+	return m_data->evs()->speed;
+}
+
+unsigned G3PartyPokemon::evSpecialAttack() const {
+	return m_data->evs()->specialAttack;
+}
+
+unsigned G3PartyPokemon::evSpecialDefense() const {
+	return m_data->evs()->specialDefense;
+}
+
+unsigned G3PartyPokemon::move1() const {
+	return m_data->attacks()->moves[0];
+}
+
+unsigned G3PartyPokemon::move2() const {
+	return m_data->attacks()->moves[1];
+}
+
+unsigned G3PartyPokemon::move3() const {
+	return m_data->attacks()->moves[2];
+}
+
+unsigned G3PartyPokemon::move4() const {
+	return m_data->attacks()->moves[3];
+}
+
+void G3PartyPokemon::decrypt() {
+	if (m_dirty) {
+		return;
+	}
+	m_dirty = true;
+	uint32_t key = m_data->otId ^ m_data->personality;
+	for (int i = 0; i < 3; ++i) {
+		m_data->data.f0.raw[i] ^= key;
+		m_data->data.f1.raw[i] ^= key;
+		m_data->data.f2.raw[i] ^= key;
+		m_data->data.f3.raw[i] ^= key;
+	}
+}
+
+G3Party::G3Party(Generation3* gen)
+	: m_gen(gen)
+	, m_start(&gen->section(Generation3::Section::BAG)->data[G30E_PARTY_POKEMON])
+{
+}
+
+std::unique_ptr<Pokemon> G3Party::at(unsigned i) {
+	uint8_t* pstart = &m_start[4 + sizeof(G3PartyPokemonData) * i];
+	return std::unique_ptr<Pokemon>(new G3PartyPokemon(m_gen, pstart));
+}
+
+unsigned G3Party::length() const {
+	return m_start[0];
 }
