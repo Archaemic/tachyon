@@ -3,6 +3,8 @@
 
 #include "base.h"
 
+struct G3BasePokemonData;
+
 class Generation3 : public Game {
 public:
 	enum {
@@ -58,6 +60,7 @@ private:
 	const static NameMapping s_names[];
 
 	Section* m_sections[Section::MAX_SECTIONS];
+	std::unique_ptr<G3BasePokemonData[]> m_boxes;
 	uint32_t m_version;
 
 	static Version version(const struct NameMapping* names, uint32_t name);

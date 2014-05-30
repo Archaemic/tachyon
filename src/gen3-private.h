@@ -142,20 +142,19 @@ struct G3PokemonBaseStats {
 	uint16_t padding;
 } __attribute__((packed));
 
-class G3PartyPokemon : public Pokemon {
+class G3BasePokemon : public Pokemon {
 public:
-	G3PartyPokemon(Generation3* gen, uint8_t* data);
+	G3BasePokemon(Generation3* gen, G3BasePokemonData* data);
 
 	virtual PokemonSpecies* species() const override;
 
 	virtual uint16_t otId() const override;
 	virtual uint16_t otSecretId() const override;
 	virtual unsigned xp() const override;
-	virtual unsigned currentHp() const override;
 	virtual Type type1() const override;
 	virtual Type type2() const override;
 
-	virtual unsigned level() const override;
+	virtual unsigned currentHp() const override;
 	virtual unsigned maxHp() const override;
 	virtual unsigned attack() const override;
 	virtual unsigned defense() const override;
@@ -187,8 +186,25 @@ public:
 
 private:
 	Generation3* m_gen;
-	std::unique_ptr<G3PartyPokemonData> m_data;
+	std::unique_ptr<G3BasePokemonData> m_data;
 	bool m_dirty;
+};
+
+class G3PartyPokemon : public G3BasePokemon {
+public:
+	G3PartyPokemon(Generation3* gen, uint8_t* data);
+
+	virtual unsigned level() const override;
+	virtual unsigned currentHp() const override;
+	virtual unsigned maxHp() const override;
+	virtual unsigned attack() const override;
+	virtual unsigned defense() const override;
+	virtual unsigned speed() const override;
+	virtual unsigned specialAttack() const override;
+	virtual unsigned specialDefense() const override;
+
+private:
+	G3PartyPokemonData* m_data;
 };
 
 class G3PokemonSpecies : public GenericPokemonSpecies<G3PokemonBaseStats> {
@@ -212,6 +228,18 @@ public:
 private:
 	Generation3* m_gen;
 	uint8_t* m_start;
+};
+
+class G3Box : public Group {
+public:
+	G3Box(Generation3* gen, G3BasePokemonData* start);
+
+	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
+	virtual unsigned length() const override;
+
+private:
+	Generation3* m_gen;
+	G3BasePokemonData* m_start;
 };
 
 #endif

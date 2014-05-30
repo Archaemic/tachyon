@@ -127,8 +127,10 @@ int main(int, char**) {
 	for (auto iter = groups.begin(); iter < groups.end(); ++iter) {
 		for (unsigned i = 0; i < (*iter)->length(); ++i) {
 			std::unique_ptr<Pokemon> pokemon = (*iter)->at(i);
-			table.addRow(pokemon.get());
-			pokemonRefs.push_back(std::move(pokemon));
+			if (pokemon) {
+				table.addRow(pokemon.get());
+				pokemonRefs.push_back(std::move(pokemon));
+			}
 		}
 	}
 
