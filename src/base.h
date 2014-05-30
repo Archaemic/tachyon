@@ -918,11 +918,4 @@ private:
 	std::unordered_map<int, std::unique_ptr<PokemonSpecies>> m_species;
 };
 
-class TMSet {
-public:
-	virtual ~TMSet() {}
-	virtual bool containsTM(int tm) const = 0;
-	virtual bool containsHM(int hm) const = 0;
-};
-
 #endif
