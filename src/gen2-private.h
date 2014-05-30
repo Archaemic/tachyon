@@ -78,23 +78,12 @@ struct G2PokemonBaseStats {
 typedef GBPokemon<G2BasePokemonData> G2BasePokemon;
 typedef GBPartyPokemon<G2PartyPokemonData> G2PartyPokemon;
 
-class G2PokemonSpecies : public PokemonSpecies {
+class G2PokemonSpecies : public GenericPokemonSpecies<G2PokemonBaseStats> {
 public:
 	G2PokemonSpecies(const G2PokemonBaseStats* data);
 
-	virtual PokemonSpecies::Id id() const override;
-	virtual unsigned baseHp() const override;
-	virtual unsigned baseAttack() const override;
-	virtual unsigned baseDefense() const override;
-	virtual unsigned baseSpeed() const override;
-	virtual unsigned baseSpecialAttack() const override;
-	virtual unsigned baseSpecialDefense() const override;
-	virtual Type type1() const override;
-	virtual Type type2() const override;
-	virtual PokemonSpecies::GrowthRate growthRate() const override;
-
 private:
-	const G2PokemonBaseStats* m_data;
+	virtual Type mapType(unsigned unmapped) const override;
 };
 
 class G2Party : public Group {

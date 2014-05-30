@@ -191,23 +191,14 @@ private:
 	bool m_dirty;
 };
 
-class G3PokemonSpecies : public PokemonSpecies {
+class G3PokemonSpecies : public GenericPokemonSpecies<G3PokemonBaseStats> {
 public:
 	G3PokemonSpecies(const G3PokemonBaseStats* data, PokemonSpecies::Id id);
 
 	virtual PokemonSpecies::Id id() const override;
-	virtual unsigned baseHp() const override;
-	virtual unsigned baseAttack() const override;
-	virtual unsigned baseDefense() const override;
-	virtual unsigned baseSpeed() const override;
-	virtual unsigned baseSpecialAttack() const override;
-	virtual unsigned baseSpecialDefense() const override;
-	virtual Type type1() const override;
-	virtual Type type2() const override;
-	virtual PokemonSpecies::GrowthRate growthRate() const override;
 
 private:
-	const G3PokemonBaseStats* m_data;
+	virtual Type mapType(unsigned unmapped) const override;
 	PokemonSpecies::Id m_id;
 };
 

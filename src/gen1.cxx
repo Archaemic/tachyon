@@ -106,60 +106,23 @@ unsigned GBPartyPokemon<G1PartyPokemonData>::specialDefense() const {
 	return R16(m_data->special);
 }
 
+template <>
+unsigned GenericPokemonSpecies<G1PokemonBaseStats>::baseSpecialAttack() const {
+	return m_data->special;
+}
+
+template <>
+unsigned GenericPokemonSpecies<G1PokemonBaseStats>::baseSpecialDefense() const {
+	return m_data->special;
+}
+
 G1PokemonSpecies::G1PokemonSpecies(const G1PokemonBaseStats* data)
-	: m_data(data)
+	: GenericPokemonSpecies<G1PokemonBaseStats>(data)
 {
 }
 
-PokemonSpecies::Id G1PokemonSpecies::id() const {
-	return (PokemonSpecies::Id) m_data->species;
-}
-
-unsigned G1PokemonSpecies::baseHp() const {
-	return m_data->hp;
-}
-
-unsigned G1PokemonSpecies::baseAttack() const {
-	return m_data->attack;
-}
-
-unsigned G1PokemonSpecies::baseDefense() const {
-	return m_data->defense;
-}
-
-unsigned G1PokemonSpecies::baseSpeed() const {
-	return m_data->speed;
-}
-
-unsigned G1PokemonSpecies::baseSpecialAttack() const {
-	return m_data->special;
-}
-
-unsigned G1PokemonSpecies::baseSpecialDefense() const {
-	return m_data->special;
-}
-
-PokemonSpecies::GrowthRate G1PokemonSpecies::growthRate() const {
-	switch (m_data->growthRate) {
-	case 0:
-		return PokemonSpecies::LEVEL_MEDIUM_FAST;
-	case 3:
-		return PokemonSpecies::LEVEL_MEDIUM_SLOW;
-	case 4:
-		return PokemonSpecies::LEVEL_FAST;
-	case 5:
-		return PokemonSpecies::LEVEL_SLOW;
-	default:
-		return PokemonSpecies::LEVEL_MEDIUM_FAST;
-	}
-}
-
-Type G1PokemonSpecies::type1() const {
-	return typeMapping[m_data->type1];
-}
-
-Type G1PokemonSpecies::type2() const {
-	return typeMapping[m_data->type2];
+Type G1PokemonSpecies::mapType(unsigned unmapped) const {
+	return typeMapping[static_cast<uint8_t>(unmapped)];
 }
 
 G1Party::G1Party(Generation1* gen)

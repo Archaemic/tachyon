@@ -1361,8 +1361,13 @@ void G3PartyPokemon::decrypt() {
 	}
 }
 
+template <>
+PokemonSpecies::Id GenericPokemonSpecies<G3PokemonBaseStats>::id() const {
+	return PokemonSpecies::MISSINGNO;
+}
+
 G3PokemonSpecies::G3PokemonSpecies(const G3PokemonBaseStats* data, PokemonSpecies::Id id)
-	: m_data(data)
+	: GenericPokemonSpecies<G3PokemonBaseStats>(data)
 	, m_id(id)
 {
 }
@@ -1371,55 +1376,8 @@ PokemonSpecies::Id G3PokemonSpecies::id() const {
 	return m_id;
 }
 
-unsigned G3PokemonSpecies::baseHp() const {
-	return m_data->hp;
-}
-
-unsigned G3PokemonSpecies::baseAttack() const {
-	return m_data->attack;
-}
-
-unsigned G3PokemonSpecies::baseDefense() const {
-	return m_data->defense;
-}
-
-unsigned G3PokemonSpecies::baseSpeed() const {
-	return m_data->speed;
-}
-
-unsigned G3PokemonSpecies::baseSpecialAttack() const {
-	return m_data->specialAttack;
-}
-
-unsigned G3PokemonSpecies::baseSpecialDefense() const {
-	return m_data->specialDefense;
-}
-
-PokemonSpecies::GrowthRate G3PokemonSpecies::growthRate() const {
-	switch (m_data->growthRate) {
-	case 0:
-		return PokemonSpecies::LEVEL_MEDIUM_FAST;
-	case 1:
-		return PokemonSpecies::LEVEL_ERRATIC;
-	case 2:
-		return PokemonSpecies::LEVEL_FLUCTUATING;
-	case 3:
-		return PokemonSpecies::LEVEL_MEDIUM_SLOW;
-	case 4:
-		return PokemonSpecies::LEVEL_FAST;
-	case 5:
-		return PokemonSpecies::LEVEL_SLOW;
-	default:
-		return PokemonSpecies::LEVEL_MEDIUM_FAST;
-	}
-}
-
-Type G3PokemonSpecies::type1() const {
-	return typeMapping[m_data->type1];
-}
-
-Type G3PokemonSpecies::type2() const {
-	return typeMapping[m_data->type2];
+Type G3PokemonSpecies::mapType(unsigned unmapped) const {
+	return typeMapping[static_cast<uint8_t>(unmapped)];
 }
 
 G3Party::G3Party(Generation3* gen)
