@@ -56,6 +56,7 @@ public:
 
 	virtual uint16_t otId() const override;
 	virtual uint16_t otSecretId() const override;
+	virtual bool shiny() const override;
 	virtual unsigned xp() const override;
 	virtual unsigned currentHp() const override;
 	virtual Type type1() const override;
@@ -174,6 +175,27 @@ uint16_t GBPokemon<T>::otId() const {
 template <typename T>
 uint16_t GBPokemon<T>::otSecretId() const {
 	return 0;
+}
+
+template <typename T>
+bool GBPokemon<T>::shiny() const {
+	if (m_data->ivDefense != 10) {
+		return false;
+	}
+	if (m_data->ivSpeed != 10) {
+		return false;
+	}
+	if (m_data->ivSpecial != 10) {
+		return false;
+	}
+	return m_data->ivAttack == 2 ||
+		m_data->ivAttack == 3 ||
+		m_data->ivAttack == 6 ||
+		m_data->ivAttack == 7 ||
+		m_data->ivAttack == 10 ||
+		m_data->ivAttack == 11 ||
+		m_data->ivAttack == 14 ||
+		m_data->ivAttack == 15;
 }
 
 template <typename T>

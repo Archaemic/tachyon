@@ -34,6 +34,9 @@ int main(int, char**) {
 	table.addColumn(u8"Species", [] (Pokemon* p) {
 		std::stringstream buffer;
 		buffer << p->species()->readable() << " (" << p->species()->id() << ")";
+		if (p->shiny()) {
+			buffer << u8"*";
+		}
 		return buffer.str();
 	}, 16);
 

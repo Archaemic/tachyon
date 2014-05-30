@@ -150,6 +150,7 @@ public:
 
 	virtual uint16_t otId() const override;
 	virtual uint16_t otSecretId() const override;
+	virtual bool shiny() const override;
 	virtual unsigned xp() const override;
 	virtual Type type1() const override;
 	virtual Type type2() const override;

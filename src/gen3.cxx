@@ -1256,6 +1256,10 @@ uint16_t G3BasePokemon::otSecretId() const {
 	return m_data->otId >> 16;
 }
 
+bool G3BasePokemon::shiny() const {
+	return (otId() ^ otSecretId() ^ (m_data->personality >> 16) ^ (m_data->personality & 0xFFFF)) < 8;
+}
+
 unsigned G3BasePokemon::xp() const {
 	return m_data->growth()->xp;
 }

@@ -797,6 +797,7 @@ public:
 	const std::string& otName() const;
 	virtual uint16_t otId() const = 0;
 	virtual uint16_t otSecretId() const = 0;
+	virtual bool shiny() const = 0;
 	virtual unsigned xp() const = 0;
 	virtual unsigned currentHp() const = 0;
 	virtual Type type1() const = 0;
