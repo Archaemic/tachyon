@@ -1198,6 +1198,7 @@ unsigned Pokemon::level() const {
 				return i - 1;
 			}
 		}
+		break;
 	case PokemonSpecies::LEVEL_MEDIUM_FAST:
 		for (unsigned i = 0; i <= 100; ++i) {
 			unsigned xpNeeded = i * i * i;
@@ -1205,6 +1206,7 @@ unsigned Pokemon::level() const {
 				return i - 1;
 			}
 		}
+		break;
 	case PokemonSpecies::LEVEL_MEDIUM_SLOW:
 		// Complex roots make programmers sad
 		for (unsigned i = 2; i <= 100; ++i) {
@@ -1213,6 +1215,7 @@ unsigned Pokemon::level() const {
 				return i - 1;
 			}
 		}
+		break;
 	case PokemonSpecies::LEVEL_SLOW:
 		for (unsigned i = 0; i <= 100; ++i) {
 			unsigned xpNeeded = 5 * i * i * i / 4;
@@ -1220,6 +1223,7 @@ unsigned Pokemon::level() const {
 				return i - 1;
 			}
 		}
+		break;
 	case PokemonSpecies::LEVEL_ERRATIC:
 		for (unsigned i = 0; i <= 50; ++i) {
 			unsigned xpNeeded = (i * i * i * (100 - i)) / 50;
@@ -1245,6 +1249,7 @@ unsigned Pokemon::level() const {
 				return i - 1;
 			}
 		}
+		break;
 	case PokemonSpecies::LEVEL_FLUCTUATING:
 		for (unsigned i = 0; i <= 15; ++i) {
 			unsigned xpNeeded = i * i * i * ((i + 1) / 3 + 24) / 50;
@@ -1264,6 +1269,7 @@ unsigned Pokemon::level() const {
 				return i - 1;
 			}
 		}
+		break;
 	}
 	return 100;
 }
