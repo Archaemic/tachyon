@@ -132,7 +132,7 @@ PokemonSpecies* GBPokemon<T>::species() const {
 template <typename T>
 unsigned GBPokemon<T>::maxHp() const {
 	PokemonSpecies* sp = species();
-	return (ivHp() + sp->baseHp() + int(sqrt(evHp())) / 8 + 50) * level() / 50 + 10;
+	return ((sp->baseHp() + ivHp()) * 2 + int(ceil(sqrt(evHp()))) / 4 + 100) * level() / 100 + 10;
 }
 
 template <typename T>
@@ -167,7 +167,7 @@ unsigned GBPokemon<T>::specialDefense() const {
 
 template <typename T>
 unsigned GBPokemon<T>::stat(unsigned iv, unsigned base, unsigned ev) const {
-	return (iv + base + int(sqrt(ev)) / 8) * level() / 50 + 5;
+	return ((base +  iv) * 2 + int(ceil(sqrt(ev))) / 4) * level() / 100 + 5;
 }
 
 template <typename T>
