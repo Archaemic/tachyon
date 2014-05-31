@@ -114,6 +114,10 @@ int main(int, char**) {
 		return buffer.str();
 	}, 4);
 
+	table.addColumn(u8"Nature", [] (Pokemon* p) {
+		return p->natureReadable();
+	}, 8);
+
 	table.addColumn(u8"Move 1", [] (Pokemon* p) {
 		return MoveReadable(p->move1());
 	}, 15);

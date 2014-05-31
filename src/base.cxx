@@ -1128,6 +1128,34 @@ const static char* moveNames[] = {
 	u8"Psycho Boost"
 };
 
+const static char* natureNames[] = {
+	u8"Hardy",
+	u8"Lonely",
+	u8"Brave",
+	u8"Adamant",
+	u8"Naughty",
+	u8"Bold",
+	u8"Docile",
+	u8"Relaxed",
+	u8"Impish",
+	u8"Lax",
+	u8"Timid",
+	u8"Hasty",
+	u8"Serious",
+	u8"Jolly",
+	u8"Naive",
+	u8"Modest",
+	u8"Mild",
+	u8"Quiet",
+	u8"Bashful",
+	u8"Rash",
+	u8"Calm",
+	u8"Gentle",
+	u8"Sassy",
+	u8"Careful",
+	u8"Quirky"
+};
+
 const char* TypeReadable(Type type) {
 	const char* readable = nullptr;
 	if (type <= DARK) {
@@ -1286,6 +1314,20 @@ Pokemon::Gender Pokemon::gender() const {
 		return FEMALE;
 	}
 	return MALE;
+}
+
+const char* Pokemon::natureReadable(Pokemon::Nature nature) {
+	if (nature == NO_NATURE) {
+		return u8"---";
+	}
+	if (nature >= NATURE_MAX) {
+		return u8"???";
+	}
+	return natureNames[nature];
+}
+
+const char* Pokemon::natureReadable() const {
+	return natureReadable(nature());
 }
 
 const std::string& Pokemon::name() const {

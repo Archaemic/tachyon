@@ -57,6 +57,7 @@ public:
 	virtual uint16_t otId() const override;
 	virtual uint16_t otSecretId() const override;
 	virtual bool shiny() const override;
+	virtual Nature nature() const override;
 	virtual unsigned xp() const override;
 	virtual unsigned currentHp() const override;
 	virtual Type type1() const override;
@@ -198,6 +199,11 @@ bool GBPokemon<T>::shiny() const {
 		m_data->ivAttack == 11 ||
 		m_data->ivAttack == 14 ||
 		m_data->ivAttack == 15;
+}
+
+template <typename T>
+Pokemon::Nature GBPokemon<T>::nature() const {
+	return NO_NATURE;
 }
 
 template <typename T>

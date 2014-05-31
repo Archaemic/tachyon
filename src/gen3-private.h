@@ -151,6 +151,7 @@ public:
 	virtual uint16_t otId() const override;
 	virtual uint16_t otSecretId() const override;
 	virtual bool shiny() const override;
+	virtual Nature nature() const override;
 	virtual unsigned xp() const override;
 	virtual Type type1() const override;
 	virtual Type type2() const override;
@@ -182,11 +183,10 @@ public:
 	virtual unsigned move3() const override;
 	virtual unsigned move4() const override;
 
-	unsigned stat(unsigned iv, unsigned base, unsigned ev) const;
-	void decrypt();
-
 private:
 	virtual uint8_t genderDeterminer() const override;
+	unsigned stat(unsigned iv, unsigned base, unsigned ev, int nature) const;
+	void decrypt();
 
 	Generation3* m_gen;
 	std::unique_ptr<G3BasePokemonData> m_data;

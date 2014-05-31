@@ -1260,6 +1260,10 @@ bool G3BasePokemon::shiny() const {
 	return (otId() ^ otSecretId() ^ (m_data->personality >> 16) ^ (m_data->personality & 0xFFFF)) < 8;
 }
 
+Pokemon::Nature G3BasePokemon::nature() const {
+	return static_cast<Nature>(m_data->personality % 25);
+}
+
 unsigned G3BasePokemon::xp() const {
 	return m_data->growth()->xp;
 }
@@ -1281,23 +1285,88 @@ unsigned G3BasePokemon::maxHp() const {
 }
 
 unsigned G3BasePokemon::attack() const {
-	return stat(ivAttack(), species()->baseAttack(), evAttack());
+	switch (nature()) {
+	case LONELY:
+	case BRAVE:
+	case ADAMANT:
+	case NAUGHTY:
+		return stat(ivAttack(), species()->baseAttack(), evAttack(), 1);
+	case BOLD:
+	case TIMID:
+	case MODEST:
+	case CALM:
+		return stat(ivAttack(), species()->baseAttack(), evAttack(), -1);
+	default:
+		return stat(ivAttack(), species()->baseAttack(), evAttack(), 0);
+	}
 }
 
 unsigned G3BasePokemon::defense() const {
-	return stat(ivDefense(), species()->baseDefense(), evDefense());
+	switch (nature()) {
+	case BOLD:
+	case RELAXED:
+	case IMPISH:
+	case LAX:
+		return stat(ivDefense(), species()->baseDefense(), evDefense(), 1);
+	case LONELY:
+	case HASTY:
+	case MILD:
+	case GENTLE:
+		return stat(ivDefense(), species()->baseDefense(), evDefense(), -1);
+	default:
+		return stat(ivDefense(), species()->baseDefense(), evDefense(), 0);
+	}
 }
 
 unsigned G3BasePokemon::speed() const {
-	return stat(ivSpeed(), species()->baseSpeed(), evSpeed());
+	switch (nature()) {
+	case TIMID:
+	case HASTY:
+	case JOLLY:
+	case NAIVE:
+		return stat(ivSpeed(), species()->baseSpeed(), evSpeed(), 1);
+	case BRAVE:
+	case RELAXED:
+	case QUIET:
+	case SASSY:
+		return stat(ivSpeed(), species()->baseSpeed(), evSpeed(), -1);
+	default:
+		return stat(ivSpeed(), species()->baseSpeed(), evSpeed(), 0);
+	}
 }
 
 unsigned G3BasePokemon::specialAttack() const {
-	return stat(ivSpecialAttack(), species()->baseSpecialAttack(), evSpecialAttack());
+	switch (nature()) {
+	case MODEST:
+	case MILD:
+	case QUIET:
+	case RASH:
+		return stat(ivSpecialAttack(), species()->baseSpecialAttack(), evSpecialAttack(), 1);
+	case ADAMANT:
+	case IMPISH:
+	case JOLLY:
+	case CAREFUL:
+		return stat(ivSpecialAttack(), species()->baseSpecialAttack(), evSpecialAttack(), -1);
+	default:
+		return stat(ivSpecialAttack(), species()->baseSpecialAttack(), evSpecialAttack(), 0);
+	}
 }
 
 unsigned G3BasePokemon::specialDefense() const {
-	return stat(ivSpecialDefense(), species()->baseSpecialDefense(), evSpecialDefense());
+	switch (nature()) {
+	case CALM:
+	case GENTLE:
+	case SASSY:
+	case CAREFUL:
+		return stat(ivSpecialDefense(), species()->baseSpecialDefense(), evSpecialDefense(), 1);
+	case NAUGHTY:
+	case LAX:
+	case NAIVE:
+	case RASH:
+		return stat(ivSpecialDefense(), species()->baseSpecialDefense(), evSpecialDefense(), -1);
+	default:
+		return stat(ivSpecialDefense(), species()->baseSpecialDefense(), evSpecialDefense(), 0);
+	}
 }
 
 unsigned G3BasePokemon::ivHp() const {
@@ -1364,8 +1433,8 @@ unsigned G3BasePokemon::move4() const {
 	return m_data->attacks()->moves[3];
 }
 
-unsigned G3BasePokemon::stat(unsigned iv, unsigned base, unsigned ev) const {
-	return ((iv + base * 2 + ev / 4) * level()) / 100 + 5;
+unsigned G3BasePokemon::stat(unsigned iv, unsigned base, unsigned ev, int nature) const {
+	return (((iv + base * 2 + ev / 4) * level()) / 100 + 5) * (1.f + (nature / 10.f));
 }
 
 void G3BasePokemon::decrypt() {

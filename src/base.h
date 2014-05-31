@@ -797,6 +797,36 @@ public:
 		FEMALE
 	};
 
+	enum Nature {
+		NO_NATURE = -1,
+		HARDY = 0,
+		LONELY,
+		BRAVE,
+		ADAMANT,
+		NAUGHTY,
+		BOLD,
+		DOCILE,
+		RELAXED,
+		IMPISH,
+		LAX,
+		TIMID,
+		HASTY,
+		SERIOUS,
+		JOLLY,
+		NAIVE,
+		MODEST,
+		MILD,
+		QUIET,
+		BASHFUL,
+		RASH,
+		CALM,
+		GENTLE,
+		SASSY,
+		CAREFUL,
+		QUIRKY,
+		NATURE_MAX
+	};
+
 	virtual ~Pokemon() {}
 
 	const std::string& name() const;
@@ -806,6 +836,7 @@ public:
 	virtual uint16_t otSecretId() const = 0;
 	virtual Gender gender() const;
 	virtual bool shiny() const = 0;
+	virtual Nature nature() const = 0;
 	virtual unsigned xp() const = 0;
 	virtual unsigned currentHp() const = 0;
 	virtual Type type1() const = 0;
@@ -837,6 +868,9 @@ public:
 	virtual unsigned move2() const = 0;
 	virtual unsigned move3() const = 0;
 	virtual unsigned move4() const = 0;
+
+	static const char* natureReadable(Nature nature);
+	const char* natureReadable() const;
 
 protected:
 	void setName(const std::string& name);
