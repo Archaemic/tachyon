@@ -1382,6 +1382,10 @@ void G3BasePokemon::decrypt() {
 	}
 }
 
+uint8_t G3BasePokemon::genderDeterminer() const {
+	return m_data->personality & 0xFF;
+}
+
 G3PartyPokemon::G3PartyPokemon(Generation3* gen, uint8_t* data)
 	: G3BasePokemon(gen, reinterpret_cast<G3BasePokemonData*>(data))
 	, m_data(reinterpret_cast<G3PartyPokemonData*>(data))

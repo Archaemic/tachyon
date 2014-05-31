@@ -33,12 +33,23 @@ int main(int, char**) {
 
 	table.addColumn(u8"Species", [] (Pokemon* p) {
 		std::stringstream buffer;
-		buffer << p->species()->readable() << " (" << p->species()->id() << ")";
+		buffer << p->species()->readable() << " (" << p->species()->id() << ") ";
+		switch (p->gender()) {
+		case Pokemon::MALE:
+			buffer << "M";
+			break;
+		case Pokemon::FEMALE:
+			buffer << "F";
+			break;
+		case Pokemon::GENDERLESS:
+			buffer << " ";
+			break;
+		}
 		if (p->shiny()) {
 			buffer << u8"*";
 		}
 		return buffer.str();
-	}, 16);
+	}, 19);
 
 	table.addColumn(u8"Lvl", [] (Pokemon* p) {
 		std::stringstream buffer;

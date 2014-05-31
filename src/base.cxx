@@ -1274,6 +1274,20 @@ unsigned Pokemon::level() const {
 	return 100;
 }
 
+Pokemon::Gender Pokemon::gender() const {
+	uint8_t ratio = species()->genderRatio();
+	if (ratio == 0xFF) {
+		return GENDERLESS;
+	}
+	if (ratio == 0xFE) {
+		return FEMALE;
+	}
+	if (genderDeterminer() < ratio) {
+		return FEMALE;
+	}
+	return MALE;
+}
+
 const std::string& Pokemon::name() const {
 	return m_name;
 }

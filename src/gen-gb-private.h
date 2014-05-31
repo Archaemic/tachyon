@@ -91,6 +91,8 @@ public:
 	unsigned stat(unsigned iv, unsigned base, unsigned ev) const;
 
 private:
+	virtual uint8_t genderDeterminer() const override;
+
 	GameBoyGame* m_gen;
 	T* m_data;
 };
@@ -300,6 +302,11 @@ unsigned GBPokemon<T>::move3() const {
 template <typename T>
 unsigned GBPokemon<T>::move4() const {
 	return m_data->moves.move4;
+}
+
+template <typename T>
+uint8_t GBPokemon<T>::genderDeterminer() const {
+	return m_data->ivAttack << 4;
 }
 
 template <typename T>

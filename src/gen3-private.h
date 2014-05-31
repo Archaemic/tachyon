@@ -128,7 +128,7 @@ struct G3PokemonBaseStats {
 	uint16_t evYieldSpecialDefense : 2;
 	uint16_t item1;
 	uint16_t item2;
-	uint8_t gender;
+	uint8_t genderRatio;
 	uint8_t eggCycles;
 	uint8_t baseFriendship;
 	uint8_t growthRate;
@@ -186,6 +186,8 @@ public:
 	void decrypt();
 
 private:
+	virtual uint8_t genderDeterminer() const override;
+
 	Generation3* m_gen;
 	std::unique_ptr<G3BasePokemonData> m_data;
 	bool m_dirty;

@@ -782,6 +782,7 @@ public:
 	virtual unsigned baseSpecialDefense() const = 0;
 	virtual Type type1() const = 0;
 	virtual Type type2() const = 0;
+	virtual uint8_t genderRatio() const = 0;
 	virtual PokemonSpecies::GrowthRate growthRate() const = 0;
 
 	const char* readable() const;
@@ -790,6 +791,12 @@ public:
 
 class Pokemon {
 public:
+	enum Gender {
+		GENDERLESS = 0,
+		MALE,
+		FEMALE
+	};
+
 	virtual ~Pokemon() {}
 
 	const std::string& name() const;
@@ -797,6 +804,7 @@ public:
 	const std::string& otName() const;
 	virtual uint16_t otId() const = 0;
 	virtual uint16_t otSecretId() const = 0;
+	virtual Gender gender() const;
 	virtual bool shiny() const = 0;
 	virtual unsigned xp() const = 0;
 	virtual unsigned currentHp() const = 0;
@@ -833,6 +841,7 @@ public:
 protected:
 	void setName(const std::string& name);
 	void setOtName(const std::string& otName);
+	virtual uint8_t genderDeterminer() const = 0;
 
 private:
 	std::string m_name;
@@ -933,6 +942,7 @@ public:
 	virtual unsigned baseSpecialDefense() const override;
 	virtual Type type1() const override;
 	virtual Type type2() const override;
+	virtual uint8_t genderRatio() const override;
 	virtual PokemonSpecies::GrowthRate growthRate() const override;
 
 protected:
@@ -1011,6 +1021,11 @@ Type GenericPokemonSpecies<T>::type1() const {
 template <typename T>
 Type GenericPokemonSpecies<T>::type2() const {
 	return mapType(m_data->type2);
+}
+
+template <typename T>
+uint8_t GenericPokemonSpecies<T>::genderRatio() const {
+	return m_data->genderRatio;
 }
 
 #endif
