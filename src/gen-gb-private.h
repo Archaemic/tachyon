@@ -51,6 +51,7 @@ template <typename T>
 class GBPokemon : public Pokemon {
 public:
 	GBPokemon(GameBoyGame* gen, uint8_t* data, const uint8_t* name, const uint8_t* ot);
+	GBPokemon(GameBoyGame* gen);
 
 	virtual PokemonSpecies* species() const override;
 
@@ -89,13 +90,23 @@ public:
 	virtual unsigned move3() const override;
 	virtual unsigned move4() const override;
 
+	virtual void setOtId(uint16_t) override;
+	virtual void setOtSecretId(uint16_t) override;
+
+	virtual void setIvHp(unsigned) override;
+	virtual void setIvAttack(unsigned) override;
+	virtual void setIvDefense(unsigned) override;
+	virtual void setIvSpeed(unsigned) override;
+	virtual void setIvSpecialAttack(unsigned) override;
+	virtual void setIvSpecialDefense(unsigned) override;
+
 	unsigned stat(unsigned iv, unsigned base, unsigned ev) const;
 
 private:
 	virtual uint8_t genderDeterminer() const override;
 
 	GameBoyGame* m_gen;
-	T* m_data;
+	std::unique_ptr<T> m_data;
 };
 
 template<typename T>
@@ -118,10 +129,19 @@ private:
 template <typename T>
 GBPokemon<T>::GBPokemon(GameBoyGame* gen, uint8_t* data, const uint8_t* name, const uint8_t* ot)
 	: m_gen(gen)
-	, m_data(reinterpret_cast<T*>(data))
+	, m_data(new T)
 {
+	memcpy(m_data.get(), data, sizeof(T));
 	setName(GameBoyGame::gameTextToUTF8(name, 11));
 	setOtName(GameBoyGame::gameTextToUTF8(ot, 8));
+}
+
+template <typename T>
+GBPokemon<T>::GBPokemon(GameBoyGame* gen)
+	: m_gen(gen)
+	, m_data(new T)
+{
+	memset(m_data.get(), 0, sizeof(T));
 }
 
 template <typename T>
@@ -308,6 +328,53 @@ unsigned GBPokemon<T>::move3() const {
 template <typename T>
 unsigned GBPokemon<T>::move4() const {
 	return m_data->moves.move4;
+}
+
+template <typename T>
+void GBPokemon<T>::setOtId(uint16_t id) {
+	m_data->otId = id;
+}
+
+template <typename T>
+void GBPokemon<T>::setOtSecretId(uint16_t) {
+}
+
+template <typename T>
+void GBPokemon<T>::setIvHp(unsigned iv) {
+	iv >>= 1;
+	m_data->ivAttack &= ~1;
+	m_data->ivDefense &= ~1;
+	m_data->ivSpeed &= ~1;
+	m_data->ivSpecial &= ~1;
+	m_data->ivAttack |= (iv >> 3) & 1;
+	m_data->ivDefense |= (iv >> 2) & 1;
+	m_data->ivSpeed |= (iv >> 1) & 1;
+	m_data->ivSpecial |= iv & 1;
+}
+
+template <typename T>
+void GBPokemon<T>::setIvAttack(unsigned iv) {
+	m_data->ivAttack = iv >> 1;
+}
+
+template <typename T>
+void GBPokemon<T>::setIvDefense(unsigned iv) {
+	m_data->ivDefense = iv >> 1;
+}
+
+template <typename T>
+void GBPokemon<T>::setIvSpeed(unsigned iv) {
+	m_data->ivSpeed = iv >> 1;
+}
+
+template <typename T>
+void GBPokemon<T>::setIvSpecialAttack(unsigned iv) {
+	m_data->ivSpecial = iv >> 1;
+}
+
+template <typename T>
+void GBPokemon<T>::setIvSpecialDefense(unsigned iv) {
+	m_data->ivSpecial = iv >> 1;
 }
 
 template <typename T>

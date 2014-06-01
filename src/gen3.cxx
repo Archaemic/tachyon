@@ -1433,6 +1433,40 @@ unsigned G3BasePokemon::move4() const {
 	return m_data->attacks()->moves[3];
 }
 
+void G3BasePokemon::setOtId(uint16_t id) {
+	m_data->otId &= ~0xFFFF;
+	m_data->otId |= id;
+}
+
+void G3BasePokemon::setOtSecretId(uint16_t id) {
+	m_data->otId &= ~0xFFFF0000;
+	m_data->otId |= id << 16;
+}
+
+void G3BasePokemon::setIvHp(unsigned iv) {
+	m_data->misc()->ivHp = iv;
+}
+
+void G3BasePokemon::setIvAttack(unsigned iv) {
+	m_data->misc()->ivAttack = iv;
+}
+
+void G3BasePokemon::setIvDefense(unsigned iv) {
+	m_data->misc()->ivDefense = iv;
+}
+
+void G3BasePokemon::setIvSpeed(unsigned iv) {
+	m_data->misc()->ivSpeed = iv;
+}
+
+void G3BasePokemon::setIvSpecialAttack(unsigned iv) {
+	m_data->misc()->ivSpecialAttack = iv;
+}
+
+void G3BasePokemon::setIvSpecialDefense(unsigned iv) {
+	m_data->misc()->ivSpecialDefense = iv;
+}
+
 unsigned G3BasePokemon::stat(unsigned iv, unsigned base, unsigned ev, int nature) const {
 	return (((iv + base * 2 + ev / 4) * level()) / 100 + 5) * (1.f + (nature / 10.f));
 }

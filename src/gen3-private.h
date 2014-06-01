@@ -183,6 +183,16 @@ public:
 	virtual unsigned move3() const override;
 	virtual unsigned move4() const override;
 
+	virtual void setOtId(uint16_t) override;
+	virtual void setOtSecretId(uint16_t) override;
+
+	virtual void setIvHp(unsigned) override;
+	virtual void setIvAttack(unsigned) override;
+	virtual void setIvDefense(unsigned) override;
+	virtual void setIvSpeed(unsigned) override;
+	virtual void setIvSpecialAttack(unsigned) override;
+	virtual void setIvSpecialDefense(unsigned) override;
+
 private:
 	virtual uint8_t genderDeterminer() const override;
 	unsigned stat(unsigned iv, unsigned base, unsigned ev, int nature) const;

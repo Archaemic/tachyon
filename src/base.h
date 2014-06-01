@@ -872,9 +872,19 @@ public:
 	static const char* natureReadable(Nature nature);
 	const char* natureReadable() const;
 
-protected:
 	void setName(const std::string& name);
 	void setOtName(const std::string& otName);
+	virtual void setOtId(uint16_t) = 0;
+	virtual void setOtSecretId(uint16_t) = 0;
+
+	virtual void setIvHp(unsigned) = 0;
+	virtual void setIvAttack(unsigned) = 0;
+	virtual void setIvDefense(unsigned) = 0;
+	virtual void setIvSpeed(unsigned) = 0;
+	virtual void setIvSpecialAttack(unsigned) = 0;
+	virtual void setIvSpecialDefense(unsigned) = 0;
+
+protected:
 	virtual uint8_t genderDeterminer() const = 0;
 
 private:
