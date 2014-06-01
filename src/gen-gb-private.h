@@ -129,9 +129,8 @@ private:
 template <typename T>
 GBPokemon<T>::GBPokemon(GameBoyGame* gen, uint8_t* data, const uint8_t* name, const uint8_t* ot)
 	: m_gen(gen)
-	, m_data(new T)
+	, m_data(new T(*reinterpret_cast<T*>(data)))
 {
-	memcpy(m_data.get(), data, sizeof(T));
 	setName(GameBoyGame::gameTextToUTF8(name, 11));
 	setOtName(GameBoyGame::gameTextToUTF8(ot, 8));
 }

@@ -1231,10 +1231,9 @@ G3PokemonMisc* G3BasePokemonData::misc() {
 
 G3BasePokemon::G3BasePokemon(Generation3* gen, G3BasePokemonData* data)
 	: m_gen(gen)
-	, m_data(new G3BasePokemonData)
+	, m_data(new G3BasePokemonData(*data))
 	, m_dirty(false)
 {
-	memcpy(m_data.get(), data, sizeof(*m_data));
 	decrypt();
 	setName(Generation3::gameTextToUTF8(m_data->name, 10));
 	setOtName(Generation3::gameTextToUTF8(m_data->otName, 7));
