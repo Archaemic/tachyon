@@ -82,6 +82,9 @@ G2Party::G2Party(Generation2* gen)
 }
 
 std::unique_ptr<Pokemon> G2Party::at(unsigned i) {
+	if (i >= length()) {
+		return nullptr;
+	}
 	uint8_t* pstart = &m_start[2 + 6 + sizeof(G2PartyPokemonData) * i];
 	uint8_t* nstart = &m_start[2 + (sizeof(G2PartyPokemonData) + 12) * 6 + 11 * i];
 	uint8_t* tstart = &m_start[2 + (sizeof(G2PartyPokemonData) + 1) * 6 + 11 * i];
@@ -100,12 +103,17 @@ G2Box::G2Box(Generation2* gen, GameBoyGame::Box box)
 		m_start += G20E_CURRENT_BOX;
 	} else if (box < GameBoyGame::BOX_08) {
 		m_start += G20E_BOX_1 + (box - 1) * G2_BOX_SIZE;
-	} else {
+	} else if (box <= GameBoyGame::BOX_12) {
 		m_start += G20E_BOX_8 + (box - 8) * G2_BOX_SIZE;
+	} else {
+		m_start += G20E_CURRENT_BOX;
 	}
 }
 
 std::unique_ptr<Pokemon> G2Box::at(unsigned i) {
+	if (i >= length()) {
+		return nullptr;
+	}
 	uint8_t* pstart = &m_start[2 + 20 + sizeof(G2BasePokemonData) * i];
 	uint8_t* nstart = &m_start[2 + (sizeof(G2BasePokemonData) + 12) * 20 + 11 * i];
 	uint8_t* tstart = &m_start[2 + (sizeof(G2BasePokemonData) + 1) * 20 + 11 * i];

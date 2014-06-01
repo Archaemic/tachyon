@@ -1552,6 +1552,9 @@ G3Party::G3Party(Generation3* gen)
 }
 
 std::unique_ptr<Pokemon> G3Party::at(unsigned i) {
+	if (i >= length()) {
+		return nullptr;
+	}
 	uint8_t* pstart = &m_start[4 + sizeof(G3PartyPokemonData) * i];
 	return std::unique_ptr<Pokemon>(new G3PartyPokemon(m_gen, pstart));
 }
@@ -1567,6 +1570,9 @@ G3Box::G3Box(Generation3* gen, G3BasePokemonData* start)
 }
 
 std::unique_ptr<Pokemon> G3Box::at(unsigned i) {
+	if (i >= length()) {
+		return nullptr;
+	}
 	G3BasePokemonData* data = &m_start[i];
 	if (data->checksum == 0) {
 		return nullptr;
