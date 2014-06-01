@@ -137,52 +137,25 @@ Type G1PokemonSpecies::mapType(unsigned unmapped) const {
 }
 
 G1Party::G1Party(Generation1* gen)
-	: m_gen(gen)
-	, m_start(&gen->ram()[G10E_PARTY_POKEMON])
+	: GBGroup<G1PartyPokemon>(gen, &gen->ram()[G10E_PARTY_POKEMON])
 {
 }
 
-std::unique_ptr<Pokemon> G1Party::at(unsigned i) {
-	if (i >= length()) {
-		return nullptr;
-	}
-	uint8_t* pstart = &m_start[2 + 6 + sizeof(G1PartyPokemonData) * i];
-	uint8_t* nstart = &m_start[2 + (sizeof(G1PartyPokemonData) + 12) * 6 + 11 * i];
-	uint8_t* tstart = &m_start[2 + (sizeof(G1PartyPokemonData) + 1) * 6 + 11 * i];
-	return std::unique_ptr<Pokemon>(new G1PartyPokemon(m_gen, pstart, nstart, tstart));
-}
-
-unsigned G1Party::length() const {
-	return m_start[0];
+unsigned G1Party::capacity() const {
+	return 6;
 }
 
 G1Box::G1Box(Generation1* gen, GameBoyGame::Box box)
-	: m_gen(gen)
-	, m_start(gen->ram())
+	: GBGroup<G1BasePokemon>(gen, gen->ram() + (
+		(box == GameBoyGame::BOX_CURRENT) ? G10E_CURRENT_BOX :
+		(box < GameBoyGame::BOX_07) ? (G10E_BOX_1 + (box - 1) * G1_BOX_SIZE) :
+		(box <= GameBoyGame::BOX_12) ? (G10E_BOX_7 + (box - 7) * G1_BOX_SIZE) :
+		G10E_CURRENT_BOX))
 {
-	if (box == GameBoyGame::BOX_CURRENT) {
-		m_start += G10E_CURRENT_BOX;
-	} else if (box < GameBoyGame::BOX_07) {
-		m_start += G10E_BOX_1 + (box - 1) * G1_BOX_SIZE;
-	} else if (box <= GameBoyGame::BOX_12) {
-		m_start += G10E_BOX_7 + (box - 7) * G1_BOX_SIZE;
-	} else {
-		m_start += G10E_CURRENT_BOX;
-	}
 }
 
-std::unique_ptr<Pokemon> G1Box::at(unsigned i) {
-	if (i >= length()) {
-		return nullptr;
-	}
-	uint8_t* pstart = &m_start[2 + 20 + sizeof(G1BasePokemonData) * i];
-	uint8_t* nstart = &m_start[2 + (sizeof(G1BasePokemonData) + 12) * 20 + 11 * i];
-	uint8_t* tstart = &m_start[2 + (sizeof(G1BasePokemonData) + 1) * 20 + 11 * i];
-	return std::unique_ptr<Pokemon>(new G1BasePokemon(m_gen, pstart, nstart, tstart));
-}
-
-unsigned G1Box::length() const {
-	return m_start[0];
+unsigned G1Box::capacity() const {
+	return 20;
 }
 
 bool G1TMSet::containsTM(int tm) const {

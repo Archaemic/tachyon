@@ -1563,6 +1563,10 @@ unsigned G3Party::length() const {
 	return m_start[0];
 }
 
+unsigned G3Party::capacity() const {
+	return 6;
+}
+
 G3Box::G3Box(Generation3* gen, G3BasePokemonData* start)
 	: m_gen(gen)
 	, m_start(start)
@@ -1581,5 +1585,9 @@ std::unique_ptr<Pokemon> G3Box::at(unsigned i) {
 }
 
 unsigned G3Box::length() const {
+	return G3_POKEMON_PER_BOX;
+}
+
+unsigned G3Box::capacity() const {
 	return G3_POKEMON_PER_BOX;
 }

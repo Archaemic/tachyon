@@ -79,28 +79,18 @@ private:
 	virtual Type mapType(unsigned unmapped) const override;
 };
 
-class G1Party : public Group {
+class G1Party : public GBGroup<G1PartyPokemon> {
 public:
 	G1Party(Generation1* gen);
 
-	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
-	virtual unsigned length() const override;
-
-private:
-	Generation1* m_gen;
-	uint8_t* m_start;
+	virtual unsigned capacity() const override;
 };
 
-class G1Box : public Group {
+class G1Box : public GBGroup<G1BasePokemon> {
 public:
 	G1Box(Generation1* gen, GameBoyGame::Box box);
 
-	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
-	virtual unsigned length() const override;
-
-private:
-	Generation1* m_gen;
-	uint8_t* m_start;
+	virtual unsigned capacity() const override;
 };
 
 #endif

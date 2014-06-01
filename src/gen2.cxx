@@ -76,52 +76,25 @@ Type G2PokemonSpecies::mapType(unsigned unmapped) const {
 }
 
 G2Party::G2Party(Generation2* gen)
-	: m_gen(gen)
-	, m_start(&gen->ram()[G20E_PARTY_POKEMON])
+	: GBGroup<G2PartyPokemon>(gen, &gen->ram()[G20E_PARTY_POKEMON])
 {
 }
 
-std::unique_ptr<Pokemon> G2Party::at(unsigned i) {
-	if (i >= length()) {
-		return nullptr;
-	}
-	uint8_t* pstart = &m_start[2 + 6 + sizeof(G2PartyPokemonData) * i];
-	uint8_t* nstart = &m_start[2 + (sizeof(G2PartyPokemonData) + 12) * 6 + 11 * i];
-	uint8_t* tstart = &m_start[2 + (sizeof(G2PartyPokemonData) + 1) * 6 + 11 * i];
-	return std::unique_ptr<Pokemon>(new G2PartyPokemon(m_gen, pstart, nstart, tstart));
-}
-
-unsigned G2Party::length() const {
-	return m_start[0];
+unsigned G2Party::capacity() const {
+	return 6;
 }
 
 G2Box::G2Box(Generation2* gen, GameBoyGame::Box box)
-	: m_gen(gen)
-	, m_start(gen->ram())
+	: GBGroup<G2BasePokemon>(gen, gen->ram() + (
+		(box == GameBoyGame::BOX_CURRENT) ? G20E_CURRENT_BOX :
+		(box < GameBoyGame::BOX_08) ? (G20E_BOX_1 + (box - 1) * G2_BOX_SIZE) :
+		(box <= GameBoyGame::BOX_12) ? (G20E_BOX_8 + (box - 8) * G2_BOX_SIZE) :
+		G20E_CURRENT_BOX))
 {
-	if (box == GameBoyGame::BOX_CURRENT) {
-		m_start += G20E_CURRENT_BOX;
-	} else if (box < GameBoyGame::BOX_08) {
-		m_start += G20E_BOX_1 + (box - 1) * G2_BOX_SIZE;
-	} else if (box <= GameBoyGame::BOX_12) {
-		m_start += G20E_BOX_8 + (box - 8) * G2_BOX_SIZE;
-	} else {
-		m_start += G20E_CURRENT_BOX;
-	}
 }
 
-std::unique_ptr<Pokemon> G2Box::at(unsigned i) {
-	if (i >= length()) {
-		return nullptr;
-	}
-	uint8_t* pstart = &m_start[2 + 20 + sizeof(G2BasePokemonData) * i];
-	uint8_t* nstart = &m_start[2 + (sizeof(G2BasePokemonData) + 12) * 20 + 11 * i];
-	uint8_t* tstart = &m_start[2 + (sizeof(G2BasePokemonData) + 1) * 20 + 11 * i];
-	return std::unique_ptr<Pokemon>(new G2BasePokemon(m_gen, pstart, nstart, tstart));
-}
-
-unsigned G2Box::length() const {
-	return m_start[0];
+unsigned G2Box::capacity() const {
+	return 20;
 }
 
 bool G2TMSet::containsTM(int tm) const {

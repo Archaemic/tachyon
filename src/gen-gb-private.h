@@ -50,6 +50,8 @@ struct GBMoveSet {
 template <typename T>
 class GBPokemon : public Pokemon {
 public:
+	typedef T DataType;
+
 	GBPokemon(GameBoyGame* gen, uint8_t* data, const uint8_t* name, const uint8_t* ot);
 	GBPokemon(GameBoyGame* gen);
 
@@ -124,6 +126,19 @@ public:
 
 private:
 	T* m_data;
+};
+
+template<typename T>
+class GBGroup : public Group {
+public:
+	GBGroup(GameBoyGame* gen, uint8_t* start);
+
+	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
+	virtual unsigned length() const override;
+
+private:
+	GameBoyGame* m_gen;
+	uint8_t* m_start;
 };
 
 template <typename T>
@@ -421,6 +436,29 @@ unsigned GBPartyPokemon<T>::specialAttack() const {
 template <typename T>
 unsigned GBPartyPokemon<T>::specialDefense() const {
 	return R16(m_data->specialDefense);
+}
+
+template <typename T>
+GBGroup<T>::GBGroup(GameBoyGame* gen, uint8_t* start)
+	: m_gen(gen)
+	, m_start(start)
+{
+}
+
+template <typename T>
+std::unique_ptr<Pokemon> GBGroup<T>::at(unsigned i) {
+	if (i >= length()) {
+		return nullptr;
+	}
+	uint8_t* pstart = &m_start[2 + capacity() + sizeof(typename T::DataType) * i];
+	uint8_t* nstart = &m_start[2 + (sizeof(typename T::DataType) + 12) * capacity() + 11 * i];
+	uint8_t* tstart = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + 11 * i];
+	return std::unique_ptr<Pokemon>(new T(m_gen, pstart, nstart, tstart));
+}
+
+template <typename T>
+unsigned GBGroup<T>::length() const {
+	return m_start[0];
 }
 
 #endif
