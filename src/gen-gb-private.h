@@ -132,7 +132,7 @@ PokemonSpecies* GBPokemon<T>::species() const {
 template <typename T>
 unsigned GBPokemon<T>::maxHp() const {
 	PokemonSpecies* sp = species();
-	return ((sp->baseHp() + ivHp()) * 2 + int(ceil(sqrt(evHp()))) / 4 + 100) * level() / 100 + 10;
+	return (sp->baseHp() * 2 + ivHp() + int(ceil(sqrt(evHp()))) / 4 + 100) * level() / 100 + 10;
 }
 
 template <typename T>
@@ -167,7 +167,7 @@ unsigned GBPokemon<T>::specialDefense() const {
 
 template <typename T>
 unsigned GBPokemon<T>::stat(unsigned iv, unsigned base, unsigned ev) const {
-	return ((base +  iv) * 2 + int(ceil(sqrt(ev))) / 4) * level() / 100 + 5;
+	return (base * 2 + iv + int(ceil(sqrt(ev))) / 4) * level() / 100 + 5;
 }
 
 template <typename T>
@@ -229,35 +229,35 @@ Type GBPokemon<T>::type2() const {
 template <typename T>
 unsigned GBPokemon<T>::ivHp() const {
 	return
-		((m_data->ivAttack & 1) << 3) |
+		(((m_data->ivAttack & 1) << 3) |
 		((m_data->ivDefense & 1) << 2) |
 		((m_data->ivSpeed & 1) << 1) |
-		(m_data->ivSpecial & 1);
+		(m_data->ivSpecial & 1)) * 2;
 }
 
 template <typename T>
 unsigned GBPokemon<T>::ivAttack() const {
-	return m_data->ivAttack;
+	return m_data->ivAttack * 2;
 }
 
 template <typename T>
 unsigned GBPokemon<T>::ivDefense() const {
-	return m_data->ivDefense;
+	return m_data->ivDefense * 2;
 }
 
 template <typename T>
 unsigned GBPokemon<T>::ivSpeed() const {
-	return m_data->ivSpeed;
+	return m_data->ivSpeed * 2;
 }
 
 template <typename T>
 unsigned GBPokemon<T>::ivSpecialAttack() const {
-	return m_data->ivSpecial;
+	return m_data->ivSpecial * 2;
 }
 
 template <typename T>
 unsigned GBPokemon<T>::ivSpecialDefense() const {
-	return m_data->ivSpecial;
+	return m_data->ivSpecial * 2;
 }
 
 template <typename T>
