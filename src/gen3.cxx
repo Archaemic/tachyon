@@ -1579,6 +1579,19 @@ unsigned G3Party::capacity() const {
 	return 6;
 }
 
+void G3Party::remove(unsigned i) {
+	unsigned len = length();
+	if (i >= len) {
+		return;
+	}
+	--m_start[0];
+	uint8_t* pstart = &m_start[4 + sizeof(G3PartyPokemonData) * i];
+	uint8_t* pnext = &m_start[4 + sizeof(G3PartyPokemonData) * (i + 1)];
+	uint8_t* pend = &m_start[4 + sizeof(G3PartyPokemonData) * m_start[0]];
+	memmove(pstart, pnext, sizeof(G3PartyPokemonData) * (len - i - 1));
+	memset(pend, 0, sizeof(G3PartyPokemonData) * (capacity() - m_start[0]));
+}
+
 G3Box::G3Box(Generation3* gen, G3BasePokemonData* start)
 	: m_gen(gen)
 	, m_start(start)
@@ -1602,4 +1615,13 @@ unsigned G3Box::length() const {
 
 unsigned G3Box::capacity() const {
 	return G3_POKEMON_PER_BOX;
+}
+
+void G3Box::remove(unsigned i) {
+	unsigned len = length();
+	if (i >= len) {
+		return;
+	}
+	G3BasePokemonData* pstart = &m_start[i];
+	memset(pstart, 0, sizeof(G3BasePokemonData));
 }

@@ -238,6 +238,7 @@ public:
 	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
 	virtual unsigned length() const override;
 	virtual unsigned capacity() const override;
+	virtual void remove(unsigned i) override;
 
 private:
 	Generation3* m_gen;
@@ -251,6 +252,7 @@ public:
 	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
 	virtual unsigned length() const override;
 	virtual unsigned capacity() const override;
+	virtual void remove(unsigned i) override;
 
 private:
 	Generation3* m_gen;

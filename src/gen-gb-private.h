@@ -135,6 +135,7 @@ public:
 
 	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
 	virtual unsigned length() const override;
+	virtual void remove(unsigned i) override;
 
 protected:
 	void setStart(uint8_t* start);
@@ -462,6 +463,35 @@ std::unique_ptr<Pokemon> GBGroup<T>::at(unsigned i) {
 template <typename T>
 unsigned GBGroup<T>::length() const {
 	return m_start[0];
+}
+
+template <typename T>
+void GBGroup<T>::remove(unsigned i) {
+	unsigned len = length();
+	if (i >= len) {
+		return;
+	}
+	--m_start[0];
+	uint8_t* sstart = &m_start[1 + i];
+	uint8_t* snext = &m_start[1 + i + 1];
+	uint8_t* send = &m_start[1 + m_start[0]];
+	uint8_t* pstart = &m_start[2 + capacity() + sizeof(typename T::DataType) * i];
+	uint8_t* pnext = &m_start[2 + capacity() + sizeof(typename T::DataType) * (i + 1)];
+	uint8_t* pend = &m_start[2 + capacity() + sizeof(typename T::DataType) * m_start[0]];
+	uint8_t* nstart = &m_start[2 + (sizeof(typename T::DataType) + 12) * capacity() + 11 * i];
+	uint8_t* nnext = &m_start[2 + (sizeof(typename T::DataType) + 12) * capacity() + 11 * (i + 1)];
+	uint8_t* nend = &m_start[2 + (sizeof(typename T::DataType) + 12) * capacity() + 11 * m_start[0]];
+	uint8_t* tstart = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + 11 * i];
+	uint8_t* tnext = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + 11 * (i + 1)];
+	uint8_t* tend = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + 11 * m_start[0]];
+	memmove(sstart, snext, len - i - 1);
+	memset(send, 0xFF, capacity() - m_start[0]);
+	memmove(pstart, pnext, sizeof(typename T::DataType) * (len - i - 1));
+	memset(pend, 0, sizeof(typename T::DataType) * (capacity() - m_start[0]));
+	memmove(nstart, nnext, 11 * (len - i - 1));
+	memset(nend, 0, 11 * (capacity() - m_start[0]));
+	memmove(tstart, tnext, 11 * (len - i - 1));
+	memset(tend, 0, 11 * (capacity() - m_start[0]));
 }
 
 template <typename T>
