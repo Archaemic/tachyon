@@ -1,11 +1,42 @@
 #include "gen2-private.h"
 
+struct Range {
+	unsigned start;
+	unsigned end;
+};
+
+static const Range checksumRegionsG20E[2][5] = {
+	{
+		{ 0x2009, 0x222F },
+		{ 0x222F, 0x23D9 },
+		{ 0x23D9, 0x2856 },
+		{ 0x2856, 0x288A },
+		{ 0x288A, 0x2D69 }
+	},
+	{
+		{ 0x15C7, 0x17ED },
+		{ 0x3D96, 0x3F40 },
+		{ 0x0C6B, 0x10E8 },
+		{ 0x7E39, 0x7E6D },
+		{ 0x10E8, 0x15C7 }
+	}
+};
+
+static const Range checksumRegionsG21E[2] = {
+	{ 0x2009, 0x2B83 },
+	{ 0x1209, 0x1D83 }
+};
+
 enum {
 	G2_BOX_SIZE = 1104,
 
 	G20E_TRAINER_NAME = 0x200B,
 	G20E_PARTY_POKEMON = 0x288A,
 	G21E_PARTY_POKEMON = 0x2865,
+	G20E_CHECKSUM_1 = 0x2D69,
+	G20E_CHECKSUM_2 = 0x7E6D,
+	G21E_CHECKSUM_1 = 0x2D0D,
+	G21E_CHECKSUM_2 = 0x1F0D,
 	G20E_CURRENT_BOX = 0x2D6C,
 	G21E_CURRENT_BOX = 0x2D11,
 	G20E_BOX_1 = 0x4000,
@@ -76,6 +107,42 @@ PokemonSpecies* Generation2::species(PokemonSpecies::Id id) {
 		putSpecies(id, species);
 	}
 	return species;
+}
+
+void Generation2::finalize() {
+	uint16_t checksum = 0;
+	uint8_t* memory = ram();
+	switch (version()) {
+	case Game::G20E_GOLD:
+	case Game::G20J_GOLD:
+	case Game::G20E_SILVER:
+	case Game::G20J_SILVER:
+	default:
+		for (unsigned i = 0; i < 5; ++i) {
+			unsigned start = checksumRegionsG20E[0][i].start;
+			unsigned newStart = checksumRegionsG20E[1][i].start;
+			unsigned end = checksumRegionsG20E[0][i].end;
+			for (unsigned offset = 0; offset < end - start; ++offset) {
+				checksum += memory[start + offset];
+				memory[newStart + offset] = memory[start + offset];
+			}
+		}
+		*reinterpret_cast<uint16_t*>(&memory[G20E_CHECKSUM_1]) = checksum;
+		*reinterpret_cast<uint16_t*>(&memory[G20E_CHECKSUM_2]) = checksum;
+		break;
+	case Game::G21E_CRYSTAL:
+	case Game::G21J_CRYSTAL:
+		unsigned start = checksumRegionsG21E[0].start;
+		unsigned newStart = checksumRegionsG21E[1].start;
+		unsigned end = checksumRegionsG21E[0].end;
+		for (unsigned offset = 0; offset < end - start; ++offset) {
+			checksum += memory[start + offset];
+			memory[newStart + offset] = memory[start + offset];
+		}
+		*reinterpret_cast<uint16_t*>(&memory[G21E_CHECKSUM_1]) = checksum;
+		*reinterpret_cast<uint16_t*>(&memory[G21E_CHECKSUM_2]) = checksum;
+		break;
+	}
 }
 
 G2PokemonSpecies::G2PokemonSpecies(const G2PokemonBaseStats* data)

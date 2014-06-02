@@ -3,9 +3,13 @@
 enum {
 	G1_BOX_SIZE = 1122,
 
+	G10E_SUM_REGION_START = 0x2598,
+	G10E_SUM_REGION_END = 0x3523,
+
 	G10E_TRAINER_NAME = 0x2598,
 	G10E_PARTY_POKEMON = 0x2F2C,
 	G10E_CURRENT_BOX = 0x30C0,
+	G10E_CHECKSUM = 0x3523,
 	G10E_BOX_1 = 0x4000,
 	G10E_BOX_7 = 0x6000,
 
@@ -65,6 +69,15 @@ PokemonSpecies* Generation1::species(PokemonSpecies::Id id) {
 		putSpecies(id, species);
 	}
 	return species;
+}
+
+void Generation1::finalize() {
+	uint8_t checksum = 0xFF;
+	uint8_t* memory = ram();
+	for (unsigned i = G10E_SUM_REGION_START; i < G10E_SUM_REGION_END; ++i) {
+		checksum -= memory[i];
+	}
+	memory[G10E_CHECKSUM] = checksum;
 }
 
 template <>

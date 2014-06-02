@@ -952,6 +952,7 @@ public:
 
 	const uint8_t* rom() const { return m_rom; }
 	uint8_t* ram() { return m_memory; }
+	virtual void finalize() = 0;
 
 	// This function does lazy evaluation and memoizes the result
 	// Thus it is not const. PokemonSpecies objects are own by the Game

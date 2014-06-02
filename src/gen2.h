@@ -19,6 +19,8 @@ public:
 
 	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
 
+	virtual void finalize() override;
+
 	static void registerLoader();
 
 private:

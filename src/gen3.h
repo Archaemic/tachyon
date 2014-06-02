@@ -47,6 +47,8 @@ public:
 
 	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
 
+	virtual void finalize() override;
+
 	Section* section(Section::ID sectionID);
 
 	static void registerLoader();

@@ -1089,6 +1089,18 @@ Generation3::Section* Generation3::section(Section::ID sectionID) {
 	return m_sections[sectionID];
 }
 
+void Generation3::finalize() {
+	for (int sid = 0; sid < Section::MAX_SECTIONS; ++sid) {
+		uint32_t checksum = 0;
+		Section* s = section(static_cast<Section::ID>(sid));
+		uint32_t* memory = reinterpret_cast<uint32_t*>(s->data);
+		for (unsigned offset = 0; offset < sizeof(s->data) / sizeof(uint32_t); ++offset) {
+			checksum += memory[offset];
+		}
+		s->checksum = checksum + (checksum >> 16);
+	}
+}
+
 G3PokemonGrowth* G3BasePokemonData::growth() {
 	switch (personality % 24) {
 	case 0:
