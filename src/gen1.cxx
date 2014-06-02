@@ -137,8 +137,9 @@ Type G1PokemonSpecies::mapType(unsigned unmapped) const {
 }
 
 G1Party::G1Party(Generation1* gen)
-	: GBGroup<G1PartyPokemon>(gen, &gen->ram()[G10E_PARTY_POKEMON])
+	: GBGroup<G1PartyPokemon>(gen)
 {
+	setStart(&gen->ram()[G10E_PARTY_POKEMON]);
 }
 
 unsigned G1Party::capacity() const {
@@ -146,12 +147,19 @@ unsigned G1Party::capacity() const {
 }
 
 G1Box::G1Box(Generation1* gen, GameBoyGame::Box box)
-	: GBGroup<G1BasePokemon>(gen, gen->ram() + (
-		(box == GameBoyGame::BOX_CURRENT) ? G10E_CURRENT_BOX :
-		(box < GameBoyGame::BOX_07) ? (G10E_BOX_1 + (box - 1) * G1_BOX_SIZE) :
-		(box <= GameBoyGame::BOX_12) ? (G10E_BOX_7 + (box - 7) * G1_BOX_SIZE) :
-		G10E_CURRENT_BOX))
+	: GBGroup<G1BasePokemon>(gen)
 {
+	uint8_t* start = gen->ram();
+	if (box == GameBoyGame::BOX_CURRENT) {
+		start += G10E_CURRENT_BOX;
+	} else if (box < GameBoyGame::BOX_07) {
+		start += G10E_BOX_1 + (box - 1) * G1_BOX_SIZE;
+	} else if (box <= GameBoyGame::BOX_12) {
+		start += G10E_BOX_7 + (box - 7) * G1_BOX_SIZE;
+	} else {
+		start += G10E_CURRENT_BOX;
+	}
+	setStart(start);
 }
 
 unsigned G1Box::capacity() const {

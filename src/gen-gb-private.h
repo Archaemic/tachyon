@@ -131,10 +131,13 @@ private:
 template<typename T>
 class GBGroup : public Group {
 public:
-	GBGroup(GameBoyGame* gen, uint8_t* start);
+	GBGroup(GameBoyGame* gen);
 
 	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
 	virtual unsigned length() const override;
+
+protected:
+	void setStart(uint8_t* start);
 
 private:
 	GameBoyGame* m_gen;
@@ -439,9 +442,9 @@ unsigned GBPartyPokemon<T>::specialDefense() const {
 }
 
 template <typename T>
-GBGroup<T>::GBGroup(GameBoyGame* gen, uint8_t* start)
+GBGroup<T>::GBGroup(GameBoyGame* gen)
 	: m_gen(gen)
-	, m_start(start)
+	, m_start(gen->ram())
 {
 }
 
@@ -459,6 +462,11 @@ std::unique_ptr<Pokemon> GBGroup<T>::at(unsigned i) {
 template <typename T>
 unsigned GBGroup<T>::length() const {
 	return m_start[0];
+}
+
+template <typename T>
+void GBGroup<T>::setStart(uint8_t* start) {
+	m_start = start;
 }
 
 #endif
