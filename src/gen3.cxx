@@ -1090,6 +1090,20 @@ Generation3::Section* Generation3::section(Section::ID sectionID) {
 }
 
 void Generation3::finalize() {
+	unsigned remaining = sizeof(G3BasePokemonData) * G3_BOXES * G3_POKEMON_PER_BOX;
+	uint8_t* boxData = reinterpret_cast<uint8_t*>(m_boxes.get());
+	for (unsigned i = Section::PC_0; i < Section::MAX_SECTIONS; ++i) {
+		uint8_t* data = this->section(static_cast<Section::ID>(i))->data;
+		unsigned thisBox = std::min<unsigned>(remaining, 3968);
+		if (i == Section::PC_0) {
+			data += 4;
+			thisBox -= 4;
+		}
+		memcpy(data, boxData, thisBox);
+		remaining -= thisBox;
+		boxData += thisBox;
+	}
+
 	for (int sid = 0; sid < Section::MAX_SECTIONS; ++sid) {
 		uint32_t checksum = 0;
 		Section* s = section(static_cast<Section::ID>(sid));
