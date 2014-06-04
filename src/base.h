@@ -36,6 +36,8 @@ enum Type {
 const char* TypeReadable(Type type);
 const char* MoveReadable(unsigned move);
 
+class Game;
+
 class PokemonSpecies {
 public:
 	enum Id {
@@ -829,6 +831,8 @@ public:
 
 	virtual ~Pokemon() {}
 
+	virtual const Game* game() const = 0;
+
 	const std::string& name() const;
 	virtual PokemonSpecies* species() const = 0;
 	const std::string& otName() const;
@@ -884,6 +888,9 @@ public:
 	virtual void setIvSpecialAttack(unsigned) = 0;
 	virtual void setIvSpecialDefense(unsigned) = 0;
 
+	virtual const uint8_t* data(unsigned* size) const = 0;
+	virtual bool copy(const Pokemon& other) = 0;
+
 protected:
 	virtual uint8_t genderDeterminer() const = 0;
 
@@ -899,6 +906,7 @@ public:
 	virtual unsigned capacity() const = 0;
 
 	virtual void remove(unsigned i) = 0;
+	virtual bool insert(const Pokemon& pokemon) = 0;
 };
 
 class Game {
@@ -951,6 +959,7 @@ public:
 	virtual std::unique_ptr<Group> box(unsigned box) = 0;
 
 	virtual Version version() const = 0;
+	virtual int generation() const = 0;
 
 	const uint8_t* rom() const { return m_rom; }
 	uint8_t* ram() { return m_memory; }

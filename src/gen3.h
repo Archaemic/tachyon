@@ -44,6 +44,7 @@ public:
 	virtual std::unique_ptr<Group> box(unsigned box) override;
 
 	virtual Version version() const override;
+	virtual int generation() const { return 3; }
 
 	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
 

@@ -17,6 +17,8 @@ private:
 } __attribute__((packed));
 
 struct G2BasePokemonData {
+	const static int GENERATION = 2;
+
 	uint8_t species;
 	uint8_t heldItem;
 	GBMoveSet moves;

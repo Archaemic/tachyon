@@ -146,6 +146,8 @@ class G3BasePokemon : public Pokemon {
 public:
 	G3BasePokemon(Generation3* gen, G3BasePokemonData* data);
 
+	virtual const Generation3* game() const override;
+
 	virtual PokemonSpecies* species() const override;
 
 	virtual uint16_t otId() const override;
@@ -193,6 +195,9 @@ public:
 	virtual void setIvSpecialAttack(unsigned) override;
 	virtual void setIvSpecialDefense(unsigned) override;
 
+	virtual const uint8_t* data(unsigned* size) const override;
+	virtual bool copy(const Pokemon& other) override;
+
 private:
 	virtual uint8_t genderDeterminer() const override;
 	unsigned stat(unsigned iv, unsigned base, unsigned ev, int nature) const;
@@ -216,6 +221,8 @@ public:
 	virtual unsigned specialAttack() const override;
 	virtual unsigned specialDefense() const override;
 
+	virtual const uint8_t* data(unsigned* size) const override;
+
 private:
 	G3PartyPokemonData* m_data;
 };
@@ -238,7 +245,9 @@ public:
 	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
 	virtual unsigned length() const override;
 	virtual unsigned capacity() const override;
+
 	virtual void remove(unsigned i) override;
+	virtual bool insert(const Pokemon& pokemon) override;
 
 private:
 	Generation3* m_gen;
@@ -252,7 +261,9 @@ public:
 	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
 	virtual unsigned length() const override;
 	virtual unsigned capacity() const override;
+
 	virtual void remove(unsigned i) override;
+	virtual bool insert(const Pokemon& pokemon) override;
 
 private:
 	Generation3* m_gen;

@@ -1265,6 +1265,10 @@ G3BasePokemon::G3BasePokemon(Generation3* gen, G3BasePokemonData* data)
 	setOtName(Generation3::gameTextToUTF8(m_data->otName, 7));
 }
 
+const Generation3* G3BasePokemon::game() const {
+	return m_gen;
+}
+
 PokemonSpecies* G3BasePokemon::species() const {
 	unsigned unmappedId = m_data->growth()->species;
 	if (unmappedId < sizeof(idMapping) / sizeof(*idMapping)) {
@@ -1514,6 +1518,17 @@ uint8_t G3BasePokemon::genderDeterminer() const {
 	return m_data->personality & 0xFF;
 }
 
+const uint8_t* G3BasePokemon::data(unsigned* size) const {
+	if (size) {
+		*size = sizeof(G3BasePokemonData);
+	}
+	return reinterpret_cast<uint8_t*>(m_data.get());
+}
+
+bool G3BasePokemon::copy(const Pokemon&) {
+	return false;
+}
+
 G3PartyPokemon::G3PartyPokemon(Generation3* gen, uint8_t* data)
 	: G3BasePokemon(gen, reinterpret_cast<G3BasePokemonData*>(data))
 	, m_data(reinterpret_cast<G3PartyPokemonData*>(data))
@@ -1550,6 +1565,13 @@ unsigned G3PartyPokemon::specialAttack() const {
 
 unsigned G3PartyPokemon::specialDefense() const {
 	return m_data->specialDefense;
+}
+
+const uint8_t* G3PartyPokemon::data(unsigned* size) const {
+	if (size) {
+		*size = sizeof(G3PartyPokemonData);
+	}
+	return reinterpret_cast<uint8_t*>(m_data);
 }
 
 template <>
@@ -1606,6 +1628,10 @@ void G3Party::remove(unsigned i) {
 	memset(pend, 0, sizeof(G3PartyPokemonData) * (capacity() - m_start[0]));
 }
 
+bool G3Party::insert(const Pokemon&) {
+	return false;
+}
+
 G3Box::G3Box(Generation3* gen, G3BasePokemonData* start)
 	: m_gen(gen)
 	, m_start(start)
@@ -1638,4 +1664,8 @@ void G3Box::remove(unsigned i) {
 	}
 	G3BasePokemonData* pstart = &m_start[i];
 	memset(pstart, 0, sizeof(G3BasePokemonData));
+}
+
+bool G3Box::insert(const Pokemon&) {
+	return false;
 }

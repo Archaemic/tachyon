@@ -52,8 +52,12 @@ class GBPokemon : public Pokemon {
 public:
 	typedef T DataType;
 
+	static std::unique_ptr<GBPokemon<T>> copy(GameBoyGame* gen, const Pokemon&);
+
 	GBPokemon(GameBoyGame* gen, uint8_t* data, const uint8_t* name, const uint8_t* ot);
 	GBPokemon(GameBoyGame* gen);
+
+	virtual const GameBoyGame* game() const override;
 
 	virtual PokemonSpecies* species() const override;
 
@@ -104,17 +108,28 @@ public:
 
 	unsigned stat(unsigned iv, unsigned base, unsigned ev) const;
 
+	virtual const uint8_t* data(unsigned* size) const override;
+	virtual bool copy(const Pokemon& other) override;
+
 private:
+	GBPokemon(const GBPokemon<T>& other);
+	explicit GBPokemon(const Pokemon& other);
+
 	virtual uint8_t genderDeterminer() const override;
 
 	GameBoyGame* m_gen;
+
+protected:
 	std::unique_ptr<T> m_data;
 };
 
 template<typename T>
 class GBPartyPokemon : public GBPokemon<T> {
 public:
+	static std::unique_ptr<GBPartyPokemon<T>> copy(GameBoyGame* gen, const Pokemon&);
+
 	GBPartyPokemon(GameBoyGame* gen, uint8_t* data, const uint8_t* name, const uint8_t* ot);
+	GBPartyPokemon(GameBoyGame* gen);
 
 	virtual unsigned level() const override;
 	virtual unsigned maxHp() const override;
@@ -124,8 +139,11 @@ public:
 	virtual unsigned specialAttack() const override;
 	virtual unsigned specialDefense() const override;
 
+	virtual bool copy(const Pokemon& other) override;
+
 private:
-	T* m_data;
+	GBPartyPokemon(const GBPartyPokemon<T>& other);
+	explicit GBPartyPokemon(const Pokemon& other);
 };
 
 template<typename T>
@@ -135,7 +153,9 @@ public:
 
 	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
 	virtual unsigned length() const override;
+
 	virtual void remove(unsigned i) override;
+	virtual bool insert(const Pokemon& pokemon) override;
 
 protected:
 	void setStart(uint8_t* start);
@@ -160,6 +180,24 @@ GBPokemon<T>::GBPokemon(GameBoyGame* gen)
 	, m_data(new T)
 {
 	memset(m_data.get(), 0, sizeof(T));
+}
+
+template <typename T>
+std::unique_ptr<GBPokemon<T>> GBPokemon<T>::copy(GameBoyGame* gen, const Pokemon& pokemon) {
+	if (gen->generation() != T::GENERATION) {
+		return nullptr;
+	}
+
+	std::unique_ptr<GBPokemon<T>> newPokemon(new GBPokemon<T>(gen));
+	if (!newPokemon->copy(pokemon)) {
+		return nullptr;
+	}
+	return newPokemon;
+}
+
+template <typename T>
+const GameBoyGame* GBPokemon<T>::game() const {
+	return m_gen;
 }
 
 template <typename T>
@@ -401,45 +439,101 @@ uint8_t GBPokemon<T>::genderDeterminer() const {
 }
 
 template <typename T>
+const uint8_t* GBPokemon<T>::data(unsigned* size) const {
+	if (size) {
+		*size = sizeof(T);
+	}
+	return reinterpret_cast<uint8_t*>(m_data.get());
+}
+
+template <typename T>
+bool GBPokemon<T>::copy(const Pokemon& other) {
+	if (other.game()->generation() != T::GENERATION) {
+		return false;
+	}
+
+	unsigned size;
+	const uint8_t* oldData = other.data(&size);
+	memcpy(m_data.get(), oldData, std::min<unsigned>(size, sizeof(T)));
+	m_data->level = other.level();
+	return true;
+}
+
+template <typename T>
 GBPartyPokemon<T>::GBPartyPokemon(GameBoyGame* gen, uint8_t* data, const uint8_t* name, const uint8_t* ot)
 	: GBPokemon<T>(gen, data, name, ot)
-	, m_data(reinterpret_cast<T*>(data))
 {
 }
 
 template <typename T>
+GBPartyPokemon<T>::GBPartyPokemon(GameBoyGame* gen)
+	: GBPokemon<T>(gen)
+{
+}
+
+template <typename T>
+std::unique_ptr<GBPartyPokemon<T>> GBPartyPokemon<T>::copy(GameBoyGame* gen, const Pokemon& pokemon) {
+	if (gen->generation() != T::GENERATION) {
+		return nullptr;
+	}
+
+	std::unique_ptr<GBPartyPokemon<T>> newPokemon(new GBPartyPokemon<T>(gen));
+	if (!newPokemon->copy(pokemon)) {
+		return nullptr;
+	}
+	return newPokemon;
+}
+
+template <typename T>
 unsigned GBPartyPokemon<T>::level() const {
-	return m_data->level;
+	return GBPokemon<T>::m_data->level;
 }
 
 template <typename T>
 unsigned GBPartyPokemon<T>::maxHp() const {
-	return R16(m_data->maxHp);
+	return R16(GBPokemon<T>::m_data->maxHp);
 }
 
 template <typename T>
 unsigned GBPartyPokemon<T>::attack() const {
-	return R16(m_data->attack);
+	return R16(GBPokemon<T>::m_data->attack);
 }
 
 template <typename T>
 unsigned GBPartyPokemon<T>::defense() const {
-	return R16(m_data->defense);
+	return R16(GBPokemon<T>::m_data->defense);
 }
 
 template <typename T>
 unsigned GBPartyPokemon<T>::speed() const {
-	return R16(m_data->speed);
+	return R16(GBPokemon<T>::m_data->speed);
 }
 
 template <typename T>
 unsigned GBPartyPokemon<T>::specialAttack() const {
-	return R16(m_data->specialAttack);
+	return R16(GBPokemon<T>::m_data->specialAttack);
 }
 
 template <typename T>
 unsigned GBPartyPokemon<T>::specialDefense() const {
-	return R16(m_data->specialDefense);
+	return R16(GBPokemon<T>::m_data->specialDefense);
+}
+
+template <typename T>
+bool GBPartyPokemon<T>::copy(const Pokemon& other) {
+	if (!GBPokemon<T>::copy(other)) {
+		return false;
+	}
+
+	GBPokemon<T>::m_data->currentHp = R16(other.currentHp());
+	GBPokemon<T>::m_data->level = GBPokemon<T>::level();
+	GBPokemon<T>::m_data->maxHp = R16(GBPokemon<T>::maxHp());
+	GBPokemon<T>::m_data->attack = R16(GBPokemon<T>::attack());
+	GBPokemon<T>::m_data->defense = R16(GBPokemon<T>::defense());
+	GBPokemon<T>::m_data->speed = R16(GBPokemon<T>::speed());
+	GBPokemon<T>::m_data->specialAttack = R16(GBPokemon<T>::specialAttack());
+	GBPokemon<T>::m_data->specialDefense = R16(GBPokemon<T>::specialDefense());
+	return true;
 }
 
 template <typename T>
@@ -463,6 +557,35 @@ std::unique_ptr<Pokemon> GBGroup<T>::at(unsigned i) {
 template <typename T>
 unsigned GBGroup<T>::length() const {
 	return m_start[0];
+}
+
+template <typename T>
+bool GBGroup<T>::insert(const Pokemon& pokemon) {
+	unsigned len = length();
+	if (len >= capacity()) {
+		return false;
+	}
+
+	std::unique_ptr<T> convertedPokemon = T::copy(m_gen, pokemon);
+	if (!convertedPokemon) {
+		return false;
+	}
+
+	const typename T::DataType* data = reinterpret_cast<const typename T::DataType*>(convertedPokemon->data(nullptr));
+
+	++m_start[0];
+	uint8_t* sstart = &m_start[1 + len];
+	uint8_t* pstart = &m_start[2 + capacity() + sizeof(typename T::DataType) * len];
+	uint8_t* nstart = &m_start[2 + (sizeof(typename T::DataType) + 12) * capacity() + 11 * len];
+	uint8_t* tstart = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + 11 * len];
+	*sstart = data->species;
+	memmove(pstart, data, sizeof(typename T::DataType));
+	memset(nstart, 0x50, 11);
+	nstart[0] = 0x80;
+	memset(tstart, 0x50, 11);
+	tstart[0] = 0x80;
+
+	return true;
 }
 
 template <typename T>

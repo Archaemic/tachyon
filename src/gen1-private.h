@@ -17,9 +17,11 @@ private:
 } __attribute__((packed));
 
 struct G1BasePokemonData {
-	uint8_t pokemonId;
+	const static int GENERATION = 1;
+
+	uint8_t species;
 	uint16_t currentHp;
-	uint8_t displayLevel;
+	uint8_t level;
 	uint8_t status;
 	uint8_t type1;
 	uint8_t type2;
