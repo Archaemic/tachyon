@@ -97,7 +97,7 @@ public:
 
 class G2Box : public GBGroup<G2BasePokemon> {
 public:
-	G2Box(Generation2* gen, GameBoyGame::Box box);
+	G2Box(Generation2* gen, unsigned box);
 
 	virtual unsigned capacity() const override;
 };

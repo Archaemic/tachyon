@@ -1030,6 +1030,10 @@ std::unique_ptr<Group> Generation3::box(unsigned box) {
 	return std::unique_ptr<Group>(new G3Box(this, &m_boxes[G3_POKEMON_PER_BOX * box]));
 }
 
+unsigned Generation3::numBoxes() const {
+	return 14;
+}
+
 Game::Version Generation3::version() const {
 	uint32_t name = *(uint32_t*) &rom()[0xAC];
 	return version(s_names, name);

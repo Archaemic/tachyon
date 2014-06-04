@@ -138,7 +138,7 @@ int main(int, char**) {
 	std::vector<std::unique_ptr<Group>> groups;
 
 	groups.push_back(game->party());
-	for (unsigned b = 0; b < GameBoyGame::BOX_12; ++b) {
+	for (unsigned b = 0; b < game->numBoxes(); ++b) {
 		groups.push_back(game->box(b));
 	}
 

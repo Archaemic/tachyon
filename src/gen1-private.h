@@ -90,7 +90,7 @@ public:
 
 class G1Box : public GBGroup<G1BasePokemon> {
 public:
-	G1Box(Generation1* gen, GameBoyGame::Box box);
+	G1Box(Generation1* gen, unsigned box);
 
 	virtual unsigned capacity() const override;
 };

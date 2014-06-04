@@ -7,6 +7,7 @@ enum {
 	G10E_SUM_REGION_END = 0x3523,
 
 	G10E_TRAINER_NAME = 0x2598,
+	G10E_CURRENT_BOX_ID = 0x284C,
 	G10E_PARTY_POKEMON = 0x2F2C,
 	G10E_CURRENT_BOX = 0x30C0,
 	G10E_CHECKSUM = 0x3523,
@@ -48,7 +49,11 @@ std::unique_ptr<Group> Generation1::party() {
 }
 
 std::unique_ptr<Group> Generation1::box(unsigned box) {
-	return std::unique_ptr<Group>(new G1Box(this, static_cast<GameBoyGame::Box>(box)));
+	return std::unique_ptr<Group>(new G1Box(this, box));
+}
+
+unsigned Generation1::numBoxes() const {
+	return 12;
 }
 
 Game::Version Generation1::version() const {
@@ -186,16 +191,16 @@ unsigned G1Party::capacity() const {
 	return 6;
 }
 
-G1Box::G1Box(Generation1* gen, GameBoyGame::Box box)
+G1Box::G1Box(Generation1* gen, unsigned box)
 	: GBGroup<G1BasePokemon>(gen)
 {
 	uint8_t* start = gen->ram();
-	if (box == GameBoyGame::BOX_CURRENT) {
+	if (box == (start[G10E_CURRENT_BOX_ID] & 0xF)) {
 		start += G10E_CURRENT_BOX;
-	} else if (box < GameBoyGame::BOX_07) {
-		start += G10E_BOX_1 + (box - 1) * G1_BOX_SIZE;
-	} else if (box <= GameBoyGame::BOX_12) {
-		start += G10E_BOX_7 + (box - 7) * G1_BOX_SIZE;
+	} else if (box < 6) {
+		start += G10E_BOX_1 + box * G1_BOX_SIZE;
+	} else if (box < gen->numBoxes()) {
+		start += G10E_BOX_7 + (box - 6) * G1_BOX_SIZE;
 	} else {
 		start += G10E_CURRENT_BOX;
 	}

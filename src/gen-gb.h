@@ -5,22 +5,6 @@
 
 class GameBoyGame : public Game {
 public:
-	enum Box {
-		BOX_CURRENT,
-		BOX_01,
-		BOX_02,
-		BOX_03,
-		BOX_04,
-		BOX_05,
-		BOX_06,
-		BOX_07,
-		BOX_08,
-		BOX_09,
-		BOX_10,
-		BOX_11,
-		BOX_12
-	};
-
 	GameBoyGame(uint8_t* memory, const uint8_t* rom);
 
 private:

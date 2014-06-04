@@ -31,6 +31,8 @@ enum {
 	G2_BOX_SIZE = 1104,
 
 	G20E_TRAINER_NAME = 0x200B,
+	G20E_CURRENT_BOX_ID = 0x2724,
+	G21E_CURRENT_BOX_ID = 0x2700,
 	G20E_PARTY_POKEMON = 0x288A,
 	G21E_PARTY_POKEMON = 0x2865,
 	G20E_CHECKSUM_1 = 0x2D69,
@@ -74,7 +76,11 @@ std::unique_ptr<Group> Generation2::party() {
 }
 
 std::unique_ptr<Group> Generation2::box(unsigned box) {
-	return std::unique_ptr<Group>(new G2Box(this, static_cast<GameBoyGame::Box>(box)));
+	return std::unique_ptr<Group>(new G2Box(this, box));
+}
+
+unsigned Generation2::numBoxes() const {
+	return 14;
 }
 
 Game::Version Generation2::version() const {
@@ -176,31 +182,40 @@ unsigned G2Party::capacity() const {
 	return 6;
 }
 
-G2Box::G2Box(Generation2* gen, GameBoyGame::Box box)
+G2Box::G2Box(Generation2* gen, unsigned box)
 	: GBGroup<G2BasePokemon>(gen)
 {
 	uint8_t* start = gen->ram();
-	if (box == GameBoyGame::BOX_CURRENT) {
-		switch (gen->version()) {
-		case Game::G20E_GOLD:
-		case Game::G20J_GOLD:
-		case Game::G20E_SILVER:
-		case Game::G20J_SILVER:
-		default:
+	switch (gen->version()) {
+	case Game::G20E_GOLD:
+	case Game::G20J_GOLD:
+	case Game::G20E_SILVER:
+	case Game::G20J_SILVER:
+	default:
+		if (box == (gen->ram()[G20E_CURRENT_BOX_ID] & 0xF)) {
 			start += G20E_CURRENT_BOX;
-			break;
-		case Game::G21E_CRYSTAL:
-		case Game::G21J_CRYSTAL:
-			start += G21E_CURRENT_BOX;
-			break;
+		} else if (box < 7) {
+			start += G20E_BOX_1 + box * G2_BOX_SIZE;
+		} else if (box < gen->numBoxes()) {
+			start += G20E_BOX_8 + (box - 7) * G2_BOX_SIZE;
+		} else {
+			start += G20E_CURRENT_BOX;
 		}
-	} else if (box < GameBoyGame::BOX_08) {
-		start += G20E_BOX_1 + (box - 1) * G2_BOX_SIZE;
-	} else if (box <= GameBoyGame::BOX_12) {
-		start += G20E_BOX_8 + (box - 8) * G2_BOX_SIZE;
-	} else {
-		start += G20E_BOX_1;
+		break;
+	case Game::G21E_CRYSTAL:
+	case Game::G21J_CRYSTAL:
+		if (box == (gen->ram()[G21E_CURRENT_BOX_ID] & 0xF)) {
+			start += G21E_CURRENT_BOX;
+		} else if (box < 7) {
+			start += G20E_BOX_1 + box * G2_BOX_SIZE;
+		} else if (box < gen->numBoxes()) {
+			start += G20E_BOX_8 + (box - 7) * G2_BOX_SIZE;
+		} else {
+			start += G21E_CURRENT_BOX;
+		}
+		break;
 	}
+
 	setStart(start);
 }
 

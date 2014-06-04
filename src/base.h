@@ -957,6 +957,7 @@ public:
 
 	virtual std::unique_ptr<Group> party() = 0;
 	virtual std::unique_ptr<Group> box(unsigned box) = 0;
+	virtual unsigned numBoxes() const = 0;
 
 	virtual Version version() const = 0;
 	virtual int generation() const = 0;

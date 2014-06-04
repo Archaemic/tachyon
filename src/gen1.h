@@ -14,6 +14,7 @@ public:
 
 	virtual std::unique_ptr<Group> party() override;
 	virtual std::unique_ptr<Group> box(unsigned box) override;
+	virtual unsigned numBoxes() const override;
 
 	virtual Version version() const override;
 	virtual int generation() const { return 1; }
