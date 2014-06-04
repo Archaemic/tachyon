@@ -1,5 +1,6 @@
 #include "gen3-private.h"
 
+#include <cstring>
 #include <sstream>
 
 enum {
