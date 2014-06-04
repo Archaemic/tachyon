@@ -142,9 +142,10 @@ struct G3PokemonBaseStats {
 	uint16_t padding;
 } __attribute__((packed));
 
-class G3BasePokemon : public Pokemon {
+template <typename T>
+class G3Pokemon : public Pokemon {
 public:
-	G3BasePokemon(Generation3* gen, G3BasePokemonData* data);
+	G3Pokemon(Generation3* gen, T* data);
 
 	virtual const Generation3* game() const override;
 
@@ -204,13 +205,17 @@ private:
 	void decrypt();
 
 	Generation3* m_gen;
-	std::unique_ptr<G3BasePokemonData> m_data;
 	bool m_dirty;
+
+protected:
+	std::unique_ptr<T> m_data;
 };
 
-class G3PartyPokemon : public G3BasePokemon {
+typedef G3Pokemon<G3BasePokemonData> G3BasePokemon;
+
+class G3PartyPokemon : public G3Pokemon<G3PartyPokemonData> {
 public:
-	G3PartyPokemon(Generation3* gen, uint8_t* data);
+	G3PartyPokemon(Generation3* gen, G3PartyPokemonData* data);
 
 	virtual unsigned level() const override;
 	virtual unsigned currentHp() const override;
@@ -220,11 +225,6 @@ public:
 	virtual unsigned speed() const override;
 	virtual unsigned specialAttack() const override;
 	virtual unsigned specialDefense() const override;
-
-	virtual const uint8_t* data(unsigned* size) const override;
-
-private:
-	G3PartyPokemonData* m_data;
 };
 
 class G3PokemonSpecies : public GenericPokemonSpecies<G3PokemonBaseStats> {

@@ -1260,21 +1260,24 @@ G3PokemonMisc* G3BasePokemonData::misc() {
 	}
 }
 
-G3BasePokemon::G3BasePokemon(Generation3* gen, G3BasePokemonData* data)
+template <typename T>
+G3Pokemon<T>::G3Pokemon(Generation3* gen, T* data)
 	: m_gen(gen)
-	, m_data(new G3BasePokemonData(*data))
 	, m_dirty(false)
+	, m_data(new T(*data))
 {
 	decrypt();
 	setName(Generation3::gameTextToUTF8(m_data->name, 10));
 	setOtName(Generation3::gameTextToUTF8(m_data->otName, 7));
 }
 
-const Generation3* G3BasePokemon::game() const {
+template <typename T>
+const Generation3* G3Pokemon<T>::game() const {
 	return m_gen;
 }
 
-PokemonSpecies* G3BasePokemon::species() const {
+template <typename T>
+PokemonSpecies* G3Pokemon<T>::species() const {
 	unsigned unmappedId = m_data->growth()->species;
 	if (unmappedId < sizeof(idMapping) / sizeof(*idMapping)) {
 		return m_gen->species(idMapping[unmappedId]);
@@ -1282,43 +1285,53 @@ PokemonSpecies* G3BasePokemon::species() const {
 	return m_gen->species(PokemonSpecies::MISSINGNO);
 }
 
-uint16_t G3BasePokemon::otId() const {
+template <typename T>
+uint16_t G3Pokemon<T>::otId() const {
 	return m_data->otId & 0xFFFF;
 }
 
-uint16_t G3BasePokemon::otSecretId() const {
+template <typename T>
+uint16_t G3Pokemon<T>::otSecretId() const {
 	return m_data->otId >> 16;
 }
 
-bool G3BasePokemon::shiny() const {
+template <typename T>
+bool G3Pokemon<T>::shiny() const {
 	return (otId() ^ otSecretId() ^ (m_data->personality >> 16) ^ (m_data->personality & 0xFFFF)) < 8;
 }
 
-Pokemon::Nature G3BasePokemon::nature() const {
+template <typename T>
+Pokemon::Nature G3Pokemon<T>::nature() const {
 	return static_cast<Nature>(m_data->personality % 25);
 }
 
-unsigned G3BasePokemon::xp() const {
+template <typename T>
+unsigned G3Pokemon<T>::xp() const {
 	return m_data->growth()->xp;
 }
 
-Type G3BasePokemon::type1() const {
+template <typename T>
+Type G3Pokemon<T>::type1() const {
 	return species()->type1();
 }
 
-Type G3BasePokemon::type2() const {
+template <typename T>
+Type G3Pokemon<T>::type2() const {
 	return species()->type2();
 }
 
-unsigned G3BasePokemon::currentHp() const {
+template <typename T>
+unsigned G3Pokemon<T>::currentHp() const {
 	return maxHp();
 }
 
-unsigned G3BasePokemon::maxHp() const {
+template <typename T>
+unsigned G3Pokemon<T>::maxHp() const {
 	return ((ivHp() + species()->baseHp() * 2 + evHp() / 4 + 100) * level()) / 100 + 10;
 }
 
-unsigned G3BasePokemon::attack() const {
+template <typename T>
+unsigned G3Pokemon<T>::attack() const {
 	switch (nature()) {
 	case LONELY:
 	case BRAVE:
@@ -1335,7 +1348,8 @@ unsigned G3BasePokemon::attack() const {
 	}
 }
 
-unsigned G3BasePokemon::defense() const {
+template <typename T>
+unsigned G3Pokemon<T>::defense() const {
 	switch (nature()) {
 	case BOLD:
 	case RELAXED:
@@ -1352,7 +1366,8 @@ unsigned G3BasePokemon::defense() const {
 	}
 }
 
-unsigned G3BasePokemon::speed() const {
+template <typename T>
+unsigned G3Pokemon<T>::speed() const {
 	switch (nature()) {
 	case TIMID:
 	case HASTY:
@@ -1369,7 +1384,8 @@ unsigned G3BasePokemon::speed() const {
 	}
 }
 
-unsigned G3BasePokemon::specialAttack() const {
+template <typename T>
+unsigned G3Pokemon<T>::specialAttack() const {
 	switch (nature()) {
 	case MODEST:
 	case MILD:
@@ -1386,7 +1402,8 @@ unsigned G3BasePokemon::specialAttack() const {
 	}
 }
 
-unsigned G3BasePokemon::specialDefense() const {
+template <typename T>
+unsigned G3Pokemon<T>::specialDefense() const {
 	switch (nature()) {
 	case CALM:
 	case GENTLE:
@@ -1403,109 +1420,135 @@ unsigned G3BasePokemon::specialDefense() const {
 	}
 }
 
-unsigned G3BasePokemon::ivHp() const {
+template <typename T>
+unsigned G3Pokemon<T>::ivHp() const {
 	return m_data->misc()->ivHp;
 }
 
-unsigned G3BasePokemon::ivAttack() const {
+template <typename T>
+unsigned G3Pokemon<T>::ivAttack() const {
 	return m_data->misc()->ivAttack;
 }
 
-unsigned G3BasePokemon::ivDefense() const {
+template <typename T>
+unsigned G3Pokemon<T>::ivDefense() const {
 	return m_data->misc()->ivDefense;
 }
 
-unsigned G3BasePokemon::ivSpeed() const {
+template <typename T>
+unsigned G3Pokemon<T>::ivSpeed() const {
 	return m_data->misc()->ivSpeed;
 }
 
-unsigned G3BasePokemon::ivSpecialAttack() const {
+template <typename T>
+unsigned G3Pokemon<T>::ivSpecialAttack() const {
 	return m_data->misc()->ivSpecialAttack;
 }
 
-unsigned G3BasePokemon::ivSpecialDefense() const {
+template <typename T>
+unsigned G3Pokemon<T>::ivSpecialDefense() const {
 	return m_data->misc()->ivSpecialDefense;
 }
 
-unsigned G3BasePokemon::evHp() const {
+template <typename T>
+unsigned G3Pokemon<T>::evHp() const {
 	return m_data->evs()->hp;
 }
 
-unsigned G3BasePokemon::evAttack() const {
+template <typename T>
+unsigned G3Pokemon<T>::evAttack() const {
 	return m_data->evs()->attack;
 }
 
-unsigned G3BasePokemon::evDefense() const {
+template <typename T>
+unsigned G3Pokemon<T>::evDefense() const {
 	return m_data->evs()->defense;
 }
 
-unsigned G3BasePokemon::evSpeed() const {
+template <typename T>
+unsigned G3Pokemon<T>::evSpeed() const {
 	return m_data->evs()->speed;
 }
 
-unsigned G3BasePokemon::evSpecialAttack() const {
+template <typename T>
+unsigned G3Pokemon<T>::evSpecialAttack() const {
 	return m_data->evs()->specialAttack;
 }
 
-unsigned G3BasePokemon::evSpecialDefense() const {
+template <typename T>
+unsigned G3Pokemon<T>::evSpecialDefense() const {
 	return m_data->evs()->specialDefense;
 }
 
-unsigned G3BasePokemon::move1() const {
+template <typename T>
+unsigned G3Pokemon<T>::move1() const {
 	return m_data->attacks()->moves[0];
 }
 
-unsigned G3BasePokemon::move2() const {
+template <typename T>
+unsigned G3Pokemon<T>::move2() const {
 	return m_data->attacks()->moves[1];
 }
 
-unsigned G3BasePokemon::move3() const {
+template <typename T>
+unsigned G3Pokemon<T>::move3() const {
 	return m_data->attacks()->moves[2];
 }
 
-unsigned G3BasePokemon::move4() const {
+template <typename T>
+unsigned G3Pokemon<T>::move4() const {
 	return m_data->attacks()->moves[3];
 }
 
-void G3BasePokemon::setOtId(uint16_t id) {
+template <typename T>
+void G3Pokemon<T>::setOtId(uint16_t id) {
 	m_data->otId &= ~0xFFFF;
 	m_data->otId |= id;
 }
 
-void G3BasePokemon::setOtSecretId(uint16_t id) {
+template <typename T>
+void G3Pokemon<T>::setOtSecretId(uint16_t id) {
 	m_data->otId &= ~0xFFFF0000;
 	m_data->otId |= id << 16;
 }
 
-void G3BasePokemon::setIvHp(unsigned iv) {
+template <typename T>
+void G3Pokemon<T>::setIvHp(unsigned iv) {
 	m_data->misc()->ivHp = iv;
 }
 
-void G3BasePokemon::setIvAttack(unsigned iv) {
+template <typename T>
+void G3Pokemon<T>::setIvAttack(unsigned iv) {
 	m_data->misc()->ivAttack = iv;
 }
 
-void G3BasePokemon::setIvDefense(unsigned iv) {
+template <typename T>
+void G3Pokemon<T>::setIvDefense(unsigned iv) {
 	m_data->misc()->ivDefense = iv;
 }
 
-void G3BasePokemon::setIvSpeed(unsigned iv) {
+template <typename T>
+void G3Pokemon<T>::setIvSpeed(unsigned iv) {
 	m_data->misc()->ivSpeed = iv;
 }
 
-void G3BasePokemon::setIvSpecialAttack(unsigned iv) {
+template <typename T>
+void G3Pokemon<T>::setIvSpecialAttack(unsigned iv) {
 	m_data->misc()->ivSpecialAttack = iv;
 }
 
-void G3BasePokemon::setIvSpecialDefense(unsigned iv) {
+template <typename T>
+void G3Pokemon<T>::setIvSpecialDefense(unsigned iv) {
 	m_data->misc()->ivSpecialDefense = iv;
 }
 
-unsigned G3BasePokemon::stat(unsigned iv, unsigned base, unsigned ev, int nature) const {
+template <typename T>
+unsigned G3Pokemon<T>::stat(unsigned iv, unsigned base, unsigned ev, int nature) const {
 	return (((iv + base * 2 + ev / 4) * level()) / 100 + 5) * (1.f + (nature / 10.f));
 }
 
-void G3BasePokemon::decrypt() {
+template <typename T>
+void G3Pokemon<T>::decrypt() {
 	if (m_dirty) {
 		return;
 	}
@@ -1519,24 +1562,26 @@ void G3BasePokemon::decrypt() {
 	}
 }
 
-uint8_t G3BasePokemon::genderDeterminer() const {
+template <typename T>
+uint8_t G3Pokemon<T>::genderDeterminer() const {
 	return m_data->personality & 0xFF;
 }
 
-const uint8_t* G3BasePokemon::data(unsigned* size) const {
+template <typename T>
+const uint8_t* G3Pokemon<T>::data(unsigned* size) const {
 	if (size) {
 		*size = sizeof(G3BasePokemonData);
 	}
 	return reinterpret_cast<uint8_t*>(m_data.get());
 }
 
-bool G3BasePokemon::copy(const Pokemon&) {
+template <typename T>
+bool G3Pokemon<T>::copy(const Pokemon&) {
 	return false;
 }
 
-G3PartyPokemon::G3PartyPokemon(Generation3* gen, uint8_t* data)
-	: G3BasePokemon(gen, reinterpret_cast<G3BasePokemonData*>(data))
-	, m_data(reinterpret_cast<G3PartyPokemonData*>(data))
+G3PartyPokemon::G3PartyPokemon(Generation3* gen, G3PartyPokemonData* data)
+	: G3Pokemon<G3PartyPokemonData>(gen, data)
 {
 }
 
@@ -1572,13 +1617,6 @@ unsigned G3PartyPokemon::specialDefense() const {
 	return m_data->specialDefense;
 }
 
-const uint8_t* G3PartyPokemon::data(unsigned* size) const {
-	if (size) {
-		*size = sizeof(G3PartyPokemonData);
-	}
-	return reinterpret_cast<uint8_t*>(m_data);
-}
-
 template <>
 PokemonSpecies::Id GenericPokemonSpecies<G3PokemonBaseStats>::id() const {
 	return PokemonSpecies::MISSINGNO;
@@ -1609,7 +1647,7 @@ std::unique_ptr<Pokemon> G3Party::at(unsigned i) {
 		return nullptr;
 	}
 	uint8_t* pstart = &m_start[4 + sizeof(G3PartyPokemonData) * i];
-	return std::unique_ptr<Pokemon>(new G3PartyPokemon(m_gen, pstart));
+	return std::unique_ptr<Pokemon>(new G3PartyPokemon(m_gen, reinterpret_cast<G3PartyPokemonData*>(pstart)));
 }
 
 unsigned G3Party::length() const {
