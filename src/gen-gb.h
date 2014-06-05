@@ -20,6 +20,7 @@ protected:
 
 public:
 	static std::string gameTextToUTF8(const uint8_t* gameText, size_t len);
+	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) override;
 };
 
 #endif

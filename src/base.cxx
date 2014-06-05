@@ -1,6 +1,7 @@
 #include "base.h"
 
 #include <cmath>
+#include <codecvt>
 #include <iostream>
 
 const static char* typeNames[] = {
@@ -1215,6 +1216,48 @@ PokemonSpecies* Game::species(PokemonSpecies::Id id) {
 
 void Game::putSpecies(PokemonSpecies::Id id, PokemonSpecies* species) {
 	m_species[id] = std::unique_ptr<PokemonSpecies>(species);
+}
+
+void Game::stringToMappedText(const char** map, char terminator, uint8_t* mappedText, size_t len, const std::string& string) {
+	if (!len) {
+		return;
+	}
+	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
+	std::u32string widestring = utf32conv.from_bytes(string);
+	auto iter = widestring.begin();
+	while (len && iter != widestring.end()) {
+		std::u32string current;
+		current.push_back(*iter);
+		for (size_t m = 0; m < 0x100; ++m) {
+			std::u32string mapItem = utf32conv.from_bytes(map[m]);
+			auto oldIter = iter;
+			std::u32string fullCurrent(current);
+			for (size_t i = 0; i < mapItem.size(); ++i) {
+				if (mapItem[i] == fullCurrent[i]) {
+					if (mapItem == fullCurrent) {
+						*mappedText = m;
+						--len;
+						++mappedText;
+						goto loopEnd;
+					}
+					++iter;
+					if (iter == widestring.end()) {
+						break;
+						iter = oldIter;
+					}
+					fullCurrent.push_back(*iter);
+				}
+			}
+		}
+		loopEnd:
+		++iter;
+	}
+	for (size_t i = 0; i < len; ++i) {
+		mappedText[i] = terminator;
+	}
+	if (!len) {
+		mappedText[-1] = terminator;
+	}
 }
 
 unsigned Pokemon::level() const {

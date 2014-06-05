@@ -68,6 +68,7 @@ private:
 	uint32_t m_version;
 
 	static Version version(const struct NameMapping* names, uint32_t name);
+	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) override;
 	class Loader : public Game::Loader {
 	public:
 		virtual Game* load(uint8_t* memory, const uint8_t* rom) const override;

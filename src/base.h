@@ -976,6 +976,9 @@ protected:
 	void setTrainerName(const std::string& name);
 	void putSpecies(PokemonSpecies::Id, PokemonSpecies*);
 
+	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) = 0;
+	void stringToMappedText(const char** mapping, char terminator, uint8_t* gameText, size_t len, const std::string&);
+
 	std::string m_trainerName;
 
 	uint8_t* m_memory;

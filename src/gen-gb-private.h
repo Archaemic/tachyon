@@ -583,10 +583,8 @@ bool GBGroup<T>::insert(const Pokemon& pokemon) {
 	uint8_t* tstart = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + 11 * len];
 	*sstart = data->species;
 	memmove(pstart, data, sizeof(typename T::DataType));
-	memset(nstart, 0x50, 11);
-	nstart[0] = 0x80;
-	memset(tstart, 0x50, 11);
-	tstart[0] = 0x80;
+	m_gen->stringToGameText(nstart, 11, pokemon.name());
+	m_gen->stringToGameText(tstart, 8, pokemon.otName());
 
 	return true;
 }

@@ -49,7 +49,7 @@ const char* GameBoyGame::charMapGBEn[0x100] = {
 
 	// 0xBX
 	u8"q", u8"r", u8"s", u8"t", u8"u", u8"v", u8"w", u8"x",
-	u8"y", u8"z", u8"é", u8"d", u8"l", u8"s", u8"t", u8"v",
+	u8"y", u8"z", u8"é", u8"ʼd", u8"ʼl", u8"ʼs", u8"ʼt", u8"ʼv",
 
 	// 0xCX
 	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
@@ -60,7 +60,7 @@ const char* GameBoyGame::charMapGBEn[0x100] = {
 	u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�", u8"�",
 
 	// 0xEX
-	u8"\'", u8"ᴾK", u8"ᴹN", u8"-", u8"r", u8"m", u8"?", u8"!",
+	u8"'", u8"ᴾK", u8"ᴹN", u8"-", u8"ʼr", u8"ʼm", u8"?", u8"!",
 	u8".", u8"ァ", u8"ゥ", u8"ェ", u8"▹", u8"▸", u8"▾", u8"♂",
 
 	// 0xFX
@@ -82,6 +82,10 @@ std::string GameBoyGame::gameTextToUTF8(const uint8_t* gameText, size_t len) {
 		stream << charMapGBEn[gameText[i]];
 	}
 	return stream.str();
+}
+
+void GameBoyGame::stringToGameText(uint8_t* gameText, size_t len, const std::string& string) {
+	stringToMappedText(charMapGBEn, 0x50, gameText, len, string);
 }
 
 Game::Version GameBoyGame::version(const ChecksumMapping* mapping, uint16_t checksum) {

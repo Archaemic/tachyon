@@ -1120,6 +1120,10 @@ void Generation3::finalize() {
 	}
 }
 
+void Generation3::stringToGameText(uint8_t* gameText, size_t len, const std::string& string) {
+	stringToMappedText(charMapEn, 0xFF, gameText, len, string);
+}
+
 G3PokemonGrowth* G3BasePokemonData::growth() {
 	switch (personality % 24) {
 	case 0:
