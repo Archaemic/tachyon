@@ -1267,12 +1267,31 @@ G3PokemonMisc* G3BasePokemonData::misc() {
 template <typename T>
 G3Pokemon<T>::G3Pokemon(Generation3* gen, T* data)
 	: m_gen(gen)
-	, m_dirty(false)
 	, m_data(new T(*data))
 {
-	decrypt();
+	crypt();
 	setName(Generation3::gameTextToUTF8(m_data->name, 10));
 	setOtName(Generation3::gameTextToUTF8(m_data->otName, 7));
+}
+
+template <typename T>
+G3Pokemon<T>::G3Pokemon(Generation3* gen)
+	: m_gen(gen)
+	, m_data(new T)
+{
+}
+
+template <typename T>
+std::unique_ptr<G3Pokemon<T>> G3Pokemon<T>::copy(Generation3* gen, const Pokemon& pokemon) {
+	if (gen->generation() != 3) {
+		return nullptr;
+	}
+
+	std::unique_ptr<G3Pokemon<T>> newPokemon(new G3Pokemon<T>(gen));
+	if (!newPokemon->copy(pokemon)) {
+		return nullptr;
+	}
+	return newPokemon;
 }
 
 template <typename T>
@@ -1552,11 +1571,7 @@ unsigned G3Pokemon<T>::stat(unsigned iv, unsigned base, unsigned ev, int nature)
 }
 
 template <typename T>
-void G3Pokemon<T>::decrypt() {
-	if (m_dirty) {
-		return;
-	}
-	m_dirty = true;
+void G3Pokemon<T>::crypt() {
 	uint32_t key = m_data->otId ^ m_data->personality;
 	for (int i = 0; i < 3; ++i) {
 		m_data->data.f0.raw[i] ^= key;
@@ -1564,6 +1579,22 @@ void G3Pokemon<T>::decrypt() {
 		m_data->data.f2.raw[i] ^= key;
 		m_data->data.f3.raw[i] ^= key;
 	}
+}
+
+template <typename T>
+void G3Pokemon<T>::checksum() {
+	uint16_t sum = 0;
+	for (int i = 0; i < 3; ++i) {
+		sum += m_data->data.f0.raw[i];
+		sum += m_data->data.f0.raw[i] >> 16;
+		sum += m_data->data.f1.raw[i];
+		sum += m_data->data.f1.raw[i] >> 16;
+		sum += m_data->data.f2.raw[i];
+		sum += m_data->data.f2.raw[i] >> 16;
+		sum += m_data->data.f3.raw[i];
+		sum += m_data->data.f3.raw[i] >> 16;
+	}
+	m_data->checksum = sum;
 }
 
 template <typename T>
@@ -1580,13 +1611,37 @@ const uint8_t* G3Pokemon<T>::data(unsigned* size) const {
 }
 
 template <typename T>
-bool G3Pokemon<T>::copy(const Pokemon&) {
-	return false;
+bool G3Pokemon<T>::copy(const Pokemon& other) {
+	if (other.game()->generation() != 3) {
+		return false;
+	}
+
+	unsigned size;
+	const uint8_t* oldData = other.data(&size);
+	memcpy(m_data.get(), oldData, std::min<unsigned>(size, sizeof(T)));
+	return true;
 }
 
 G3PartyPokemon::G3PartyPokemon(Generation3* gen, G3PartyPokemonData* data)
 	: G3Pokemon<G3PartyPokemonData>(gen, data)
 {
+}
+
+G3PartyPokemon::G3PartyPokemon(Generation3* gen)
+	: G3Pokemon<G3PartyPokemonData>(gen)
+{
+}
+
+std::unique_ptr<G3PartyPokemon> G3PartyPokemon::copy(Generation3* gen, const Pokemon& pokemon) {
+	if (gen->generation() != 3) {
+		return nullptr;
+	}
+
+	std::unique_ptr<G3PartyPokemon> newPokemon(new G3PartyPokemon(gen));
+	if (!newPokemon->copy(pokemon)) {
+		return nullptr;
+	}
+	return newPokemon;
 }
 
 unsigned G3PartyPokemon::level() const {
@@ -1619,6 +1674,22 @@ unsigned G3PartyPokemon::specialAttack() const {
 
 unsigned G3PartyPokemon::specialDefense() const {
 	return m_data->specialDefense;
+}
+
+bool G3PartyPokemon::copy(const Pokemon& other) {
+	if (!G3Pokemon<G3PartyPokemonData>::copy(other)) {
+		return false;
+	}
+
+	G3Pokemon<G3PartyPokemonData>::m_data->currentHp = other.currentHp();
+	G3Pokemon<G3PartyPokemonData>::m_data->level = G3Pokemon<G3PartyPokemonData>::level();
+	G3Pokemon<G3PartyPokemonData>::m_data->maxHp = G3Pokemon<G3PartyPokemonData>::maxHp();
+	G3Pokemon<G3PartyPokemonData>::m_data->attack = G3Pokemon<G3PartyPokemonData>::attack();
+	G3Pokemon<G3PartyPokemonData>::m_data->defense = G3Pokemon<G3PartyPokemonData>::defense();
+	G3Pokemon<G3PartyPokemonData>::m_data->speed = G3Pokemon<G3PartyPokemonData>::speed();
+	G3Pokemon<G3PartyPokemonData>::m_data->specialAttack = G3Pokemon<G3PartyPokemonData>::specialAttack();
+	G3Pokemon<G3PartyPokemonData>::m_data->specialDefense = G3Pokemon<G3PartyPokemonData>::specialDefense();
+	return true;
 }
 
 template <>
@@ -1675,8 +1746,25 @@ void G3Party::remove(unsigned i) {
 	memset(pend, 0, sizeof(G3PartyPokemonData) * (capacity() - m_start[0]));
 }
 
-bool G3Party::insert(const Pokemon&) {
-	return false;
+bool G3Party::insert(const Pokemon& pokemon) {
+	unsigned len = length();
+	if (len >= capacity()) {
+		return false;
+	}
+
+	std::unique_ptr<G3PartyPokemon> convertedPokemon = G3PartyPokemon::copy(m_gen, pokemon);
+	if (!convertedPokemon) {
+		return false;
+	}
+
+	convertedPokemon->crypt();
+	const G3PartyPokemonData* data = reinterpret_cast<const G3PartyPokemonData*>(convertedPokemon->data(nullptr));
+
+	++m_start[0];
+	uint8_t* pstart = &m_start[4 + sizeof(G3PartyPokemonData) * len];
+	memmove(pstart, data, sizeof(G3PartyPokemonData));
+
+	return true;
 }
 
 G3Box::G3Box(Generation3* gen, G3BasePokemonData* start)
@@ -1713,6 +1801,29 @@ void G3Box::remove(unsigned i) {
 	memset(pstart, 0, sizeof(G3BasePokemonData));
 }
 
-bool G3Box::insert(const Pokemon&) {
-	return false;
+bool G3Box::insert(const Pokemon& pokemon) {
+	size_t i;
+	for (i = 0; i < capacity(); ++i) {
+		G3BasePokemonData* data = &m_start[i];
+		if (data->checksum == 0) {
+			break;
+		}
+	}
+	if (i == capacity()) {
+		return false;
+	}
+
+	std::unique_ptr<G3BasePokemon> convertedPokemon = G3BasePokemon::copy(m_gen, pokemon);
+	if (!convertedPokemon) {
+		return false;
+	}
+
+	convertedPokemon->checksum();
+	convertedPokemon->crypt();
+	const G3BasePokemonData* data = reinterpret_cast<const G3BasePokemonData*>(convertedPokemon->data(nullptr));
+
+	G3BasePokemonData* pstart = &m_start[i];
+	memmove(pstart, data, sizeof(G3BasePokemonData));
+
+	return true;
 }
