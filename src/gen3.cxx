@@ -1339,6 +1339,16 @@ Type G3Pokemon<T>::type1() const {
 }
 
 template <typename T>
+unsigned G3Pokemon<T>::pokerusStrain() const {
+	return m_data->misc()->pokerus >> 4;
+}
+
+template <typename T>
+unsigned G3Pokemon<T>::pokerusDays() const {
+	return m_data->misc()->pokerus & 0xF;
+}
+
+template <typename T>
 Type G3Pokemon<T>::type2() const {
 	return species()->type2();
 }
@@ -1676,6 +1686,10 @@ unsigned G3PartyPokemon::specialDefense() const {
 	return m_data->specialDefense;
 }
 
+unsigned G3PartyPokemon::pokerusDays() const {
+	return m_data->pokerus & 0xF;
+}
+
 bool G3PartyPokemon::copy(const Pokemon& other) {
 	if (!G3Pokemon<G3PartyPokemonData>::copy(other)) {
 		return false;
@@ -1689,6 +1703,7 @@ bool G3PartyPokemon::copy(const Pokemon& other) {
 	G3Pokemon<G3PartyPokemonData>::m_data->speed = G3Pokemon<G3PartyPokemonData>::speed();
 	G3Pokemon<G3PartyPokemonData>::m_data->specialAttack = G3Pokemon<G3PartyPokemonData>::specialAttack();
 	G3Pokemon<G3PartyPokemonData>::m_data->specialDefense = G3Pokemon<G3PartyPokemonData>::specialDefense();
+	G3Pokemon<G3PartyPokemonData>::m_data->pokerus = G3Pokemon<G3PartyPokemonData>::pokerusDays();
 	return true;
 }
 

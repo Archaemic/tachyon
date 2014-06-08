@@ -72,6 +72,8 @@ public:
 	virtual unsigned currentHp() const override;
 	virtual Type type1() const override;
 	virtual Type type2() const override;
+	virtual unsigned pokerusStrain() const override;
+	virtual unsigned pokerusDays() const override;
 
 	virtual unsigned maxHp() const override;
 	virtual unsigned attack() const override;
@@ -303,6 +305,16 @@ Type GBPokemon<T>::type1() const {
 template <typename T>
 Type GBPokemon<T>::type2() const {
 	return species()->type2();
+}
+
+template <typename T>
+unsigned GBPokemon<T>::pokerusStrain() const {
+	return m_data->pokerus >> 4;
+}
+
+template <typename T>
+unsigned GBPokemon<T>::pokerusDays() const {
+	return m_data->pokerus & 0xF;
 }
 
 template <typename T>

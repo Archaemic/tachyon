@@ -127,6 +127,26 @@ Type GBPokemon<G1BasePokemonData>::type2() const {
 }
 
 template <>
+unsigned GBPokemon<G1BasePokemonData>::pokerusStrain() const {
+	return 0;
+}
+
+template <>
+unsigned GBPokemon<G1BasePokemonData>::pokerusDays() const {
+	return 0;
+}
+
+template <>
+unsigned GBPokemon<G1PartyPokemonData>::pokerusStrain() const {
+	return 0;
+}
+
+template <>
+unsigned GBPokemon<G1PartyPokemonData>::pokerusDays() const {
+	return 0;
+}
+
+template <>
 unsigned GBPartyPokemon<G1PartyPokemonData>::specialAttack() const {
 	return R16(m_data->special);
 }

@@ -845,6 +845,8 @@ public:
 	virtual unsigned currentHp() const = 0;
 	virtual Type type1() const = 0;
 	virtual Type type2() const = 0;
+	virtual unsigned pokerusStrain() const = 0;
+	virtual unsigned pokerusDays() const = 0;
 
 	virtual unsigned level() const;
 	virtual unsigned maxHp() const = 0;

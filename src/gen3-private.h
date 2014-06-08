@@ -161,6 +161,8 @@ public:
 	virtual unsigned xp() const override;
 	virtual Type type1() const override;
 	virtual Type type2() const override;
+	virtual unsigned pokerusStrain() const override;
+	virtual unsigned pokerusDays() const override;
 
 	virtual unsigned currentHp() const override;
 	virtual unsigned maxHp() const override;
@@ -231,6 +233,7 @@ public:
 	virtual unsigned speed() const override;
 	virtual unsigned specialAttack() const override;
 	virtual unsigned specialDefense() const override;
+	virtual unsigned pokerusDays() const override;
 
 	virtual bool copy(const Pokemon& other) override;
 };
