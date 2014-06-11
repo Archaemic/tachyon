@@ -2,6 +2,7 @@
 #define PTXN_GEN_3_PRIVATE_H
 
 #include "gen3.h"
+#include "common/GenericPokemonSpecies.h"
 
 struct G3PokemonGrowth {
 	uint16_t species;

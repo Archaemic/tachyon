@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "gen1.h"
+#include "gen1/Generation1.h"
 #include "gen2.h"
 #include "gen3.h"
 #include "util.h"

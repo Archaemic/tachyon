@@ -3,6 +3,7 @@
 
 #include "gen2.h"
 #include "gen-gb-private.h"
+#include "common/GenericPokemonSpecies.h"
 
 struct G2TMSet {
 public:
