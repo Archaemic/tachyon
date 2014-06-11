@@ -1,0 +1,85 @@
+#include "common/Game.h"
+
+#include <codecvt>
+#include <iostream>
+
+std::vector<std::unique_ptr<Game::Loader>> Game::s_loaders;
+
+Game::Game(uint8_t* memory, const uint8_t* rom)
+	: m_memory(memory)
+	, m_rom(rom)
+{
+}
+
+void Game::Loader::registerLoader(std::unique_ptr<Game::Loader> loader) {
+	s_loaders.push_back(std::move(loader));
+}
+
+std::unique_ptr<Game> Game::load(uint8_t* memory, const uint8_t* rom) {
+	Game* game;
+	for (auto iter = s_loaders.begin(); iter < s_loaders.end(); ++iter) {
+		game = (*iter)->load(memory, rom);
+		if (game) {
+			return std::unique_ptr<Game>(game);
+		}
+	}
+	return nullptr;
+}
+
+const std::string& Game::trainerName() const {
+	return m_trainerName;
+}
+
+void Game::setTrainerName(const std::string& name) {
+	m_trainerName = name;
+}
+
+PokemonSpecies* Game::species(PokemonSpecies::Id id) {
+	return m_species[id].get();
+}
+
+void Game::putSpecies(PokemonSpecies::Id id, PokemonSpecies* species) {
+	m_species[id] = std::unique_ptr<PokemonSpecies>(species);
+}
+
+void Game::stringToMappedText(const char** map, char terminator, uint8_t* mappedText, size_t len, const std::string& string) {
+	if (!len) {
+		return;
+	}
+	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
+	std::u32string widestring = utf32conv.from_bytes(string);
+	auto iter = widestring.begin();
+	while (len && iter != widestring.end()) {
+		std::u32string current;
+		current.push_back(*iter);
+		for (size_t m = 0; m < 0x100; ++m) {
+			std::u32string mapItem = utf32conv.from_bytes(map[m]);
+			auto oldIter = iter;
+			std::u32string fullCurrent(current);
+			for (size_t i = 0; i < mapItem.size(); ++i) {
+				if (mapItem[i] == fullCurrent[i]) {
+					if (mapItem == fullCurrent) {
+						*mappedText = m;
+						--len;
+						++mappedText;
+						goto loopEnd;
+					}
+					++iter;
+					if (iter == widestring.end()) {
+						break;
+						iter = oldIter;
+					}
+					fullCurrent.push_back(*iter);
+				}
+			}
+		}
+		loopEnd:
+		++iter;
+	}
+	for (size_t i = 0; i < len; ++i) {
+		mappedText[i] = terminator;
+	}
+	if (!len) {
+		mappedText[-1] = terminator;
+	}
+}

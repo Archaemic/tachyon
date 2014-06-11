@@ -6,6 +6,9 @@
 #include <iomanip>
 #include <sstream>
 
+#include "common/Group.h"
+#include "common/Move.h"
+#include "common/Pokemon.h"
 #include "gen1/Generation1.h"
 #include "gen2/Generation2.h"
 #include "gen3.h"

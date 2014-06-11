@@ -11,7 +11,6 @@ file(GLOB COMMON_SRC ${CMAKE_SOURCE_DIR}/src/common/*.cxx)
 
 set(SRC
 	${CMAKE_SOURCE_DIR}/src/main.cxx
-	${CMAKE_SOURCE_DIR}/src/base.cxx
 	${CMAKE_SOURCE_DIR}/src/gen3.cxx
 )
 

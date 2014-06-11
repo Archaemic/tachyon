@@ -1,7 +1,7 @@
 #ifndef PTXN_GEN_3_H
 #define PTXN_GEN_3_H
 
-#include "base.h"
+#include "common/Game.h"
 
 struct G3BasePokemonData;
 

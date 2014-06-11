@@ -1,7 +1,7 @@
 #ifndef PTXN_GENERIC_POKEMON_SPECIES_H
 #define PTXN_GENERIC_POKEMON_SPECIES_H
 
-#include "base.h"
+#include "common/PokemonSpecies.h"
 
 template <typename T>
 class GenericPokemonSpecies : public PokemonSpecies {

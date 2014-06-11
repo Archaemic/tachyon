@@ -3,6 +3,8 @@
 
 #include "gen3.h"
 #include "common/GenericPokemonSpecies.h"
+#include "common/Group.h"
+#include "common/Pokemon.h"
 
 struct G3PokemonGrowth {
 	uint16_t species;

@@ -1,7 +1,11 @@
 #ifndef PTXN_GAME_BOY_GAME_H
 #define PTXN_GAME_BOY_GAME_H
 
-#include "base.h"
+#include "common/Game.h"
+
+#define R16(V) (((V) & 0xFF) << 8) | (((V) & 0xFF00) >> 8)
+#define R24(V) (((V) & 0xFF) << 16) | ((V) & 0xFF00) | (((V) & 0xFF0000) >> 16)
+#define R32(V) (((V) & 0xFF) << 24) | (((V) & 0xFF00) << 8) | (((V) & 0xFF0000) >> 8) | (((V) & 0xFF000000) >> 24)
 
 class GameBoyGame : public Game {
 public:
