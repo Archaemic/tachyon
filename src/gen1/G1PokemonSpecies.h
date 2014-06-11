@@ -1,8 +1,8 @@
 #ifndef PTXN_G1_POKEMON_SPECIES_H
 #define PTXN_G1_POKEMON_SPECIES_H
 
+#include "common/GameBoyGame.h"
 #include "common/GenericPokemonSpecies.h"
-#include "gen-gb-private.h"
 
 struct G1TMSet {
 public:

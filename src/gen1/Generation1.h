@@ -1,7 +1,7 @@
 #ifndef PTXN_GENERATION_1_H
 #define PTXN_GENERATION_1_H
 
-#include "gen-gb.h"
+#include "common/GameBoyGame.h"
 
 class Generation1 : public GameBoyGame {
 public:

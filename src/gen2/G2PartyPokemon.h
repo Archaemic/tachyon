@@ -1,7 +1,7 @@
 #ifndef PTXN_G2_PARTY_POKEMON_H
 #define PTXN_G2_PARTY_POKEMON_H
 
-#include "gen-gb-private.h"
+#include "common/GBPartyPokemon.h"
 #include "gen2/G2BasePokemon.h"
 
 struct G2PartyPokemonData : public G2BasePokemonData {

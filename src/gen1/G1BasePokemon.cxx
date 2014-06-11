@@ -14,12 +14,12 @@ unsigned GBPokemon<G1BasePokemonData>::currentHp() const {
 
 template <>
 Type GBPokemon<G1BasePokemonData>::type1() const {
-	return typeMapping[m_data->type1];
+	return GameBoyGame::typeMapping[m_data->type1];
 }
 
 template <>
 Type GBPokemon<G1BasePokemonData>::type2() const {
-	return typeMapping[m_data->type2];
+	return GameBoyGame::typeMapping[m_data->type2];
 }
 
 template <>

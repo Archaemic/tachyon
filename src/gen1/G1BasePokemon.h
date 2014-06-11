@@ -1,7 +1,7 @@
 #ifndef PTXN_G1_BASE_POKEMON
 #define PTXN_G1_BASE_POKEMON
 
-#include "gen-gb-private.h"
+#include "common/GBPokemon.h"
 
 enum {
 	G10E_ID_MAPPING = 0x041023,

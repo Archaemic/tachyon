@@ -1,4 +1,4 @@
-#include "gen-gb-private.h"
+#include "common/GameBoyGame.h"
 
 #include <sstream>
 
@@ -66,6 +66,39 @@ const char* GameBoyGame::charMapGBEn[0x100] = {
 	// 0xFX
 	u8"$", u8"×", u8".", u8"/", u8",", u8"♀", u8"0", u8"1",
 	u8"2", u8"3", u8"4", u8"5", u8"6", u8"7", u8"8", u8"9"
+};
+
+const Type GameBoyGame::typeMapping[256] = {
+	NORMAL,
+	FIGHTING,
+	FLYING,
+	POISON,
+	GROUND,
+	ROCK,
+	BIRD,
+	BUG,
+	GHOST,
+	STEEL,
+
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+	QQQ,
+
+	QQQ,
+	FIRE,
+	WATER,
+	GRASS,
+	ELECTRIC,
+	PSYCHIC,
+	ICE,
+	DRAGON,
+	DARK
 };
 
 GameBoyGame::GameBoyGame(uint8_t* memory, const uint8_t* rom)

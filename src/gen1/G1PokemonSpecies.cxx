@@ -27,5 +27,5 @@ G1PokemonSpecies::G1PokemonSpecies(const G1PokemonBaseStats* data)
 }
 
 Type G1PokemonSpecies::mapType(unsigned unmapped) const {
-	return typeMapping[static_cast<uint8_t>(unmapped)];
+	return GameBoyGame::typeMapping[static_cast<uint8_t>(unmapped)];
 }

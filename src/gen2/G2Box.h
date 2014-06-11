@@ -1,7 +1,7 @@
 #ifndef PTXN_G2_BOX_H
 #define PTXN_G2_BOX_H
 
-#include "gen-gb-private.h"
+#include "common/GBGroup.h"
 #include "gen2/G2BasePokemon.h"
 
 class Generation2;

@@ -2,7 +2,6 @@
 #define PTXN_G2_POKEMON_SPECIES_H
 
 #include "common/GenericPokemonSpecies.h"
-#include "gen-gb-private.h"
 
 struct G2TMSet {
 public:
