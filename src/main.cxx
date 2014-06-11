@@ -11,7 +11,7 @@
 #include "common/Pokemon.h"
 #include "gen1/Generation1.h"
 #include "gen2/Generation2.h"
-#include "gen3.h"
+#include "gen3/Generation3.h"
 #include "util.h"
 
 int main(int, char**) {

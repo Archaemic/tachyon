@@ -1,5 +1,5 @@
-#ifndef PTXN_GEN_3_H
-#define PTXN_GEN_3_H
+#ifndef PTXN_GENERATION_3_H
+#define PTXN_GENERATION_3_H
 
 #include "common/Game.h"
 

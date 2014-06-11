@@ -1,6 +1,8 @@
 #ifndef PTXN_GROUP_H
 #define PTXN_GROUP_H
 
+#include <memory>
+
 class Pokemon;
 
 class Group {
