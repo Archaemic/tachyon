@@ -1,5 +1,5 @@
-#ifndef PTXN_GEN_2_H
-#define PTXN_GEN_2_H
+#ifndef PTXN_GENERATION_2_H
+#define PTXN_GENERATION_2_H
 
 #include "gen-gb.h"
 
