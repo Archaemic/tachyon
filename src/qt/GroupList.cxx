@@ -25,7 +25,7 @@ int GroupList::rowCount(const QModelIndex&) const {
 }
 
 QVariant GroupList::data(const QModelIndex& index, int role) const {
-	std::unique_ptr<Group> group;
+	Group* group;
 	if (index.row()) {
 		group = m_cart->game()->box(index.row() - 1);
 	} else {
@@ -35,7 +35,7 @@ QVariant GroupList::data(const QModelIndex& index, int role) const {
 	case Qt::DisplayRole:
 		return QString::fromUtf8(group->name().c_str());
 	case Qt::UserRole:
-		return QVariant::fromValue((void*) group.release());
+		return QVariant::fromValue((void*) group);
 	default:
 		return QVariant();
 	}

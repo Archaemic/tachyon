@@ -26,6 +26,10 @@ Generation1::Generation1(uint8_t* memory, const uint8_t* rom)
 	: GameBoyGame(memory, rom)
 {
 	setTrainerName(gameTextToUTF8(&memory[G10E_TRAINER_NAME], 8));
+	setParty(new G1Party(this));
+	for (unsigned box = 0; box < numBoxes(); ++box) {
+		addBox(new G1Box(this, box));
+	}
 }
 
 void Generation1::registerLoader() {
@@ -38,14 +42,6 @@ Game* Generation1::Loader::load(uint8_t* memory, const uint8_t* rom) const {
 		return new Generation1(memory, rom);
 	}
 	return nullptr;
-}
-
-std::unique_ptr<Group> Generation1::party() {
-	return std::unique_ptr<Group>(new G1Party(this));
-}
-
-std::unique_ptr<Group> Generation1::box(unsigned box) {
-	return std::unique_ptr<Group>(new G1Box(this, box));
 }
 
 unsigned Generation1::numBoxes() const {

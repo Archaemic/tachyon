@@ -34,6 +34,25 @@ void Game::setTrainerName(const std::string& name) {
 	m_trainerName = name;
 }
 
+Group* Game::party() {
+	return m_party.get();
+}
+
+void Game::setParty(Group* party) {
+	m_party = std::unique_ptr<Group>(party);
+}
+
+Group* Game::box(unsigned box) {
+	if (box > m_boxes.size()) {
+		return nullptr;
+	}
+	return m_boxes[box].get();
+}
+
+void Game::addBox(Group* box) {
+	m_boxes.push_back(std::unique_ptr<Group>(box));
+}
+
 PokemonSpecies* Game::species(PokemonSpecies::Id id) {
 	return m_species[id].get();
 }

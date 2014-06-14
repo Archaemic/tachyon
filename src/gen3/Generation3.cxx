@@ -536,6 +536,11 @@ Generation3::Generation3(uint8_t* memory, const uint8_t* rom)
 	}
 
 	setTrainerName(gameTextToUTF8(&m_sections[0]->data[G30E_TRAINER_NAME], 8));
+	setParty(new G3Party(this));
+	for (unsigned box = 0; box < numBoxes(); ++box) {
+		uint8_t* boxName = &this->section(Section::PC_8)->data[G30E_BOX_NAMES + box * 9];
+		addBox(new G3Box(this, &m_boxes[G3_POKEMON_PER_BOX * box], gameTextToUTF8(boxName, 9)));
+	}
 }
 
 void Generation3::registerLoader() {
@@ -559,15 +564,6 @@ std::string Generation3::gameTextToUTF8(const uint8_t* gameText, size_t len) {
 		stream << charMapEn[gameText[i]];
 	}
 	return stream.str();
-}
-
-std::unique_ptr<Group> Generation3::party() {
-	return std::unique_ptr<Group>(new G3Party(this));
-}
-
-std::unique_ptr<Group> Generation3::box(unsigned box) {
-	uint8_t* boxName = &section(Section::PC_8)->data[G30E_BOX_NAMES + box * 9];
-	return std::unique_ptr<Group>(new G3Box(this, &m_boxes[G3_POKEMON_PER_BOX * box], gameTextToUTF8(boxName, 9)));
 }
 
 unsigned Generation3::numBoxes() const {

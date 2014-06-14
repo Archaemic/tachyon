@@ -7,9 +7,9 @@
 #include <unordered_map>
 #include <vector>
 
+#include "common/Group.h"
 #include "common/PokemonSpecies.h"
 
-class Group;
 class Pokemon;
 
 class Game {
@@ -58,8 +58,8 @@ public:
 
 	const std::string& trainerName() const;
 
-	virtual std::unique_ptr<Group> party() = 0;
-	virtual std::unique_ptr<Group> box(unsigned box) = 0;
+	Group* party();
+	Group* box(unsigned box);
 	virtual unsigned numBoxes() const = 0;
 
 	virtual Version version() const = 0;
@@ -79,6 +79,9 @@ protected:
 	void setTrainerName(const std::string& name);
 	void putSpecies(PokemonSpecies::Id, PokemonSpecies*);
 
+	void setParty(Group* party);
+	void addBox(Group* box);
+
 	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) = 0;
 	void stringToMappedText(const char** mapping, char terminator, uint8_t* gameText, size_t len, const std::string&);
 
@@ -90,6 +93,9 @@ protected:
 private:
 	static std::vector<std::unique_ptr<Loader>> s_loaders;
 	std::unordered_map<int, std::unique_ptr<PokemonSpecies>> m_species;
+
+	std::unique_ptr<Group> m_party;
+	std::vector<std::unique_ptr<Group>> m_boxes;
 };
 
 #endif

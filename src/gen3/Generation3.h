@@ -40,8 +40,6 @@ public:
 
 	Generation3(uint8_t* memory, const uint8_t* rom);
 
-	virtual std::unique_ptr<Group> party() override;
-	virtual std::unique_ptr<Group> box(unsigned box) override;
 	virtual unsigned numBoxes() const;
 
 	virtual Version version() const override;

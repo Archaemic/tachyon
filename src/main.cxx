@@ -138,16 +138,16 @@ int main(int, char**) {
 	}, 15);
 
 	std::vector<std::unique_ptr<Pokemon>> pokemonRefs;
-	std::vector<std::unique_ptr<Group>> groups;
+	std::vector<Group*> groups;
 
 	groups.push_back(game->party());
 	for (unsigned b = 0; b < game->numBoxes(); ++b) {
 		groups.push_back(game->box(b));
 	}
 
-	for (auto iter = groups.begin(); iter < groups.end(); ++iter) {
-		for (unsigned i = 0; i < (*iter)->length(); ++i) {
-			std::unique_ptr<Pokemon> pokemon = (*iter)->at(i);
+	for (auto group : groups) {
+		for (unsigned i = 0; i < group->length(); ++i) {
+			std::unique_ptr<Pokemon> pokemon = group->at(i);
 			if (pokemon) {
 				table.addRow(pokemon.get());
 				pokemonRefs.push_back(std::move(pokemon));
