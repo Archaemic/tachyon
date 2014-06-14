@@ -11,6 +11,10 @@ public:
 	G2Party(Generation2* gen);
 
 	virtual unsigned capacity() const override;
+	virtual std::string name() const override;
+
+private:
+	std::string m_name;
 };
 
 #endif

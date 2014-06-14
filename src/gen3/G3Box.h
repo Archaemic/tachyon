@@ -12,11 +12,12 @@ struct G3BasePokemonData;
 
 class G3Box : public Group {
 public:
-	G3Box(Generation3* gen, G3BasePokemonData* start);
+	G3Box(Generation3* gen, G3BasePokemonData* start, const std::string& name);
 
 	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
 	virtual unsigned length() const override;
 	virtual unsigned capacity() const override;
+	virtual std::string name() const override;
 
 	virtual void remove(unsigned i) override;
 	virtual bool insert(const Pokemon& pokemon) override;
@@ -24,6 +25,7 @@ public:
 private:
 	Generation3* m_gen;
 	G3BasePokemonData* m_start;
+	std::string m_name;
 };
 
 #endif

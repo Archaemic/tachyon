@@ -10,6 +10,7 @@ enum {
 	G3_BOXES = 14,
 
 	G30E_PARTY_POKEMON = 0x0234,
+	G30E_BOX_NAMES = 0x0744,
 
 	G30E_RUBY_BASE_STATS = 0x1FEC34,
 	G30E_SAPPHIRE_BASE_STATS = 0x1FEBC4,
@@ -565,7 +566,8 @@ std::unique_ptr<Group> Generation3::party() {
 }
 
 std::unique_ptr<Group> Generation3::box(unsigned box) {
-	return std::unique_ptr<Group>(new G3Box(this, &m_boxes[G3_POKEMON_PER_BOX * box]));
+	uint8_t* boxName = &section(Section::PC_8)->data[G30E_BOX_NAMES + box * 9];
+	return std::unique_ptr<Group>(new G3Box(this, &m_boxes[G3_POKEMON_PER_BOX * box], gameTextToUTF8(boxName, 9)));
 }
 
 unsigned Generation3::numBoxes() const {

@@ -29,6 +29,10 @@ unsigned G3Party::capacity() const {
 	return 6;
 }
 
+std::string G3Party::name() const {
+	return "Party";
+}
+
 void G3Party::remove(unsigned i) {
 	unsigned len = length();
 	if (i >= len) {

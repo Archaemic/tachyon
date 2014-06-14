@@ -11,6 +11,7 @@ public:
 	G1Party(Generation1* gen);
 
 	virtual unsigned capacity() const override;
+	virtual std::string name() const override;
 };
 
 #endif

@@ -11,6 +11,10 @@ public:
 	G1Box(Generation1* gen, unsigned box);
 
 	virtual unsigned capacity() const override;
+	virtual std::string name() const override;
+
+private:
+	unsigned m_box;
 };
 
 #endif

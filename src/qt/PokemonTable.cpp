@@ -46,7 +46,7 @@ QVariant PokemonTable::data(const QModelIndex& index, int role) const {
 			return "";
 		}
 		if (index.row()) {
-			return tr("Box") + tr(" ") + QString::number(index.row());
+			return QString::fromUtf8(m_groups[index.row()]->name().c_str());
 		} else {
 			return tr("Party");
 		}

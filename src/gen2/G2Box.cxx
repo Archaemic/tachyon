@@ -7,6 +7,8 @@ enum {
 
 	G20E_CURRENT_BOX_ID = 0x2724,
 	G21E_CURRENT_BOX_ID = 0x2700,
+	G20E_BOX_NAMES = 0x2727,
+	G21E_BOX_NAMES = 0x2703,
 	G20E_CURRENT_BOX = 0x2D6C,
 	G21E_CURRENT_BOX = 0x2D11,
 	G20E_BOX_1 = 0x4000,
@@ -32,6 +34,7 @@ G2Box::G2Box(Generation2* gen, unsigned box)
 		} else {
 			start += G20E_CURRENT_BOX;
 		}
+		m_name = gen->gameTextToUTF8(&gen->ram()[G20E_BOX_NAMES + 9 * box], 9);
 		break;
 	case Game::G21E_CRYSTAL:
 	case Game::G21J_CRYSTAL:
@@ -44,6 +47,7 @@ G2Box::G2Box(Generation2* gen, unsigned box)
 		} else {
 			start += G21E_CURRENT_BOX;
 		}
+		m_name = gen->gameTextToUTF8(&gen->ram()[G21E_BOX_NAMES + 9 * box], 9);
 		break;
 	}
 
@@ -52,4 +56,8 @@ G2Box::G2Box(Generation2* gen, unsigned box)
 
 unsigned G2Box::capacity() const {
 	return 20;
+}
+
+std::string G2Box::name() const {
+	return m_name;
 }

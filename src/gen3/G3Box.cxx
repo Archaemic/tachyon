@@ -2,9 +2,10 @@
 
 #include "gen3/G3BasePokemon.h"
 
-G3Box::G3Box(Generation3* gen, G3BasePokemonData* start)
+G3Box::G3Box(Generation3* gen, G3BasePokemonData* start, const std::string& name)
 	: m_gen(gen)
 	, m_start(start)
+	, m_name(name)
 {
 }
 
@@ -25,6 +26,10 @@ unsigned G3Box::length() const {
 
 unsigned G3Box::capacity() const {
 	return G3_POKEMON_PER_BOX;
+}
+
+std::string G3Box::name() const {
+	return m_name;
 }
 
 void G3Box::remove(unsigned i) {

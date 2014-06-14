@@ -28,3 +28,7 @@ G2Party::G2Party(Generation2* gen)
 unsigned G2Party::capacity() const {
 	return 6;
 }
+
+std::string G2Party::name() const {
+	return "Party";
+}

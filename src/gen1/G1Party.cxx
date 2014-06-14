@@ -15,3 +15,7 @@ G1Party::G1Party(Generation1* gen)
 unsigned G1Party::capacity() const {
 	return 6;
 }
+
+std::string G1Party::name() const {
+	return "Party";
+}

@@ -12,6 +12,7 @@ public:
 	virtual std::unique_ptr<Pokemon> at(unsigned i) override;
 	virtual unsigned length() const override;
 	virtual unsigned capacity() const override;
+	virtual std::string name() const override;
 
 	virtual void remove(unsigned i) override;
 	virtual bool insert(const Pokemon& pokemon) override;
