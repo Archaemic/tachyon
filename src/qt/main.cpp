@@ -1,5 +1,5 @@
 #include <QApplication>
-#include <QTableView>
+#include <QTreeView>
 
 #include "gen1/Generation1.h"
 #include "gen2/Generation2.h"
@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
 
 	QApplication app(argc, argv);
 	PokemonTable table;
-	QTableView view;
+	QTreeView view;
 	Cartridge cart("game.bin", "test.sav");
 	table.load(&cart);
 	view.setModel(&table);
