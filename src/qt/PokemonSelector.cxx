@@ -27,7 +27,7 @@ PokemonSelector::PokemonSelector(QWidget* parent)
 	hbox->addWidget(m_tableView);
 	setLayout(hbox);
 
-	connect(m_listView, SIGNAL(activated(const QModelIndex&)), this, SLOT(selectGroup(const QModelIndex&)));
+	connect(m_listView->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(selectGroup(const QModelIndex&)));
 }
 
 void PokemonSelector::load(Cartridge* cart) {
