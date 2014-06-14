@@ -13,10 +13,15 @@ PokemonTable::PokemonTable(QObject* parent)
 }
 
 void PokemonTable::setGroup(Group* group) {
+	beginResetModel();
 	m_group = group;
+	endResetModel();
 }
 
 int PokemonTable::rowCount(const QModelIndex&) const {
+	if (!m_group) {
+		return 0;
+	}
 	return m_group->length();
 }
 
@@ -29,6 +34,9 @@ QVariant PokemonTable::data(const QModelIndex& index, int role) const {
 		return QVariant();
 	}
 	std::unique_ptr<Pokemon> pokemon = m_group->at(index.row());
+	if (!pokemon) {
+		return "---";
+	}
 	switch (index.column()) {
 	case COLUMN_NAME:
 		return QString::fromUtf8(pokemon->name().c_str());

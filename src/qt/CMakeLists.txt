@@ -12,11 +12,13 @@ endif()
 find_package(Qt5Widgets REQUIRED)
 
 set(SRC
-	Cartridge.cpp
-	PokemonTable.cpp
+	Cartridge.cxx
+	GroupList.cxx
+	PokemonSelector.cxx
+	PokemonTable.cxx
 )
 
-add_executable(QTachyon WIN32 MACOSX_BUNDLE main.cpp ${SRC})
+add_executable(QTachyon WIN32 MACOSX_BUNDLE main.cxx ${SRC})
 
 qt5_use_modules(QTachyon Widgets)
 
