@@ -1,36 +1,26 @@
 #include "PokemonTable.h"
 
 #include "common/Game.h"
+#include "common/Group.h"
 #include "common/Move.h"
-#include "common/Pokemon.h"
-
-#include "Cartridge.h"
 
 #include <vector>
 
 PokemonTable::PokemonTable(QObject* parent)
-	: QAbstractItemModel(parent)
-	, m_cart(nullptr)
+	: QAbstractTableModel(parent)
+	, m_group(nullptr)
 {
-	update();
 }
 
-void PokemonTable::load(Cartridge* cart) {
-	m_cart = cart;
-	update();
+void PokemonTable::setGroup(Group* group) {
+	m_group = group;
 }
 
-int PokemonTable::rowCount(const QModelIndex& index) const {
-	if (!index.isValid()) {
-		return m_groups.size();
-	}
-	if (index.parent().isValid()) {
-		return 0;
-	}
-	return m_groups[index.row()]->length();
+int PokemonTable::rowCount(const QModelIndex&) const {
+	return m_group->length();
 }
 
-int PokemonTable::columnCount(const QModelIndex& index) const {
+int PokemonTable::columnCount(const QModelIndex&) const {
 	return COLUMN_MAX;
 }
 
@@ -38,27 +28,7 @@ QVariant PokemonTable::data(const QModelIndex& index, int role) const {
 	if (role != Qt::DisplayRole) {
 		return QVariant();
 	}
-
-	QModelIndex parent = index.parent();
-
-	if (!parent.isValid()) {
-		if (index.column()) {
-			return "";
-		}
-		if (index.row()) {
-			return QString::fromUtf8(m_groups[index.row()]->name().c_str());
-		} else {
-			return tr("Party");
-		}
-	}
-
-	std::unique_ptr<Pokemon> pokemon = m_groups[parent.row()]->at(index.row());
-	if (!pokemon) {
-		if (index.column()) {
-			return "";
-		}
-		return tr("---");
-	}
+	std::unique_ptr<Pokemon> pokemon = m_group->at(index.row());
 	switch (index.column()) {
 	case COLUMN_NAME:
 		return QString::fromUtf8(pokemon->name().c_str());
@@ -115,7 +85,7 @@ QVariant PokemonTable::data(const QModelIndex& index, int role) const {
 
 QVariant PokemonTable::headerData(int section, Qt::Orientation orientation, int role) const {
 	if (role != Qt::DisplayRole || orientation == Qt::Vertical) {
-		return QAbstractItemModel::headerData(section, orientation, role);
+		return QAbstractTableModel::headerData(section, orientation, role);
 	}
 	switch (section) {
 	case COLUMN_NAME:
@@ -164,37 +134,5 @@ QVariant PokemonTable::headerData(int section, Qt::Orientation orientation, int 
 		return tr("Move 4");
 	default:
 		return 0;
-	}
-}
-
-QModelIndex PokemonTable::index(int row, int column, const QModelIndex& parent) const {
-	if (!parent.isValid()) {
-		return createIndex(row, column);
-	}
-	return createIndex(row, column, parent.row() + 1);
-}
-
-QModelIndex PokemonTable::parent(const QModelIndex& index) const {
-	quint32 id = index.internalId();
-	if (!id) {
-		return QModelIndex();
-	}
-	return createIndex(id - 1, 0);
-}
-
-void PokemonTable::unload() {
-	m_cart = nullptr;
-	update();
-}
-
-void PokemonTable::update() {
-	if (!m_cart) {
-		m_groups.clear();
-		return;
-	}
-
-	m_groups.push_back(m_cart->game()->party());
-	for (unsigned b = 0; b < m_cart->game()->numBoxes(); ++b) {
-		m_groups.push_back(m_cart->game()->box(b));
 	}
 }
