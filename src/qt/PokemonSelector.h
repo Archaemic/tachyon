@@ -5,7 +5,7 @@
 
 class Cartridge;
 class GroupList;
-class PokemonTable;
+class PokemonList;
 
 class QListView;
 class QTableView;
@@ -19,11 +19,11 @@ public:
 
 private:
 	Cartridge* m_cart;
-	PokemonTable* m_table;
-	GroupList* m_list;
+	GroupList* m_groupList;
+	PokemonList* m_pokemonList;
 
-	QListView* m_listView;
-	QTableView* m_tableView;
+	QListView* m_groupListView;
+	QListView* m_pokemonListView;
 
 private slots:
 	void selectGroup(const QModelIndex&);
