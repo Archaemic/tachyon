@@ -16,6 +16,8 @@ private:
 	uint8_t m_set[7];
 } __attribute__((packed));
 
+class Sprite;
+
 struct G1PokemonBaseStats {
 	uint8_t species;
 	uint8_t hp;
@@ -39,6 +41,8 @@ struct G1PokemonBaseStats {
 class G1PokemonSpecies : public GenericPokemonSpecies<G1PokemonBaseStats> {
 public:
 	G1PokemonSpecies(const G1PokemonBaseStats* data);
+
+	virtual const Sprite* frontSprite() const override;
 
 private:
 	virtual Type mapType(unsigned unmapped) const override;

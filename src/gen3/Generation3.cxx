@@ -12,6 +12,12 @@ enum {
 	G30E_PARTY_POKEMON = 0x0234,
 	G30E_BOX_NAMES = 0x0744,
 
+	G30E_RUBY_SPRITE_MAPPING = 0x1E8354,
+	G30E_SAPPHIRE_SPRITE_MAPPING = 0x1E82E4,
+
+	G30E_RUBY_PALETTE_MAPPING = 0x1EA5B4,
+	G30E_SAPPHIRE_PALETTE_MAPPING = 0x1EA544,
+
 	G30E_RUBY_BASE_STATS = 0x1FEC34,
 	G30E_SAPPHIRE_BASE_STATS = 0x1FEBC4,
 
@@ -607,7 +613,7 @@ PokemonSpecies* Generation3::species(PokemonSpecies::Id id) {
 		default:
 			return nullptr;
 		}
-		species = new G3PokemonSpecies(&stats[reverseIdMapping[id] - 1], id);
+		species = new G3PokemonSpecies(this, &stats[reverseIdMapping[id] - 1], id);
 		putSpecies(id, species);
 	}
 	return species;
@@ -656,6 +662,93 @@ void Generation3::finalize() {
 	}
 }
 
+std::unique_ptr<Sprite> Generation3::frontSprite(PokemonSpecies::Id id) const {
+	if (id > PokemonSpecies::DEOXYS) {
+		return nullptr;
+	}
+	unsigned gameId = reverseIdMapping[id];
+	struct Mapping {
+		uint32_t pointer;
+		uint16_t unknown;
+		uint16_t id;
+	};
+
+	const Mapping* spriteMapping;
+	const Mapping* paletteMapping;
+	switch (version()) {
+	case Game::G30E_RUBY:
+		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_SPRITE_MAPPING]);
+		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_PALETTE_MAPPING]);
+		break;
+	case Game::G30E_SAPPHIRE:
+		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_SPRITE_MAPPING]);
+		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_PALETTE_MAPPING]);
+		break;
+	default:
+		return nullptr;
+	}
+	spriteMapping += gameId;
+	paletteMapping += gameId;
+
+	uint8_t* rawSpriteData = new uint8_t[64 * 32];
+	uint8_t* spriteData = new uint8_t[64 * 32];
+	uint16_t* paletteData = new uint16_t[16];
+
+	const uint8_t* spritePointer = &rom()[spriteMapping->pointer & (SIZE_ROM - 1)];
+	const uint8_t* palettePointer = &rom()[paletteMapping->pointer & (SIZE_ROM - 1)];
+
+	lz77Decompress(spritePointer, rawSpriteData, 64 * 32);
+	lz77Decompress(palettePointer, reinterpret_cast<uint8_t*>(paletteData), 32);
+
+	for (unsigned tile = 0; tile < 64; ++tile) {
+		for (unsigned y = 0; y < 8; ++y) {
+			reinterpret_cast<uint32_t*>(spriteData)[y * 8 + (tile & 7) + (tile >> 3) * 64] = reinterpret_cast<uint32_t*>(rawSpriteData)[y + tile * 8];
+		}
+	}
+
+	delete [] rawSpriteData;
+
+	return std::unique_ptr<Sprite>(new Sprite(64, 64, spriteData, paletteData, Sprite::GBA_4));
+}
+
 void Generation3::stringToGameText(uint8_t* gameText, size_t len, const std::string& string) {
 	stringToMappedText(charMapEn, 0xFF, gameText, len, string);
+}
+
+void Generation3::lz77Decompress(const uint8_t* source, uint8_t* dest, size_t maxLength) const {
+	int remaining = std::min<int>(*reinterpret_cast<const uint32_t*>(source) >> 8, maxLength);
+	int blockHeader;
+	int blocksRemaining = 0;
+
+	source += 4;
+
+	while (remaining > 0) {
+		if (blocksRemaining) {
+			if (blockHeader & 0x80) {
+				int block = source[0] | (source[1] << 8);
+				source += 2;
+				uint8_t* uncompressed = dest - (((block & 0x000F) << 8) | ((block & 0xFF00) >> 8)) - 1;
+				int bytes = ((block & 0x00F0) >> 4) + 3;
+
+				while (bytes && remaining) {
+					*dest = *uncompressed;
+					++uncompressed;
+					++dest;
+					--remaining;
+					--bytes;
+				}
+			} else {
+				*dest = *source;
+				++source;
+				++dest;
+				--remaining;
+			}
+			blockHeader <<= 1;
+			--blocksRemaining;
+		} else {
+			blockHeader = *source;
+			++source;
+			blocksRemaining = 8;
+		}
+	}
 }

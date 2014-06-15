@@ -26,6 +26,11 @@ G1PokemonSpecies::G1PokemonSpecies(const G1PokemonBaseStats* data)
 {
 }
 
+const Sprite* G1PokemonSpecies::frontSprite() const
+{
+	return nullptr;
+}
+
 Type G1PokemonSpecies::mapType(unsigned unmapped) const {
 	return GameBoyGame::typeMapping[static_cast<uint8_t>(unmapped)];
 }

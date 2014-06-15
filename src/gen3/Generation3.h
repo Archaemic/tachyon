@@ -2,6 +2,7 @@
 #define PTXN_GENERATION_3_H
 
 #include "common/Game.h"
+#include "common/Sprite.h"
 
 struct G3BasePokemonData;
 
@@ -53,6 +54,8 @@ public:
 
 	static void registerLoader();
 
+	std::unique_ptr<Sprite> frontSprite(PokemonSpecies::Id) const;
+
 private:
 	struct NameMapping {
 		uint32_t name;
@@ -67,6 +70,9 @@ private:
 
 	static Version version(const struct NameMapping* names, uint32_t name);
 	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) override;
+
+	void lz77Decompress(const uint8_t* source, uint8_t* dest, size_t maxLength) const;
+
 	class Loader : public Game::Loader {
 	public:
 		virtual Game* load(uint8_t* memory, const uint8_t* rom) const override;

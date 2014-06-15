@@ -1,5 +1,7 @@
 #include "gen3/G3PokemonSpecies.h"
 
+#include "gen3/Generation3.h"
+
 const static Type typeMapping[256] = {
 	NORMAL,
 	FIGHTING,
@@ -463,19 +465,26 @@ const PokemonSpecies::Id G3PokemonSpecies::idMapping[] = {
 	PokemonSpecies::UNOWN,
 	PokemonSpecies::UNOWN
 };
+
 template <>
 PokemonSpecies::Id GenericPokemonSpecies<G3PokemonBaseStats>::id() const {
 	return PokemonSpecies::MISSINGNO;
 }
 
-G3PokemonSpecies::G3PokemonSpecies(const G3PokemonBaseStats* data, PokemonSpecies::Id id)
+G3PokemonSpecies::G3PokemonSpecies(const Generation3* gen, const G3PokemonBaseStats* data, PokemonSpecies::Id id)
 	: GenericPokemonSpecies<G3PokemonBaseStats>(data)
+	, m_gen(gen)
 	, m_id(id)
+	, m_frontSprite(gen->frontSprite(id))
 {
 }
 
 PokemonSpecies::Id G3PokemonSpecies::id() const {
 	return m_id;
+}
+
+const Sprite* G3PokemonSpecies::frontSprite() const {
+	return m_frontSprite.get();
 }
 
 Type G3PokemonSpecies::mapType(unsigned unmapped) const {

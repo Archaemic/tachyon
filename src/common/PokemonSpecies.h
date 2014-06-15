@@ -5,6 +5,8 @@
 
 #include "common/Type.h"
 
+class Sprite;
+
 class PokemonSpecies {
 public:
 	enum Id {
@@ -753,6 +755,8 @@ public:
 	virtual Type type2() const = 0;
 	virtual uint8_t genderRatio() const = 0;
 	virtual PokemonSpecies::GrowthRate growthRate() const = 0;
+
+	virtual const Sprite* frontSprite() const = 0;
 
 	const char* readable() const;
 	static const char* readable(Id id);

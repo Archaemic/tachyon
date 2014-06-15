@@ -11,6 +11,7 @@
 #include "common/PokemonSpecies.h"
 
 class Pokemon;
+class Sprite;
 
 class Game {
 public:

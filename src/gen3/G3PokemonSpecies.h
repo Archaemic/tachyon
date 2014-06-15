@@ -3,6 +3,8 @@
 
 #include "common/GenericPokemonSpecies.h"
 
+#include <memory>
+
 struct G3PokemonBaseStats {
 	uint8_t hp;
 	uint8_t attack;
@@ -36,17 +38,25 @@ struct G3PokemonBaseStats {
 	uint16_t padding;
 } __attribute__((packed));
 
+class Generation3;
+class Sprite;
+
 class G3PokemonSpecies : public GenericPokemonSpecies<G3PokemonBaseStats> {
 public:
-	G3PokemonSpecies(const G3PokemonBaseStats* data, PokemonSpecies::Id id);
+	G3PokemonSpecies(const Generation3* gen, const G3PokemonBaseStats* data, PokemonSpecies::Id id);
 
 	virtual PokemonSpecies::Id id() const override;
+
+	virtual const Sprite* frontSprite() const override;
 
 	const static PokemonSpecies::Id idMapping[440];
 
 private:
 	virtual Type mapType(unsigned unmapped) const override;
+
+	const Generation3* m_gen;
 	PokemonSpecies::Id m_id;
+	std::unique_ptr<Sprite> m_frontSprite;
 };
 
 #endif
