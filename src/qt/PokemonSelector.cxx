@@ -25,6 +25,7 @@ PokemonSelector::PokemonSelector(QWidget* parent)
 	m_pokemonListView->setViewMode(QListView::IconMode);
 	m_pokemonListView->setIconSize(QSize(64, 64));
 	m_pokemonListView->setGridSize(QSize(96, 96));
+	m_pokemonListView->setResizeMode(QListView::Adjust);
 	QHBoxLayout* hbox = new QHBoxLayout;
 	hbox->addWidget(m_groupListView);
 	hbox->addWidget(m_pokemonListView);
