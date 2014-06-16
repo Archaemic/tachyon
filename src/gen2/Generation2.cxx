@@ -16,6 +16,12 @@ enum {
 
 	G20E_SPRITE_MAPPING_BASE = 0x048000,
 	G21E_SPRITE_MAPPING_BASE = 0x120000,
+
+	G20E_UNOWN_SPRITE_MAPPING_BASE = 0x07C000,
+	G21E_UNOWN_SPRITE_MAPPING_BASE = 0x124000,
+
+	G20E_PALETTES = 0x00AD45,
+	G21E_PALETTES = 0x00A8D6,
 };
 
 struct Range {
@@ -156,6 +162,13 @@ std::unique_ptr<MultipaletteSprite> Generation2::frontSprite(PokemonSpecies::Id 
 		uint16_t backPointer;
 	} __attribute__((packed))* mapping;
 
+	const struct Palette {
+		uint16_t colorA;
+		uint16_t colorB;
+		uint16_t shinyColorA;
+		uint16_t shinyColorB;
+	} __attribute__((packed))* palette;
+
 	switch (version()) {
 	case Game::G20E_GOLD:
 	case Game::G20J_GOLD:
@@ -163,10 +176,12 @@ std::unique_ptr<MultipaletteSprite> Generation2::frontSprite(PokemonSpecies::Id 
 	case Game::G20J_SILVER:
 	default:
 		mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_SPRITE_MAPPING_BASE])[id - 1];
+		palette = &reinterpret_cast<const Palette*>(&rom()[G20E_PALETTES])[id - 1];
 		break;
 	case Game::G21E_CRYSTAL:
 	case Game::G21J_CRYSTAL:
 		mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_SPRITE_MAPPING_BASE])[id - 1];
+		palette = &reinterpret_cast<const Palette*>(&rom()[G21E_PALETTES])[id - 1];
 		break;
 	}
 
@@ -198,15 +213,14 @@ std::unique_ptr<MultipaletteSprite> Generation2::frontSprite(PokemonSpecies::Id 
 	uint16_t* paletteData = new uint16_t[16];
 	uint16_t* shinyPaletteData = new uint16_t[16];
 
-	// Temporary colors until I get the actual palettes
 	paletteData[0] = 0x7FFF;
+	paletteData[1] = palette->colorA;
+	paletteData[2] = palette->colorB;
 	paletteData[3] = 0x0000;
-	paletteData[2] = 0x318C;
-	paletteData[1] = 0x6318;
 	shinyPaletteData[0] = 0x7FFF;
+	shinyPaletteData[1] = palette->shinyColorA;
+	shinyPaletteData[2] = palette->shinyColorB;
 	shinyPaletteData[3] = 0x0000;
-	shinyPaletteData[2] = 0x4108;
-	shinyPaletteData[1] = 0x7294;
 
 	const uint8_t* spritePointer = &rom()[address & (SIZE_ROM - 1)];
 	lzDecompress(spritePointer, rawSpriteData, size * size * 16);
