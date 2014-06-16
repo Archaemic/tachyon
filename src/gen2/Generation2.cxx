@@ -179,8 +179,13 @@ std::unique_ptr<MultipaletteSprite> Generation2::frontSprite(PokemonSpecies::Id 
 	default:
 		break;
 	}
+
+	if (bank == 0x13 || bank == 0x14) {
+		bank += 0xC;
+	}
+
 	unsigned address = mapping->frontPointer;
-	address = bank * 0x4000 + address - 0x4000 * !!bank;
+	address = bank * 0x4000 + (address & 0x3FFF);
 
 	uint8_t* rawSpriteData = new uint8_t[size * size * 16];
 	uint8_t* spriteData = new uint8_t[size * size * 16];
