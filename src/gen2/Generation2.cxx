@@ -180,8 +180,14 @@ std::unique_ptr<MultipaletteSprite> Generation2::frontSprite(PokemonSpecies::Id 
 		break;
 	}
 
-	if (bank == 0x13 || bank == 0x14) {
+	switch (bank) {
+	case 0x13:
+	case 0x14:
 		bank += 0xC;
+		break;
+	case 0x1F:
+		bank += 0xF;
+		break;
 	}
 
 	unsigned address = mapping->frontPointer;
