@@ -483,7 +483,7 @@ PokemonSpecies::Id G3PokemonSpecies::id() const {
 	return m_id;
 }
 
-const Sprite* G3PokemonSpecies::frontSprite() const {
+const MultipaletteSprite* G3PokemonSpecies::frontSprite() const {
 	return m_frontSprite.get();
 }
 

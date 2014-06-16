@@ -5,7 +5,7 @@
 
 #include "common/Type.h"
 
-class Sprite;
+class MultipaletteSprite;
 
 class PokemonSpecies {
 public:
@@ -756,7 +756,7 @@ public:
 	virtual uint8_t genderRatio() const = 0;
 	virtual PokemonSpecies::GrowthRate growthRate() const = 0;
 
-	virtual const Sprite* frontSprite() const = 0;
+	virtual const MultipaletteSprite* frontSprite() const = 0;
 
 	const char* readable() const;
 	static const char* readable(Id id);

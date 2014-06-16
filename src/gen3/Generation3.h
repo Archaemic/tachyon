@@ -2,7 +2,7 @@
 #define PTXN_GENERATION_3_H
 
 #include "common/Game.h"
-#include "common/Sprite.h"
+#include "common/MultipaletteSprite.h"
 
 struct G3BasePokemonData;
 
@@ -54,7 +54,7 @@ public:
 
 	static void registerLoader();
 
-	std::unique_ptr<Sprite> frontSprite(PokemonSpecies::Id) const;
+	std::unique_ptr<MultipaletteSprite> frontSprite(PokemonSpecies::Id) const;
 
 private:
 	struct NameMapping {

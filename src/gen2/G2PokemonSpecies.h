@@ -3,6 +3,8 @@
 
 #include "common/GenericPokemonSpecies.h"
 
+#include <memory>
+
 struct G2TMSet {
 public:
 	G2TMSet();
@@ -15,6 +17,7 @@ private:
 	uint8_t m_set[8];
 } __attribute__((packed));
 
+class Generation2;
 class Sprite;
 
 struct G2PokemonBaseStats {
@@ -44,12 +47,14 @@ struct G2PokemonBaseStats {
 
 class G2PokemonSpecies : public GenericPokemonSpecies<G2PokemonBaseStats> {
 public:
-	G2PokemonSpecies(const G2PokemonBaseStats* data);
+	G2PokemonSpecies(const Generation2* gen, const G2PokemonBaseStats* data);
 
-	virtual const Sprite* frontSprite() const override;
+	virtual const MultipaletteSprite* frontSprite() const override;
 
 private:
 	virtual Type mapType(unsigned unmapped) const override;
+
+	std::unique_ptr<MultipaletteSprite> m_frontSprite;
 };
 
 #endif

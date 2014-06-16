@@ -13,6 +13,9 @@ enum {
 
 	G20E_BASE_STATS = 0x051B0B,
 	G21E_BASE_STATS = 0x051424,
+
+	G20E_SPRITE_MAPPING_BASE = 0x048000,
+	G21E_SPRITE_MAPPING_BASE = 0x120000,
 };
 
 struct Range {
@@ -96,9 +99,9 @@ PokemonSpecies* Generation2::species(PokemonSpecies::Id id) {
 			break;
 		}
 		if (id <= 251) {
-			species = new G2PokemonSpecies(&stats[id - 1]);
+			species = new G2PokemonSpecies(this, &stats[id - 1]);
 		} else {
-			species = new G2PokemonSpecies(&stats[-1]);
+			species = new G2PokemonSpecies(this, &stats[-1]);
 		}
 		putSpecies(id, species);
 	}
@@ -138,5 +141,238 @@ void Generation2::finalize() {
 		*reinterpret_cast<uint16_t*>(&memory[G21E_CHECKSUM_1]) = checksum;
 		*reinterpret_cast<uint16_t*>(&memory[G21E_CHECKSUM_2]) = checksum;
 		break;
+	}
+}
+
+std::unique_ptr<MultipaletteSprite> Generation2::frontSprite(PokemonSpecies::Id id, unsigned size) const {
+	if (id > PokemonSpecies::CELEBI) {
+		return nullptr;
+	}
+
+	const struct Mapping {
+		uint8_t frontBank;
+		uint16_t frontPointer;
+		uint8_t backBank;
+		uint16_t backPointer;
+	} __attribute__((packed))* mapping;
+
+	switch (version()) {
+	case Game::G20E_GOLD:
+	case Game::G20J_GOLD:
+	case Game::G20E_SILVER:
+	case Game::G20J_SILVER:
+	default:
+		mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_SPRITE_MAPPING_BASE])[id - 1];
+		break;
+	case Game::G21E_CRYSTAL:
+	case Game::G21J_CRYSTAL:
+		mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_SPRITE_MAPPING_BASE])[id - 1];
+		break;
+	}
+
+	unsigned bank = mapping->frontBank;
+	switch (version()) {
+	case G21E_CRYSTAL:
+	case G21J_CRYSTAL:
+		bank += 0x36;
+		break;
+	default:
+		break;
+	}
+	unsigned address = mapping->frontPointer;
+	address = bank * 0x4000 + address - 0x4000 * !!bank;
+
+	uint8_t* rawSpriteData = new uint8_t[size * size * 16];
+	uint8_t* spriteData = new uint8_t[size * size * 16];
+	uint16_t* paletteData = new uint16_t[16];
+	uint16_t* shinyPaletteData = new uint16_t[16];
+
+	// Temporary colors until I get the actual palettes
+	paletteData[0] = 0x7FFF;
+	paletteData[3] = 0x0000;
+	paletteData[2] = 0x318C;
+	paletteData[1] = 0x6318;
+	shinyPaletteData[0] = 0x7FFF;
+	shinyPaletteData[3] = 0x0000;
+	shinyPaletteData[2] = 0x4108;
+	shinyPaletteData[1] = 0x7294;
+
+	const uint8_t* spritePointer = &rom()[address & (SIZE_ROM - 1)];
+	lzDecompress(spritePointer, rawSpriteData, size * size * 16);
+
+	for (unsigned tile = 0; tile < size * size; ++tile) {
+		for (unsigned y = 0; y < 8; ++y) {
+			uint16_t row = reinterpret_cast<uint16_t*>(rawSpriteData)[y + tile * 8];
+			uint8_t lower = row & 0xFF;
+			uint8_t upper = row >> 8;
+			row = 0;
+			for (int i = 0; i < 8; ++i) {
+				row |= ((upper & (1 << i)) >> i) << (1 + i * 2);
+				row |= ((lower & (1 << i)) >> i) << (i * 2);
+			}
+			reinterpret_cast<uint16_t*>(spriteData)[y * size + (tile % size) * 8 * size + tile / size] = row;
+		}
+	}
+
+	delete [] rawSpriteData;
+
+	MultipaletteSprite* sprite = new MultipaletteSprite(size * 8, size * 8, spriteData, paletteData, Sprite::GB_2);
+	sprite->addPalette(shinyPaletteData);
+	return std::unique_ptr<MultipaletteSprite>(sprite);
+}
+
+void Generation2::lzDecompress(const uint8_t* source, uint8_t* dest, size_t maxLength) const {
+	uint8_t* decompressed = dest;
+	while (1) {
+		uint8_t byte = *source;
+		++source;
+		if (byte == 0xFF) {
+			break;
+		}
+
+		enum Command {
+			LITERAL,
+			REPEAT,
+			ALTERNATE,
+			ZERO,
+			COPY,
+			MIRROR_BITS,
+			MIRROR_BYTES,
+			LONG
+		} command = static_cast<Command>(byte >> 5);
+
+		unsigned length;
+		if (command == 7) {
+			length = (byte & 0x3) << 8;
+			command = static_cast<Command>((byte >> 2) & 7);
+			length += *source + 1;
+			++source;
+		} else {
+			length = (byte & 0x1F) + 1;
+		}
+
+		switch (command) {
+		case LITERAL:
+			for (unsigned i = 0; i < length; ++i) {
+				*dest = *source;
+				++source;
+				++dest;
+				--maxLength;
+				if (maxLength == 0) {
+					return;
+				}
+			}
+			break;
+		case REPEAT:
+			byte = *source;
+			++source;
+			for (unsigned i = 0; i < length; ++i) {
+				*dest = byte;
+				++dest;
+				--maxLength;
+				if (maxLength == 0) {
+					return;
+				}
+			}
+			break;
+		case ALTERNATE:
+			uint8_t byte2;
+			byte = *source;
+			++source;
+			byte2 = *source;
+			++source;
+			for (unsigned i = 0; i < length; ++i) {
+				if (i & 1) {
+					*dest = byte2;
+				} else {
+					*dest = byte;
+				}
+				++dest;
+				--maxLength;
+				if (maxLength == 0) {
+					return;
+				}
+			}
+			break;
+		case ZERO:
+			for (unsigned i = 0; i < length; ++i) {
+				*dest = 0;
+				++dest;
+				--maxLength;
+				if (maxLength == 0) {
+					return;
+				}
+			}
+			break;
+		case COPY:
+		case MIRROR_BITS:
+		case MIRROR_BYTES:
+			int offset;
+			uint8_t* backtrack;
+			offset = *source;
+			++source;
+			if (offset > 0x7F) {
+				backtrack = dest - (offset & 0x7F) - 1;
+			} else {
+				offset <<= 8;
+				offset += *source;
+				++source;
+				backtrack = decompressed + offset;
+			}
+			switch (command) {
+			case COPY:
+				for (unsigned i = 0; i < length; ++i) {
+					if (backtrack >= decompressed && backtrack < dest) {
+						*dest = *backtrack;
+					} else {
+						*dest = 0;
+					}
+					++backtrack;
+					++dest;
+					--maxLength;
+					if (maxLength == 0) {
+						return;
+					}
+				}
+				break;
+			case MIRROR_BITS:
+				for (unsigned i = 0; i < length; ++i) {
+					*dest = 0;
+					if (backtrack >= decompressed && backtrack < dest) {
+						byte = *backtrack;
+						for (int bit = 0; bit < 8; ++bit) {
+							*dest |= ((byte & (1 << bit)) >> bit) << (7 - bit);
+						}
+					}
+					++backtrack;
+					++dest;
+					--maxLength;
+					if (maxLength == 0) {
+						return;
+					}
+				}
+				break;
+			case MIRROR_BYTES:
+				for (unsigned i = 0; i < length; ++i) {
+					if (backtrack >= decompressed && backtrack < dest) {
+						*dest = *backtrack;
+					} else {
+						*dest = 0;
+					}
+					--backtrack;
+					++dest;
+					--maxLength;
+					if (maxLength == 0) {
+						return;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+			break;
+		case LONG:
+			break;
+		}
 	}
 }

@@ -42,7 +42,7 @@ class G1PokemonSpecies : public GenericPokemonSpecies<G1PokemonBaseStats> {
 public:
 	G1PokemonSpecies(const G1PokemonBaseStats* data);
 
-	virtual const Sprite* frontSprite() const override;
+	virtual const MultipaletteSprite* frontSprite() const override;
 
 private:
 	virtual Type mapType(unsigned unmapped) const override;

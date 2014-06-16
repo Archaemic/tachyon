@@ -47,7 +47,7 @@ public:
 
 	virtual PokemonSpecies::Id id() const override;
 
-	virtual const Sprite* frontSprite() const override;
+	virtual const MultipaletteSprite* frontSprite() const override;
 
 	const static PokemonSpecies::Id idMapping[440];
 
@@ -56,7 +56,7 @@ private:
 
 	const Generation3* m_gen;
 	PokemonSpecies::Id m_id;
-	std::unique_ptr<Sprite> m_frontSprite;
+	std::unique_ptr<MultipaletteSprite> m_frontSprite;
 };
 
 #endif

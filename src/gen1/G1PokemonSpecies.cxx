@@ -26,7 +26,7 @@ G1PokemonSpecies::G1PokemonSpecies(const G1PokemonBaseStats* data)
 {
 }
 
-const Sprite* G1PokemonSpecies::frontSprite() const
+const MultipaletteSprite* G1PokemonSpecies::frontSprite() const
 {
 	return nullptr;
 }

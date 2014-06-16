@@ -31,11 +31,11 @@ unsigned Sprite::height() const {
 	return m_height;
 }
 
-uint8_t* Sprite::pixelData() const {
+const uint8_t* Sprite::pixelData() const {
 	return m_pixelData;
 }
 
-uint16_t* Sprite::palette() const {
+const uint16_t* Sprite::palette() const {
 	return m_palette;
 }
 
