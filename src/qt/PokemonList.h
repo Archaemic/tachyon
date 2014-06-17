@@ -5,11 +5,15 @@
 
 #include <QAbstractListModel>
 
+#include <memory>
+
 class Group;
 
 class PokemonList : public QAbstractListModel {
 Q_OBJECT
 public:
+	const static int SPRITE_SIZE = 96;
+
 	PokemonList(QObject* parent = nullptr);
 
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -19,6 +23,8 @@ public slots:
 	void setGroup(Group* group);
 
 private:
+	static std::unique_ptr<QPixmap> nullPixmap;
+
 	Group* m_group;
 };
 

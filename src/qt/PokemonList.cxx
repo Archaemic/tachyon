@@ -7,10 +7,16 @@
 #include <QImage>
 #include <QPixmap>
 
+std::unique_ptr<QPixmap> PokemonList::nullPixmap;
+
 PokemonList::PokemonList(QObject* parent)
 	: QAbstractListModel(parent)
 	, m_group(nullptr)
 {
+	if (!nullPixmap) {
+		nullPixmap = std::unique_ptr<QPixmap>(new QPixmap(SPRITE_SIZE, SPRITE_SIZE));
+		nullPixmap->fill(Qt::transparent);
+	}
 }
 
 void PokemonList::setGroup(Group* group) {
@@ -37,12 +43,12 @@ QVariant PokemonList::data(const QModelIndex& index, int role) const {
 		return QString::fromUtf8(pokemon->name().c_str());
 	case Qt::DecorationRole: {
 		if (!pokemon) {
-			return QVariant();
+			return *nullPixmap.get();
 		}
 
 		const MultipaletteSprite* sprite = pokemon->species()->frontSprite();
 		if (!sprite) {
-			return QVariant();
+			return *nullPixmap.get();
 		}
 
 		QImage image(QSize(sprite->width(), sprite->height()), QImage::Format_Indexed8);
@@ -84,7 +90,7 @@ QVariant PokemonList::data(const QModelIndex& index, int role) const {
 			}
 			break;
 		}
-		return QPixmap::fromImage(image);
+		return QPixmap::fromImage(image.copy((int(sprite->width()) - SPRITE_SIZE) / 2, (int(sprite->height()) - SPRITE_SIZE) / 2, SPRITE_SIZE, SPRITE_SIZE));
 		break;
 	}
 	default:

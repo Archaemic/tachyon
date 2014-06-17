@@ -23,8 +23,8 @@ PokemonSelector::PokemonSelector(QWidget* parent)
 	m_groupListView->setMaximumWidth(100);
 	m_pokemonListView->setModel(m_pokemonList);
 	m_pokemonListView->setViewMode(QListView::IconMode);
-	m_pokemonListView->setIconSize(QSize(96, 96));
-	m_pokemonListView->setGridSize(QSize(96, 96));
+	m_pokemonListView->setIconSize(QSize(PokemonList::SPRITE_SIZE, PokemonList::SPRITE_SIZE));
+	m_pokemonListView->setGridSize(QSize(PokemonList::SPRITE_SIZE, PokemonList::SPRITE_SIZE + 32));
 	m_pokemonListView->setResizeMode(QListView::Adjust);
 	resize(QSize(650, 400));
 	QHBoxLayout* hbox = new QHBoxLayout;
