@@ -9,6 +9,9 @@
 #include "GameRegistryView.h"
 #include "PokemonSelector.h"
 
+#include <QDir>
+#include <QFileDialog>
+
 int main(int argc, char** argv) {
 	Generation1::registerLoader();
 	Generation2::registerLoader();
@@ -17,7 +20,12 @@ int main(int argc, char** argv) {
 	QApplication app(argc, argv);
 
 	GameRegistry registry;
-	registry.addRom("game.bin");
+
+	QString path = QFileDialog::getExistingDirectory(nullptr, QObject::tr("Register ROM directory"));
+	QDir dir(path);
+	for (auto file : dir.entryInfoList(QDir::Files)) {
+		registry.addRom(file.absoluteFilePath());
+	}
 
 	GameRegistryView registryView;
 	registryView.setRegistry(&registry);
