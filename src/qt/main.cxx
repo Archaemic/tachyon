@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 	registry.addRom("game.bin");
 
 	GameRegistryView registryView;
-	registryView.listView().setModel(registry.listModel());
+	registryView.setRegistry(&registry);
 	registryView.show();
 
 	return app.exec();

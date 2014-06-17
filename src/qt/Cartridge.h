@@ -10,16 +10,15 @@ class QString;
 class Cartridge : public QObject {
 Q_OBJECT
 public:
-	Cartridge(const QString& romPath, const QString& sramPath, QObject* parent = nullptr);
+	Cartridge(const uint8_t* rom, const QString& sramPath, QObject* parent = nullptr);
 	virtual ~Cartridge();
 
 	Game* game();
 
 private:
-	QFile* m_rom;
 	QFile* m_sram;
 	std::unique_ptr<Game> m_game;
-	uchar* m_romMap;
+	const uint8_t* m_romMap;
 	uchar* m_sramMap;
 };
 

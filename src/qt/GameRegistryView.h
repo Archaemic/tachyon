@@ -4,16 +4,21 @@
 #include <QListView>
 #include <QWidget>
 
+class GameRegistry;
+
 class GameRegistryView : public QWidget {
 Q_OBJECT
 public:
 	GameRegistryView(QWidget* parent = nullptr);
 
-	QListView& listView() { return *m_listView; }
-	const QListView& listView() const { return *m_listView; }
+	void setRegistry(GameRegistry* registry);
 
 private:
 	QListView* m_listView;
+	GameRegistry* m_registry;
+
+private slots:
+	void openSavegame(const QModelIndex&);
 };
 
 #endif
