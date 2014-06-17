@@ -75,7 +75,8 @@ private:
 
 	class Loader : public Game::Loader {
 	public:
-		virtual Game* load(uint8_t* memory, const uint8_t* rom) const override;
+		virtual Generation3* load(uint8_t* memory, const uint8_t* rom) const override;
+		virtual Version detect(const uint8_t* rom) const override;
 	};
 
 public:

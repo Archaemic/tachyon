@@ -559,12 +559,16 @@ void Generation3::registerLoader() {
 	Game::Loader::registerLoader(std::unique_ptr<Loader>(new Loader()));
 }
 
-Game* Generation3::Loader::load(uint8_t* memory, const uint8_t* rom) const {
-	uint32_t name = *(uint32_t*) &rom[0xAC];
-	if (version(s_names, name)) {
+Generation3* Generation3::Loader::load(uint8_t* memory, const uint8_t* rom) const {
+	if (detect(rom)) {
 		return new Generation3(memory, rom);
 	}
 	return nullptr;
+}
+
+Game::Version Generation3::Loader::detect(const uint8_t* rom) const {
+	uint32_t name = *(uint32_t*) &rom[0xAC];
+	return version(s_names, name);
 }
 
 std::string Generation3::gameTextToUTF8(const uint8_t* gameText, size_t len) {

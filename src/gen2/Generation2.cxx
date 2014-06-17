@@ -70,12 +70,16 @@ void Generation2::registerLoader() {
 	Game::Loader::registerLoader(std::unique_ptr<Loader>(new Loader()));
 }
 
-Game* Generation2::Loader::load(uint8_t* memory, const uint8_t* rom) const {
-	uint16_t checksum = *(uint16_t*) &rom[0x14E];
-	if (GameBoyGame::version(Generation2::s_checksums, checksum)) {
+Generation2* Generation2::Loader::load(uint8_t* memory, const uint8_t* rom) const {
+	if (detect(rom)) {
 		return new Generation2(memory, rom);
 	}
 	return nullptr;
+}
+
+Game::Version Generation2::Loader::detect(const uint8_t* rom) const {
+	uint16_t checksum = *(uint16_t*) &rom[0x14E];
+	return GameBoyGame::version(Generation2::s_checksums, checksum);
 }
 
 unsigned Generation2::numBoxes() const {

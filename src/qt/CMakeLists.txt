@@ -14,6 +14,8 @@ find_package(Qt5Widgets REQUIRED)
 set(SRC
 	Cartridge.cxx
 	GroupList.cxx
+	GameRegistry.cxx
+	GameRegistryView.cxx
 	PokemonList.cxx
 	PokemonSelector.cxx
 	PokemonTable.cxx

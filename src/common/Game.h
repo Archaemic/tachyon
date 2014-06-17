@@ -51,10 +51,12 @@ public:
 	class Loader {
 	public:
 		virtual Game* load(uint8_t* memory, const uint8_t* rom) const = 0;
+		virtual Game::Version detect(const uint8_t* rom) const = 0;
 		static void registerLoader(std::unique_ptr<Loader> loader);
 	};
 
 	static std::unique_ptr<Game> load(uint8_t* memory, const uint8_t* rom);
+	static Version detect(const uint8_t* rom);
 	virtual ~Game() {}
 
 	const std::string& trainerName() const;

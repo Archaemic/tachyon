@@ -5,6 +5,8 @@
 #include "gen3/Generation3.h"
 
 #include "Cartridge.h"
+#include "GameRegistry.h"
+#include "GameRegistryView.h"
 #include "PokemonSelector.h"
 
 int main(int argc, char** argv) {
@@ -13,11 +15,13 @@ int main(int argc, char** argv) {
 	Generation3::registerLoader();
 
 	QApplication app(argc, argv);
-	PokemonSelector selector;
 
-	Cartridge cart("game.bin", "test.sav");
-	selector.load(&cart);
-	selector.show();
+	GameRegistry registry;
+	registry.addRom("game.bin");
+
+	GameRegistryView registryView;
+	registryView.listView().setModel(registry.listModel());
+	registryView.show();
 
 	return app.exec();
 }

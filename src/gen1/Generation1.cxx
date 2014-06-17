@@ -36,12 +36,16 @@ void Generation1::registerLoader() {
 	Game::Loader::registerLoader(std::unique_ptr<Loader>(new Loader()));
 }
 
-Game* Generation1::Loader::load(uint8_t* memory, const uint8_t* rom) const {
-	uint16_t checksum = *(uint16_t*) &rom[0x14E];
-	if (GameBoyGame::version(Generation1::s_checksums, checksum)) {
+Generation1* Generation1::Loader::load(uint8_t* memory, const uint8_t* rom) const {
+	if (detect(rom)) {
 		return new Generation1(memory, rom);
 	}
 	return nullptr;
+}
+
+Game::Version Generation1::Loader::detect(const uint8_t* rom) const {
+	uint16_t checksum = *(uint16_t*) &rom[0x14E];
+	return GameBoyGame::version(Generation1::s_checksums, checksum);
 }
 
 unsigned Generation1::numBoxes() const {
