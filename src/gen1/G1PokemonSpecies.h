@@ -3,6 +3,7 @@
 
 #include "common/GameBoyGame.h"
 #include "common/GenericPokemonSpecies.h"
+#include "common/MultipaletteSprite.h"
 
 struct G1TMSet {
 public:
@@ -16,6 +17,7 @@ private:
 	uint8_t m_set[7];
 } __attribute__((packed));
 
+class Generation1;
 class Sprite;
 
 struct G1PokemonBaseStats {
@@ -40,7 +42,7 @@ struct G1PokemonBaseStats {
 
 class G1PokemonSpecies : public GenericPokemonSpecies<G1PokemonBaseStats> {
 public:
-	G1PokemonSpecies(const G1PokemonBaseStats* data);
+	G1PokemonSpecies(const Generation1* gen, const G1PokemonBaseStats* data);
 
 	virtual Forme forme() const override { return FORME_NORMAL; }
 
@@ -48,6 +50,9 @@ public:
 
 private:
 	virtual Type mapType(unsigned unmapped) const override;
+
+	const Generation1* m_gen;
+	std::unique_ptr<MultipaletteSprite> m_frontSprite;
 };
 
 template <> unsigned GenericPokemonSpecies<G1PokemonBaseStats>::baseSpecialAttack() const;

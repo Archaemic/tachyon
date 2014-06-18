@@ -23,7 +23,6 @@ public:
 protected:
 	virtual Type mapType(unsigned) const = 0;
 
-private:
 	const T* m_data;
 };
 
@@ -35,7 +34,7 @@ GenericPokemonSpecies<T>::GenericPokemonSpecies(const T* data)
 
 template <typename T>
 PokemonSpecies::Id GenericPokemonSpecies<T>::id() const {
-	return (PokemonSpecies::Id) m_data->species;
+	return static_cast<PokemonSpecies::Id>(m_data->species);
 }
 
 template <typename T>
