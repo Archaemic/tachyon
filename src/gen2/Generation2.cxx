@@ -237,19 +237,7 @@ std::unique_ptr<MultipaletteSprite> Generation2::frontSprite(PokemonSpecies::Id 
 	const uint8_t* spritePointer = &rom()[address & (SIZE_ROM - 1)];
 	lzDecompress(spritePointer, rawSpriteData, size * size * 16);
 
-	for (unsigned tile = 0; tile < size * size; ++tile) {
-		for (unsigned y = 0; y < 8; ++y) {
-			uint16_t row = reinterpret_cast<uint16_t*>(rawSpriteData)[y + tile * 8];
-			uint8_t lower = row & 0xFF;
-			uint8_t upper = row >> 8;
-			row = 0;
-			for (int i = 0; i < 8; ++i) {
-				row |= ((upper & (1 << i)) >> i) << (1 + i * 2);
-				row |= ((lower & (1 << i)) >> i) << (i * 2);
-			}
-			reinterpret_cast<uint16_t*>(spriteData)[y * size + (tile % size) * 8 * size + tile / size] = row;
-		}
-	}
+	GameBoyGame::arrangeTiles(rawSpriteData, spriteData, size, size);
 
 	delete [] rawSpriteData;
 

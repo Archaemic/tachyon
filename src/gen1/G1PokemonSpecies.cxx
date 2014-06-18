@@ -77,19 +77,7 @@ G1PokemonSpecies::G1PokemonSpecies(const Generation1* gen, const G1PokemonBaseSt
 	decomp.decompress();
 	memcpy(rawSpriteData, decomp.output(), std::min<size_t>(width * height * 16, decomp.size()));
 
-	for (unsigned tile = 0; tile < width * height; ++tile) {
-		for (unsigned y = 0; y < 8; ++y) {
-			uint16_t row = reinterpret_cast<uint16_t*>(rawSpriteData)[y + tile * 8];
-			uint8_t lower = row & 0xFF;
-			uint8_t upper = row >> 8;
-			row = 0;
-			for (int i = 0; i < 8; ++i) {
-				row |= ((upper & (1 << i)) >> i) << (1 + i * 2);
-				row |= ((lower & (1 << i)) >> i) << (i * 2);
-			}
-			reinterpret_cast<uint16_t*>(spriteData)[y * width + (tile % width) * 8 * width + tile / width] = row;
-		}
-	}
+	GameBoyGame::arrangeTiles(rawSpriteData, spriteData, width, height);
 
 	delete [] rawSpriteData;
 

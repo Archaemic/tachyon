@@ -130,3 +130,19 @@ Game::Version GameBoyGame::version(const ChecksumMapping* mapping, uint16_t chec
 	}
 	return mapping->version;
 }
+
+void GameBoyGame::arrangeTiles(const uint8_t* source, uint8_t* dest, unsigned width, unsigned height) {
+	for (unsigned tile = 0; tile < width * height; ++tile) {
+		for (unsigned y = 0; y < 8; ++y) {
+			uint16_t row = reinterpret_cast<const uint16_t*>(source)[y + tile * 8];
+			uint8_t lower = row & 0xFF;
+			uint8_t upper = row >> 8;
+			row = 0;
+			for (int i = 0; i < 8; ++i) {
+				row |= ((upper & (1 << i)) >> i) << (1 + i * 2);
+				row |= ((lower & (1 << i)) >> i) << (i * 2);
+			}
+			reinterpret_cast<uint16_t*>(dest)[y * width + (tile % width) * 8 * width + tile / width] = row;
+		}
+	}
+}

@@ -26,6 +26,8 @@ public:
 	static const Type typeMapping[256];
 	static std::string gameTextToUTF8(const uint8_t* gameText, size_t len);
 	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) override;
+
+	static void arrangeTiles(const uint8_t* src, uint8_t* dest, unsigned width, unsigned height);
 };
 
 struct GBMoveSet {
