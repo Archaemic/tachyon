@@ -733,6 +733,39 @@ public:
 		DIANCIE,
 	};
 
+	enum Forme {
+		FORME_NORMAL = 0,
+
+		UNOWN_A = 0,
+		UNOWN_B,
+		UNOWN_C,
+		UNOWN_D,
+		UNOWN_E,
+		UNOWN_F,
+		UNOWN_G,
+		UNOWN_H,
+		UNOWN_I,
+		UNOWN_J,
+		UNOWN_K,
+		UNOWN_L,
+		UNOWN_M,
+		UNOWN_N,
+		UNOWN_O,
+		UNOWN_P,
+		UNOWN_Q,
+		UNOWN_R,
+		UNOWN_S,
+		UNOWN_T,
+		UNOWN_U,
+		UNOWN_V,
+		UNOWN_W,
+		UNOWN_X,
+		UNOWN_Y,
+		UNOWN_Z,
+		UNOWN_EXCLAIM,
+		UNOWN_QUESTION
+	};
+
 	enum GrowthRate {
 		LEVEL_FAST,
 		LEVEL_MEDIUM_FAST,
@@ -745,6 +778,7 @@ public:
 	virtual ~PokemonSpecies() {}
 
 	virtual Id id() const = 0;
+	virtual Forme forme() const = 0;
 	virtual unsigned baseHp() const = 0;
 	virtual unsigned baseAttack() const = 0;
 	virtual unsigned baseDefense() const = 0;

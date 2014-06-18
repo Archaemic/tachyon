@@ -43,9 +43,14 @@ class Sprite;
 
 class G3PokemonSpecies : public GenericPokemonSpecies<G3PokemonBaseStats> {
 public:
-	G3PokemonSpecies(const Generation3* gen, const G3PokemonBaseStats* data, PokemonSpecies::Id id);
+	enum {
+		UNOWN_BASE = 413
+	};
+
+	G3PokemonSpecies(const Generation3* gen, const G3PokemonBaseStats* data, PokemonSpecies::Id id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL);
 
 	virtual PokemonSpecies::Id id() const override;
+	virtual Forme forme() const override;
 
 	virtual const MultipaletteSprite* frontSprite() const override;
 
@@ -56,6 +61,7 @@ private:
 
 	const Generation3* m_gen;
 	PokemonSpecies::Id m_id;
+	PokemonSpecies::Forme m_forme;
 	std::unique_ptr<MultipaletteSprite> m_frontSprite;
 };
 

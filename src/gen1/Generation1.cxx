@@ -57,7 +57,7 @@ Game::Version Generation1::version() const {
 	return GameBoyGame::version(s_checksums, checksum);
 }
 
-PokemonSpecies* Generation1::species(PokemonSpecies::Id id) {
+PokemonSpecies* Generation1::species(PokemonSpecies::Id id, PokemonSpecies::Forme) {
 	PokemonSpecies* species = Game::species(id);
 	if (!species) {
 		if (id == PokemonSpecies::MEW && version() != Game::G11E_YELLOW) {

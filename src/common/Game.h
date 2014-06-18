@@ -74,13 +74,13 @@ public:
 
 	// This function does lazy evaluation and memoizes the result
 	// Thus it is not const. PokemonSpecies objects are own by the Game
-	virtual PokemonSpecies* species(PokemonSpecies::Id);
+	virtual PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL);
 
 protected:
 	Game(uint8_t* memory, const uint8_t* rom);
 
 	void setTrainerName(const std::string& name);
-	void putSpecies(PokemonSpecies::Id, PokemonSpecies*);
+	void putSpecies(PokemonSpecies::Id, PokemonSpecies*, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL);
 
 	void setParty(Group* party);
 	void addBox(Group* box);
@@ -96,6 +96,7 @@ protected:
 private:
 	static std::vector<std::unique_ptr<Loader>> s_loaders;
 	std::unordered_map<int, std::unique_ptr<PokemonSpecies>> m_species;
+	std::unordered_map<int, std::unordered_map<int, std::unique_ptr<PokemonSpecies>>> m_formes;
 
 	std::unique_ptr<Group> m_party;
 	std::vector<std::unique_ptr<Group>> m_boxes;

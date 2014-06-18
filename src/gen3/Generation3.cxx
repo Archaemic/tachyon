@@ -591,8 +591,8 @@ Game::Version Generation3::version() const {
 	return version(s_names, name);
 }
 
-PokemonSpecies* Generation3::species(PokemonSpecies::Id id) {
-	PokemonSpecies* species = Game::species(id);
+PokemonSpecies* Generation3::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
+	PokemonSpecies* species = Game::species(id, forme);
 	if (!species && id <= PokemonSpecies::DEOXYS) {
 		const G3PokemonBaseStats* stats;
 		switch (version()) {
@@ -623,8 +623,12 @@ PokemonSpecies* Generation3::species(PokemonSpecies::Id id) {
 		default:
 			return nullptr;
 		}
-		species = new G3PokemonSpecies(this, &stats[reverseIdMapping[id] - 1], id);
-		putSpecies(id, species);
+		if (id == PokemonSpecies::UNOWN && forme && forme <= PokemonSpecies::UNOWN_QUESTION) {
+			species = new G3PokemonSpecies(this, &stats[G3PokemonSpecies::UNOWN_BASE + forme - 1], id, forme);
+		} else {
+			species = new G3PokemonSpecies(this, &stats[reverseIdMapping[id] - 1], id);
+		}
+		putSpecies(id, species, forme);
 	}
 	return species;
 }
@@ -672,11 +676,16 @@ void Generation3::finalize() {
 	}
 }
 
-std::unique_ptr<MultipaletteSprite> Generation3::frontSprite(PokemonSpecies::Id id) const {
+std::unique_ptr<MultipaletteSprite> Generation3::frontSprite(PokemonSpecies::Id id, PokemonSpecies::Forme forme) const {
 	if (id > PokemonSpecies::DEOXYS) {
 		return nullptr;
 	}
-	unsigned gameId = reverseIdMapping[id];
+	unsigned gameId;
+	if (id != PokemonSpecies::UNOWN || !forme) {
+		gameId = reverseIdMapping[id];
+	} else {
+		gameId = G3PokemonSpecies::UNOWN_BASE + forme - 1;
+	}
 	struct Mapping {
 		uint32_t pointer;
 		uint16_t unknown;

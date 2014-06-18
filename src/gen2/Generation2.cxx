@@ -91,8 +91,8 @@ Game::Version Generation2::version() const {
 	return GameBoyGame::version(s_checksums, checksum);
 }
 
-PokemonSpecies* Generation2::species(PokemonSpecies::Id id) {
-	PokemonSpecies* species = Game::species(id);
+PokemonSpecies* Generation2::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
+	PokemonSpecies* species = Game::species(id, forme);
 	if (!species) {
 		const G2PokemonBaseStats* stats;
 		switch (version()) {
@@ -109,11 +109,11 @@ PokemonSpecies* Generation2::species(PokemonSpecies::Id id) {
 			break;
 		}
 		if (id <= 251) {
-			species = new G2PokemonSpecies(this, &stats[id - 1]);
+			species = new G2PokemonSpecies(this, &stats[id - 1], forme);
 		} else {
 			species = new G2PokemonSpecies(this, &stats[-1]);
 		}
-		putSpecies(id, species);
+		putSpecies(id, species, forme);
 	}
 	return species;
 }
@@ -154,7 +154,7 @@ void Generation2::finalize() {
 	}
 }
 
-std::unique_ptr<MultipaletteSprite> Generation2::frontSprite(PokemonSpecies::Id id, unsigned size) const {
+std::unique_ptr<MultipaletteSprite> Generation2::frontSprite(PokemonSpecies::Id id, unsigned size, PokemonSpecies::Forme forme) const {
 	if (id > PokemonSpecies::CELEBI) {
 		return nullptr;
 	}
@@ -179,12 +179,20 @@ std::unique_ptr<MultipaletteSprite> Generation2::frontSprite(PokemonSpecies::Id 
 	case Game::G20E_SILVER:
 	case Game::G20J_SILVER:
 	default:
-		mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_SPRITE_MAPPING_BASE])[id - 1];
+		if (id != PokemonSpecies::UNOWN) {
+			mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_SPRITE_MAPPING_BASE])[id - 1];
+		} else {
+			mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_UNOWN_SPRITE_MAPPING_BASE])[forme];
+		}
 		palette = &reinterpret_cast<const Palette*>(&rom()[G20E_PALETTES])[id - 1];
 		break;
 	case Game::G21E_CRYSTAL:
 	case Game::G21J_CRYSTAL:
-		mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_SPRITE_MAPPING_BASE])[id - 1];
+		if (id != PokemonSpecies::UNOWN) {
+			mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_SPRITE_MAPPING_BASE])[id - 1];
+		} else {
+			mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_UNOWN_SPRITE_MAPPING_BASE])[forme];
+		}
 		palette = &reinterpret_cast<const Palette*>(&rom()[G21E_PALETTES])[id - 1];
 		break;
 	}

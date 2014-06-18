@@ -18,13 +18,13 @@ public:
 	virtual Version version() const override;
 	virtual int generation() const { return 2; }
 
-	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
+	virtual PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 
 	virtual void finalize() override;
 
 	static void registerLoader();
 
-	std::unique_ptr<MultipaletteSprite> frontSprite(PokemonSpecies::Id, unsigned size) const;
+	std::unique_ptr<MultipaletteSprite> frontSprite(PokemonSpecies::Id, unsigned size, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) const;
 
 private:
 	const static ChecksumMapping s_checksums[];

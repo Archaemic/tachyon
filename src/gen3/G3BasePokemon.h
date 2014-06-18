@@ -213,7 +213,15 @@ template <typename T>
 PokemonSpecies* G3Pokemon<T>::species() const {
 	unsigned unmappedId = m_data->growth()->species;
 	if (unmappedId < sizeof(G3PokemonSpecies::idMapping) / sizeof(*G3PokemonSpecies::idMapping)) {
-		return m_gen->species(G3PokemonSpecies::idMapping[unmappedId]);
+		PokemonSpecies::Id id = G3PokemonSpecies::idMapping[unmappedId];
+		PokemonSpecies::Forme forme = PokemonSpecies::FORME_NORMAL;
+		if (id == PokemonSpecies::UNOWN) {
+			uint32_t letter = m_data->personality;
+			letter = (letter & 0x3) | ((letter >> 6) & 0xC) | ((letter >> 12) & 0x30) | ((letter >> 18) & 0xC0);
+			letter %= 28;
+			forme = static_cast<PokemonSpecies::Forme>(letter);
+		}
+		return m_gen->species(id, forme);
 	}
 	return m_gen->species(PokemonSpecies::MISSINGNO);
 }

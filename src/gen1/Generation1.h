@@ -17,7 +17,7 @@ public:
 	virtual Version version() const override;
 	virtual int generation() const { return 1; }
 
-	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
+	virtual PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 
 	virtual void finalize() override;
 

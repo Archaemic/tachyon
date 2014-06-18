@@ -471,16 +471,21 @@ PokemonSpecies::Id GenericPokemonSpecies<G3PokemonBaseStats>::id() const {
 	return PokemonSpecies::MISSINGNO;
 }
 
-G3PokemonSpecies::G3PokemonSpecies(const Generation3* gen, const G3PokemonBaseStats* data, PokemonSpecies::Id id)
+G3PokemonSpecies::G3PokemonSpecies(const Generation3* gen, const G3PokemonBaseStats* data, PokemonSpecies::Id id, PokemonSpecies::Forme forme)
 	: GenericPokemonSpecies<G3PokemonBaseStats>(data)
 	, m_gen(gen)
 	, m_id(id)
-	, m_frontSprite(gen->frontSprite(id))
+	, m_forme(forme)
+	, m_frontSprite(gen->frontSprite(id, forme))
 {
 }
 
 PokemonSpecies::Id G3PokemonSpecies::id() const {
 	return m_id;
+}
+
+PokemonSpecies::Forme G3PokemonSpecies::forme() const {
+	return m_forme;
 }
 
 const MultipaletteSprite* G3PokemonSpecies::frontSprite() const {

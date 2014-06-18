@@ -64,12 +64,20 @@ void Game::addBox(Group* box) {
 	m_boxes.push_back(std::unique_ptr<Group>(box));
 }
 
-PokemonSpecies* Game::species(PokemonSpecies::Id id) {
-	return m_species[id].get();
+PokemonSpecies* Game::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
+	if (!forme) {
+		return m_species[id].get();
+	} else {
+		return m_formes[id][forme].get();
+	}
 }
 
-void Game::putSpecies(PokemonSpecies::Id id, PokemonSpecies* species) {
-	m_species[id] = std::unique_ptr<PokemonSpecies>(species);
+void Game::putSpecies(PokemonSpecies::Id id, PokemonSpecies* species, PokemonSpecies::Forme forme) {
+	if (!forme) {
+		m_species[id] = std::unique_ptr<PokemonSpecies>(species);
+	} else {
+		m_formes[id][forme] = std::unique_ptr<PokemonSpecies>(species);
+	}
 }
 
 void Game::stringToMappedText(const char** map, char terminator, uint8_t* mappedText, size_t len, const std::string& string) {

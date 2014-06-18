@@ -3,14 +3,23 @@
 #include "common/GameBoyGame.h"
 #include "gen2/Generation2.h"
 
-G2PokemonSpecies::G2PokemonSpecies(const Generation2* gen, const G2PokemonBaseStats* data)
+G2PokemonSpecies::G2PokemonSpecies(const Generation2* gen, const G2PokemonBaseStats* data, PokemonSpecies::Forme forme)
 	: GenericPokemonSpecies<G2PokemonBaseStats>(data)
-	, m_frontSprite(gen->frontSprite(static_cast<PokemonSpecies::Id>(data->species), data->spriteDim & 0xF))
+	, m_forme(forme)
+	, m_frontSprite(nullptr)
 {
+	if (data->species == PokemonSpecies::UNOWN) {
+		m_frontSprite = gen->frontSprite(static_cast<PokemonSpecies::Id>(data->species), data->spriteDim & 0xF, forme);
+	} else {
+		m_frontSprite = gen->frontSprite(static_cast<PokemonSpecies::Id>(data->species), data->spriteDim & 0xF);
+	}
 }
 
-const MultipaletteSprite* G2PokemonSpecies::frontSprite() const
-{
+PokemonSpecies::Forme G2PokemonSpecies::forme() const {
+	return m_forme;
+}
+
+const MultipaletteSprite* G2PokemonSpecies::frontSprite() const {
 	return m_frontSprite.get();
 }
 

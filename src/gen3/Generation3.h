@@ -46,7 +46,7 @@ public:
 	virtual Version version() const override;
 	virtual int generation() const { return 3; }
 
-	virtual PokemonSpecies* species(PokemonSpecies::Id) override;
+	virtual PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 
 	virtual void finalize() override;
 
@@ -54,7 +54,7 @@ public:
 
 	static void registerLoader();
 
-	std::unique_ptr<MultipaletteSprite> frontSprite(PokemonSpecies::Id) const;
+	std::unique_ptr<MultipaletteSprite> frontSprite(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) const;
 
 private:
 	struct NameMapping {

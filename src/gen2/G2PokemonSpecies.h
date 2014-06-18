@@ -47,13 +47,16 @@ struct G2PokemonBaseStats {
 
 class G2PokemonSpecies : public GenericPokemonSpecies<G2PokemonBaseStats> {
 public:
-	G2PokemonSpecies(const Generation2* gen, const G2PokemonBaseStats* data);
+	G2PokemonSpecies(const Generation2* gen, const G2PokemonBaseStats* data, Forme forme = FORME_NORMAL);
+
+	virtual Forme forme() const override;
 
 	virtual const MultipaletteSprite* frontSprite() const override;
 
 private:
 	virtual Type mapType(unsigned unmapped) const override;
 
+	Forme m_forme;
 	std::unique_ptr<MultipaletteSprite> m_frontSprite;
 };
 

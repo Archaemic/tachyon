@@ -42,6 +42,8 @@ class G1PokemonSpecies : public GenericPokemonSpecies<G1PokemonBaseStats> {
 public:
 	G1PokemonSpecies(const G1PokemonBaseStats* data);
 
+	virtual Forme forme() const override { return FORME_NORMAL; }
+
 	virtual const MultipaletteSprite* frontSprite() const override;
 
 private:

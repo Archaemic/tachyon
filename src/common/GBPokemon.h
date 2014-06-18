@@ -119,7 +119,16 @@ const GameBoyGame* GBPokemon<T>::game() const {
 
 template <typename T>
 PokemonSpecies* GBPokemon<T>::species() const {
-	return m_gen->species(static_cast<PokemonSpecies::Id>(m_data->species));
+	PokemonSpecies::Id id = static_cast<PokemonSpecies::Id>(m_data->species);
+	PokemonSpecies::Forme forme = PokemonSpecies::FORME_NORMAL;
+	if (id == PokemonSpecies::UNOWN) {
+		forme = static_cast<PokemonSpecies::Forme>(
+			(((m_data->ivAttack & 0x6) << 5) |
+			((m_data->ivDefense & 0x6) << 3) |
+			((m_data->ivSpeed & 0x6) << 1) |
+			((m_data->ivSpecial & 0x6) >> 1)) / 10);
+	}
+	return m_gen->species(id, forme);
 }
 
 template <typename T>
