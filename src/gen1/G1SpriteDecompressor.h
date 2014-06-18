@@ -30,7 +30,7 @@ private:
 	uint8_t* m_output;
 
 	const static unsigned table1[16];
-	const static unsigned table2[4][16];
+	const static unsigned table2[2][16];
 };
 
 #endif
