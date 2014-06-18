@@ -49,6 +49,8 @@ public:
 	virtual const MultipaletteSprite* frontSprite() const override;
 
 private:
+	void loadSprites();
+
 	virtual Type mapType(unsigned unmapped) const override;
 
 	const Generation1* m_gen;

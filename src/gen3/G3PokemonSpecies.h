@@ -57,6 +57,8 @@ public:
 	const static PokemonSpecies::Id idMapping[440];
 
 private:
+	void loadSprites();
+
 	virtual Type mapType(unsigned unmapped) const override;
 
 	const Generation3* m_gen;

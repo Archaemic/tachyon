@@ -24,12 +24,10 @@ public:
 
 	static void registerLoader();
 
-	std::unique_ptr<MultipaletteSprite> frontSprite(PokemonSpecies::Id, unsigned size, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) const;
+	static void lzDecompress(const uint8_t* source, uint8_t* dest, size_t maxLength);
 
 private:
 	const static ChecksumMapping s_checksums[];
-
-	void lzDecompress(const uint8_t* source, uint8_t* dest, size_t maxLength) const;
 
 	class Loader : public Game::Loader {
 	public:

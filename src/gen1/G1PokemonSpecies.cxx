@@ -29,6 +29,10 @@ G1PokemonSpecies::G1PokemonSpecies(const Generation1* gen, const G1PokemonBaseSt
 	: GenericPokemonSpecies<G1PokemonBaseStats>(data)
 	, m_gen(gen)
 {
+	loadSprites();
+}
+
+void G1PokemonSpecies::loadSprites() {
 	unsigned width = m_data->spriteDim >> 4;
 	unsigned height = m_data->spriteDim & 0xF;
 

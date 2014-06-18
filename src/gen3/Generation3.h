@@ -54,7 +54,9 @@ public:
 
 	static void registerLoader();
 
-	std::unique_ptr<MultipaletteSprite> frontSprite(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) const;
+	static void lz77Decompress(const uint8_t* source, uint8_t* dest, size_t maxLength);
+
+	const static uint16_t reverseIdMapping[387];
 
 private:
 	struct NameMapping {
@@ -70,8 +72,6 @@ private:
 
 	static Version version(const struct NameMapping* names, uint32_t name);
 	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) override;
-
-	void lz77Decompress(const uint8_t* source, uint8_t* dest, size_t maxLength) const;
 
 	class Loader : public Game::Loader {
 	public:
