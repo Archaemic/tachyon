@@ -37,6 +37,6 @@ unsigned G1Box::capacity() const {
 std::string G1Box::name() const {
 	std::stringstream name;
 	name << "Box ";
-	name << m_box;
+	name << (m_box + 1);
 	return name.str();
 }
