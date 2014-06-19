@@ -47,11 +47,9 @@ struct G2PokemonBaseStats {
 
 class G2PokemonSpecies : public GenericPokemonSpecies<G2PokemonBaseStats> {
 public:
-	G2PokemonSpecies(const Generation2* gen, const G2PokemonBaseStats* data, Forme forme = FORME_NORMAL);
+	G2PokemonSpecies(const G2PokemonBaseStats* data, Forme forme = FORME_NORMAL);
 
 	virtual Forme forme() const override;
-
-	virtual const MultipaletteSprite* frontSprite() const override;
 
 private:
 	void loadSprites();

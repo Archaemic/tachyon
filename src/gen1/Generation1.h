@@ -3,6 +3,8 @@
 
 #include "common/GameBoyGame.h"
 
+struct G1PokemonBaseStats;
+
 class Generation1 : public GameBoyGame {
 public:
 	enum {
@@ -17,13 +19,17 @@ public:
 	virtual Version version() const override;
 	virtual int generation() const { return 1; }
 
-	virtual PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
+	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 
 	virtual void finalize() override;
+
+	virtual PokemonSpecies::Id mapId(unsigned id) const override;
 
 	static void registerLoader();
 
 private:
+	void loadSprites(PokemonSpecies* species, const G1PokemonBaseStats* data) const;
+
 	const static ChecksumMapping s_checksums[];
 
 	class Loader : public Game::Loader {

@@ -52,7 +52,7 @@ public:
 	virtual const Game* game() const = 0;
 
 	const std::string& name() const;
-	virtual PokemonSpecies* species() const = 0;
+	virtual const PokemonSpecies* species() const = 0;
 	const std::string& otName() const;
 	virtual uint16_t otId() const = 0;
 	virtual uint16_t otSecretId() const = 0;

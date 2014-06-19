@@ -4,6 +4,8 @@
 #include "common/GameBoyGame.h"
 #include "common/MultipaletteSprite.h"
 
+struct G2PokemonBaseStats;
+
 class Generation2 : public GameBoyGame {
 public:
 	enum {
@@ -18,7 +20,7 @@ public:
 	virtual Version version() const override;
 	virtual int generation() const { return 2; }
 
-	virtual PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
+	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 
 	virtual void finalize() override;
 
@@ -27,6 +29,8 @@ public:
 	static void lzDecompress(const uint8_t* source, uint8_t* dest, size_t maxLength);
 
 private:
+	void loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*) const;
+
 	const static ChecksumMapping s_checksums[];
 
 	class Loader : public Game::Loader {

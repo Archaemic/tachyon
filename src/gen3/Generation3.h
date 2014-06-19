@@ -46,7 +46,7 @@ public:
 	virtual Version version() const override;
 	virtual int generation() const { return 3; }
 
-	virtual PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
+	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 
 	virtual void finalize() override;
 
@@ -69,6 +69,8 @@ private:
 	Section* m_sections[Section::MAX_SECTIONS];
 	std::unique_ptr<G3BasePokemonData[]> m_boxes;
 	uint32_t m_version;
+
+	void loadSprites(PokemonSpecies* species) const;
 
 	static Version version(const struct NameMapping* names, uint32_t name);
 	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) override;

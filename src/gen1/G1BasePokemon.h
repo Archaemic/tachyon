@@ -34,7 +34,7 @@ struct G1BasePokemonData {
 
 typedef GBPokemon<G1BasePokemonData> G1BasePokemon;
 
-template <> PokemonSpecies* GBPokemon<G1BasePokemonData>::species() const;
+template <> const PokemonSpecies* GBPokemon<G1BasePokemonData>::species() const;
 template <> unsigned GBPokemon<G1BasePokemonData>::currentHp() const;
 template <> Type GBPokemon<G1BasePokemonData>::type1() const;
 template <> Type GBPokemon<G1BasePokemonData>::type2() const;

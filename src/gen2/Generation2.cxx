@@ -13,6 +13,15 @@ enum {
 
 	G20E_BASE_STATS = 0x051B0B,
 	G21E_BASE_STATS = 0x051424,
+
+	G20E_SPRITE_MAPPING_BASE = 0x048000,
+	G21E_SPRITE_MAPPING_BASE = 0x120000,
+
+	G20E_UNOWN_SPRITE_MAPPING_BASE = 0x07C000,
+	G21E_UNOWN_SPRITE_MAPPING_BASE = 0x124000,
+
+	G20E_PALETTES = 0x00AD45,
+	G21E_PALETTES = 0x00A8D6,
 };
 
 struct Range {
@@ -82,8 +91,8 @@ Game::Version Generation2::version() const {
 	return GameBoyGame::version(s_checksums, checksum);
 }
 
-PokemonSpecies* Generation2::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
-	PokemonSpecies* species = Game::species(id, forme);
+const PokemonSpecies* Generation2::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
+	const PokemonSpecies* species = Game::species(id, forme);
 	if (!species) {
 		const G2PokemonBaseStats* stats;
 		switch (version()) {
@@ -100,11 +109,14 @@ PokemonSpecies* Generation2::species(PokemonSpecies::Id id, PokemonSpecies::Form
 			break;
 		}
 		if (id <= 251) {
-			species = new G2PokemonSpecies(this, &stats[id - 1], forme);
+			stats = &stats[id - 1];
 		} else {
-			species = new G2PokemonSpecies(this, &stats[-1]);
+			stats = &stats[-1];
 		}
-		putSpecies(id, species, forme);
+		PokemonSpecies* newSpecies = new G2PokemonSpecies(stats, forme);
+		loadSprites(newSpecies, stats);
+		putSpecies(id, newSpecies, forme);
+		species = newSpecies;
 	}
 	return species;
 }
@@ -143,6 +155,100 @@ void Generation2::finalize() {
 		*reinterpret_cast<uint16_t*>(&memory[G21E_CHECKSUM_2]) = checksum;
 		break;
 	}
+}
+
+void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats* data) const {
+	if (species->id() > PokemonSpecies::CELEBI) {
+		return;
+	}
+
+	const struct Mapping {
+		uint8_t frontBank;
+		uint16_t frontPointer;
+		uint8_t backBank;
+		uint16_t backPointer;
+	} __attribute__((packed))* mapping;
+
+	const struct Palette {
+		uint16_t colorA;
+		uint16_t colorB;
+		uint16_t shinyColorA;
+		uint16_t shinyColorB;
+	} __attribute__((packed))* palette;
+
+	switch (version()) {
+	case Game::G20E_GOLD:
+	case Game::G20J_GOLD:
+	case Game::G20E_SILVER:
+	case Game::G20J_SILVER:
+	default:
+		if (species->id() != PokemonSpecies::UNOWN) {
+			mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_SPRITE_MAPPING_BASE])[species->id() - 1];
+		} else {
+			mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_UNOWN_SPRITE_MAPPING_BASE])[species->forme()];
+		}
+		palette = &reinterpret_cast<const Palette*>(&rom()[G20E_PALETTES])[species->id() - 1];
+		break;
+	case Game::G21E_CRYSTAL:
+	case Game::G21J_CRYSTAL:
+		if (species->id() != PokemonSpecies::UNOWN) {
+			mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_SPRITE_MAPPING_BASE])[species->id() - 1];
+		} else {
+			mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_UNOWN_SPRITE_MAPPING_BASE])[species->forme()];
+		}
+		palette = &reinterpret_cast<const Palette*>(&rom()[G21E_PALETTES])[species->id() - 1];
+		break;
+	}
+
+	unsigned bank = mapping->frontBank;
+	switch (version()) {
+	case Game::G21E_CRYSTAL:
+	case Game::G21J_CRYSTAL:
+		bank += 0x36;
+		break;
+	default:
+		break;
+	}
+
+	switch (bank) {
+	case 0x13:
+	case 0x14:
+		bank += 0xC;
+		break;
+	case 0x1F:
+		bank += 0xF;
+		break;
+	}
+
+	unsigned address = mapping->frontPointer;
+	address = bank * 0x4000 + (address & 0x3FFF);
+
+	unsigned size = data->spriteDim & 0xF;
+
+	uint8_t* rawSpriteData = new uint8_t[size * size * 16];
+	uint8_t* spriteData = new uint8_t[size * size * 16];
+	uint16_t* paletteData = new uint16_t[16];
+	uint16_t* shinyPaletteData = new uint16_t[16];
+
+	paletteData[0] = 0x7FFF;
+	paletteData[1] = palette->colorA;
+	paletteData[2] = palette->colorB;
+	paletteData[3] = 0x0000;
+	shinyPaletteData[0] = 0x7FFF;
+	shinyPaletteData[1] = palette->shinyColorA;
+	shinyPaletteData[2] = palette->shinyColorB;
+	shinyPaletteData[3] = 0x0000;
+
+	const uint8_t* spritePointer = &rom()[address & (SIZE_ROM - 1)];
+	lzDecompress(spritePointer, rawSpriteData, size * size * 16);
+
+	arrangeTiles(rawSpriteData, spriteData, size, size);
+
+	delete [] rawSpriteData;
+
+	MultipaletteSprite* sprite = new MultipaletteSprite(size * 8, size * 8, spriteData, paletteData, Sprite::GB_2);
+	sprite->addPalette(shinyPaletteData);
+	species->setFrontSprite(sprite);
 }
 
 void Generation2::lzDecompress(const uint8_t* source, uint8_t* dest, size_t maxLength) {

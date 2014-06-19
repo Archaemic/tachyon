@@ -64,7 +64,7 @@ void Game::addBox(Group* box) {
 	m_boxes.push_back(std::unique_ptr<Group>(box));
 }
 
-PokemonSpecies* Game::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
+const PokemonSpecies* Game::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
 	if (!forme) {
 		return m_species[id].get();
 	} else {

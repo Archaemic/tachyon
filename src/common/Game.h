@@ -67,14 +67,14 @@ public:
 
 	virtual Version version() const = 0;
 	virtual int generation() const = 0;
-
-	const uint8_t* rom() const { return m_rom; }
 	uint8_t* ram() { return m_memory; }
 	virtual void finalize() = 0;
 
+	virtual PokemonSpecies::Id mapId(unsigned id) const { return static_cast<PokemonSpecies::Id>(id); }
+
 	// This function does lazy evaluation and memoizes the result
 	// Thus it is not const. PokemonSpecies objects are own by the Game
-	virtual PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL);
+	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL);
 
 protected:
 	Game(uint8_t* memory, const uint8_t* rom);
@@ -84,6 +84,8 @@ protected:
 
 	void setParty(Group* party);
 	void addBox(Group* box);
+
+	const uint8_t* rom() const { return m_rom; }
 
 	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) = 0;
 	void stringToMappedText(const char** mapping, char terminator, uint8_t* gameText, size_t len, const std::string&);

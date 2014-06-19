@@ -15,7 +15,7 @@ struct G1PartyPokemonData : public G1BasePokemonData {
 
 typedef GBPartyPokemon<G1PartyPokemonData> G1PartyPokemon;
 
-template <> PokemonSpecies* GBPokemon<G1PartyPokemonData>::species() const;
+template <> const PokemonSpecies* GBPokemon<G1PartyPokemonData>::species() const;
 template <> unsigned GBPokemon<G1PartyPokemonData>::pokerusStrain() const;
 template <> unsigned GBPokemon<G1PartyPokemonData>::pokerusDays() const;
 template <> unsigned GBPartyPokemon<G1PartyPokemonData>::specialAttack() const;

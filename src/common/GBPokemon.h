@@ -16,7 +16,7 @@ public:
 
 	virtual const GameBoyGame* game() const override;
 
-	virtual PokemonSpecies* species() const override;
+	virtual const PokemonSpecies* species() const override;
 
 	virtual uint16_t otId() const override;
 	virtual uint16_t otSecretId() const override;
@@ -118,7 +118,7 @@ const GameBoyGame* GBPokemon<T>::game() const {
 }
 
 template <typename T>
-PokemonSpecies* GBPokemon<T>::species() const {
+const PokemonSpecies* GBPokemon<T>::species() const {
 	PokemonSpecies::Id id = static_cast<PokemonSpecies::Id>(m_data->species);
 	PokemonSpecies::Forme forme = PokemonSpecies::FORME_NORMAL;
 	if (id == PokemonSpecies::UNOWN) {
@@ -133,37 +133,37 @@ PokemonSpecies* GBPokemon<T>::species() const {
 
 template <typename T>
 unsigned GBPokemon<T>::maxHp() const {
-	PokemonSpecies* sp = species();
+	const PokemonSpecies* sp = species();
 	return (sp->baseHp() * 2 + ivHp() + int(ceil(sqrt(evHp()))) / 4 + 100) * level() / 100 + 10;
 }
 
 template <typename T>
 unsigned GBPokemon<T>::attack() const {
-	PokemonSpecies* sp = species();
+	const PokemonSpecies* sp = species();
 	return stat(ivAttack(), sp->baseAttack(), evAttack());
 }
 
 template <typename T>
 unsigned GBPokemon<T>::defense() const {
-	PokemonSpecies* sp = species();
+	const PokemonSpecies* sp = species();
 	return stat(ivDefense(), sp->baseDefense(), evDefense());
 }
 
 template <typename T>
 unsigned GBPokemon<T>::speed() const {
-	PokemonSpecies* sp = species();
+	const PokemonSpecies* sp = species();
 	return stat(ivSpeed(), sp->baseSpeed(), evSpeed());
 }
 
 template <typename T>
 unsigned GBPokemon<T>::specialAttack() const {
-	PokemonSpecies* sp = species();
+	const PokemonSpecies* sp = species();
 	return stat(ivSpecialAttack(), sp->baseSpecialAttack(), evSpecialAttack());
 }
 
 template <typename T>
 unsigned GBPokemon<T>::specialDefense() const {
-	PokemonSpecies* sp = species();
+	const PokemonSpecies* sp = species();
 	return stat(ivSpecialDefense(), sp->baseSpecialDefense(), evSpecialDefense());
 }
 

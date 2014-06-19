@@ -3,9 +3,8 @@
 
 #include <cstdint>
 
+#include "common/MultipaletteSprite.h"
 #include "common/Type.h"
-
-class MultipaletteSprite;
 
 class PokemonSpecies {
 public:
@@ -790,10 +789,14 @@ public:
 	virtual uint8_t genderRatio() const = 0;
 	virtual PokemonSpecies::GrowthRate growthRate() const = 0;
 
-	virtual const MultipaletteSprite* frontSprite() const = 0;
+	const MultipaletteSprite* frontSprite() const;
+	void setFrontSprite(MultipaletteSprite*);
 
 	const char* readable() const;
 	static const char* readable(Id id);
+
+private:
+	std::unique_ptr<MultipaletteSprite> m_frontSprite;
 };
 
 #endif

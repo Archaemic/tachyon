@@ -23,6 +23,18 @@ enum {
 
 	G32J_LEAF_GREEN_BASE_STATS = 0x211184,
 	G32E_LEAF_GREEN_BASE_STATS = 0x25477C,
+
+	G30E_RUBY_FRONT_SPRITE_MAPPING = 0x1E8354,
+	G30E_SAPPHIRE_FRONT_SPRITE_MAPPING = 0x1E82E4,
+	G32E_FIRE_RED_FRONT_SPRITE_MAPPING = 0x2350AC,
+
+	G30E_RUBY_PALETTE_MAPPING = 0x1EA5B4,
+	G30E_SAPPHIRE_PALETTE_MAPPING = 0x1EA544,
+	G32E_FIRE_RED_PALETTE_MAPPING = 0x23730C,
+
+	G30E_RUBY_SHINY_PALETTE_MAPPING = 0x1EB374,
+	G30E_SAPPHIRE_SHINY_PALETTE_MAPPING = 0x1EB304,
+	G32E_FIRE_RED_SHINY_PALETTE_MAPPING = 0x2380CC,
 };
 
 static const char* charMapEn[0x100] = {
@@ -579,8 +591,8 @@ Game::Version Generation3::version() const {
 	return version(s_names, name);
 }
 
-PokemonSpecies* Generation3::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
-	PokemonSpecies* species = Game::species(id, forme);
+const PokemonSpecies* Generation3::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
+	const PokemonSpecies* species = Game::species(id, forme);
 	if (!species && id <= PokemonSpecies::DEOXYS) {
 		const G3PokemonBaseStats* stats;
 		switch (version()) {
@@ -611,12 +623,15 @@ PokemonSpecies* Generation3::species(PokemonSpecies::Id id, PokemonSpecies::Form
 		default:
 			return nullptr;
 		}
+		PokemonSpecies* newSpecies;
 		if (id == PokemonSpecies::UNOWN && forme && forme <= PokemonSpecies::UNOWN_QUESTION) {
-			species = new G3PokemonSpecies(this, &stats[G3PokemonSpecies::UNOWN_BASE + forme - 1], id, forme);
+			newSpecies = new G3PokemonSpecies(&stats[G3PokemonSpecies::UNOWN_BASE + forme - 1], id, forme);
 		} else {
-			species = new G3PokemonSpecies(this, &stats[reverseIdMapping[id] - 1], id);
+			newSpecies = new G3PokemonSpecies(&stats[reverseIdMapping[id] - 1], id);
 		}
-		putSpecies(id, species, forme);
+		putSpecies(id, newSpecies, forme);
+		loadSprites(newSpecies);
+		species = newSpecies;
 	}
 	return species;
 }
@@ -662,6 +677,76 @@ void Generation3::finalize() {
 		}
 		s->checksum = checksum + (checksum >> 16);
 	}
+}
+
+void Generation3::loadSprites(PokemonSpecies* species) const {
+	if (species->id() > PokemonSpecies::DEOXYS) {
+		return;
+	}
+
+	unsigned gameId;
+	if (species->id() != PokemonSpecies::UNOWN || !species->forme()) {
+		gameId = reverseIdMapping[species->id()];
+	} else {
+		gameId = G3PokemonSpecies::UNOWN_BASE + species->forme() - 1;
+	}
+	struct Mapping {
+		uint32_t pointer;
+		uint16_t unknown;
+		uint16_t id;
+	};
+
+	const Mapping* spriteMapping;
+	const Mapping* paletteMapping;
+	const Mapping* shinyPaletteMapping;
+
+	switch (version()) {
+	case Game::G30E_RUBY:
+		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_FRONT_SPRITE_MAPPING]);
+		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_PALETTE_MAPPING]);
+		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_SHINY_PALETTE_MAPPING]);
+		break;
+	case Game::G30E_SAPPHIRE:
+		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_FRONT_SPRITE_MAPPING]);
+		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_PALETTE_MAPPING]);
+		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_SHINY_PALETTE_MAPPING]);
+		break;
+	case Game::G32E_FIRE_RED:
+		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_FRONT_SPRITE_MAPPING]);
+		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_PALETTE_MAPPING]);
+		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_SHINY_PALETTE_MAPPING]);
+		break;
+	default:
+		return;
+	}
+	spriteMapping += gameId;
+	paletteMapping += gameId;
+	shinyPaletteMapping += gameId;
+
+	uint8_t* rawSpriteData = new uint8_t[64 * 32];
+	uint8_t* spriteData = new uint8_t[64 * 32];
+	uint16_t* paletteData = new uint16_t[16];
+	uint16_t* shinyPaletteData = new uint16_t[16];
+
+	const uint8_t* spritePointer = &rom()[spriteMapping->pointer & (SIZE_ROM - 1)];
+	const uint8_t* palettePointer = &rom()[paletteMapping->pointer & (SIZE_ROM - 1)];
+	const uint8_t* shinyPalettePointer = &rom()[shinyPaletteMapping->pointer & (SIZE_ROM - 1)];
+
+	lz77Decompress(spritePointer, rawSpriteData, 64 * 32);
+	lz77Decompress(palettePointer, reinterpret_cast<uint8_t*>(paletteData), 32);
+	lz77Decompress(shinyPalettePointer, reinterpret_cast<uint8_t*>(shinyPaletteData), 32);
+
+	for (unsigned tile = 0; tile < 64; ++tile) {
+		for (unsigned y = 0; y < 8; ++y) {
+			reinterpret_cast<uint32_t*>(spriteData)[y * 8 + (tile & 7) + (tile >> 3) * 64] = reinterpret_cast<uint32_t*>(rawSpriteData)[y + tile * 8];
+		}
+	}
+
+	delete [] rawSpriteData;
+
+	MultipaletteSprite* sprite = new MultipaletteSprite(64, 64, spriteData, paletteData, Sprite::GBA_4);
+	sprite->addPalette(shinyPaletteData);
+	species->setFrontSprite(sprite);
 }
 
 void Generation3::stringToGameText(uint8_t* gameText, size_t len, const std::string& string) {

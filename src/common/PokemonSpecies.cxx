@@ -723,6 +723,13 @@ const static char* speciesNames[] = {
 	u8"Diancie",
 };
 
+const MultipaletteSprite* PokemonSpecies::frontSprite() const {
+	return m_frontSprite.get();
+}
+
+void PokemonSpecies::setFrontSprite(MultipaletteSprite* sprite) {
+	m_frontSprite = std::unique_ptr<MultipaletteSprite>(sprite);
+}
 
 const char* PokemonSpecies::readable() const {
 	return speciesNames[id()];

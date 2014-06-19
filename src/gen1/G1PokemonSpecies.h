@@ -42,19 +42,12 @@ struct G1PokemonBaseStats {
 
 class G1PokemonSpecies : public GenericPokemonSpecies<G1PokemonBaseStats> {
 public:
-	G1PokemonSpecies(const Generation1* gen, const G1PokemonBaseStats* data);
+	G1PokemonSpecies(const G1PokemonBaseStats* data);
 
 	virtual Forme forme() const override { return FORME_NORMAL; }
 
-	virtual const MultipaletteSprite* frontSprite() const override;
-
 private:
-	void loadSprites();
-
 	virtual Type mapType(unsigned unmapped) const override;
-
-	const Generation1* m_gen;
-	std::unique_ptr<MultipaletteSprite> m_frontSprite;
 };
 
 template <> unsigned GenericPokemonSpecies<G1PokemonBaseStats>::baseSpecialAttack() const;

@@ -1,10 +1,8 @@
 #include "gen1/G1PartyPokemon.h"
 
 template <>
-PokemonSpecies* GBPokemon<G1PartyPokemonData>::species() const {
-	const uint8_t* idMapping = &m_gen->rom()[G10E_ID_MAPPING];
-	PokemonSpecies::Id id =  static_cast<PokemonSpecies::Id>(idMapping[m_data->species]);
-	return m_gen->species(id);
+const PokemonSpecies* GBPokemon<G1PartyPokemonData>::species() const {
+	return m_gen->species(m_gen->mapId(m_data->species));
 }
 
 template <>

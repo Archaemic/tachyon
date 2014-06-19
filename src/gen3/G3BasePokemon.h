@@ -108,7 +108,7 @@ public:
 
 	virtual const Generation3* game() const override;
 
-	virtual PokemonSpecies* species() const override;
+	virtual const PokemonSpecies* species() const override;
 
 	virtual uint16_t otId() const override;
 	virtual uint16_t otSecretId() const override;
@@ -210,7 +210,7 @@ const Generation3* G3Pokemon<T>::game() const {
 }
 
 template <typename T>
-PokemonSpecies* G3Pokemon<T>::species() const {
+const PokemonSpecies* G3Pokemon<T>::species() const {
 	unsigned unmappedId = m_data->growth()->species;
 	if (unmappedId < sizeof(G3PokemonSpecies::idMapping) / sizeof(*G3PokemonSpecies::idMapping)) {
 		PokemonSpecies::Id id = G3PokemonSpecies::idMapping[unmappedId];
