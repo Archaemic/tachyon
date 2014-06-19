@@ -139,8 +139,8 @@ void GameBoyGame::arrangeTiles(const uint8_t* source, uint8_t* dest, unsigned wi
 			uint8_t upper = row >> 8;
 			row = 0;
 			for (int i = 0; i < 8; ++i) {
-				row |= ((upper & (1 << i)) >> i) << (1 + i * 2);
-				row |= ((lower & (1 << i)) >> i) << (i * 2);
+				row |= (upper & (1 << i)) << (i + 1);
+				row |= (lower & (1 << i)) << i;
 			}
 			reinterpret_cast<uint16_t*>(dest)[y * width + (tile % width) * 8 * width + tile / width] = row;
 		}
