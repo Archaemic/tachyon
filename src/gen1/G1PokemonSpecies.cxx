@@ -4,6 +4,11 @@
 #include "gen1/G1BasePokemon.h"
 #include "gen1/G1SpriteDecompressor.h"
 
+enum {
+	G10E_PALETTE_MAPPING = 0x725C8,
+	G10E_PALETTES = 0x72660
+};
+
 template <>
 unsigned GenericPokemonSpecies<G1PokemonBaseStats>::baseSpecialAttack() const {
 	return m_data->special;
@@ -45,6 +50,12 @@ void G1PokemonSpecies::loadSprites() {
 		}
 	}
 
+	uint8_t mapping = m_gen->rom()[G10E_PALETTE_MAPPING + id()];
+
+	const struct Palette {
+		uint16_t color[4];
+	} __attribute__((packed))* palette = &reinterpret_cast<const Palette*>(&m_gen->rom()[G10E_PALETTES])[mapping];
+
 	unsigned bank;
 
 	if (gameId == 0x15) {
@@ -70,10 +81,10 @@ void G1PokemonSpecies::loadSprites() {
 	uint8_t* spriteData = new uint8_t[width * height * 16];
 	uint16_t* paletteData = new uint16_t[16];
 
-	paletteData[0] = 0x7FFF;
-	paletteData[1] = 0x6318;
-	paletteData[2] = 0x318C;
-	paletteData[3] = 0x0000;
+	paletteData[0] = palette->color[0];
+	paletteData[1] = palette->color[1];
+	paletteData[2] = palette->color[2];
+	paletteData[3] = palette->color[3];
 
 	const uint8_t* spritePointer = &m_gen->rom()[address & (Generation1::SIZE_ROM - 1)];
 
