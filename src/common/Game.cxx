@@ -26,12 +26,12 @@ std::unique_ptr<Game> Game::load(uint8_t* memory, const uint8_t* rom) {
 	return nullptr;
 }
 
-Game::Version Game::detect(const uint8_t* rom) {
-	Game::Version version;
+Game::Edition Game::detect(const uint8_t* rom) {
+	Game::Edition edition;
 	for (auto iter = s_loaders.begin(); iter < s_loaders.end(); ++iter) {
-		version = (*iter)->detect(rom);
-		if (version) {
-			return version;
+		edition = (*iter)->detect(rom);
+		if (edition) {
+			return edition;
 		}
 	}
 	return Game::INVALID;
@@ -80,7 +80,7 @@ void Game::putSpecies(PokemonSpecies::Id id, PokemonSpecies* species, PokemonSpe
 	}
 }
 
-void Game::stringToMappedText(const char** map, char terminator, uint8_t* mappedText, size_t len, const std::string& string) {
+void Game::stringToMappedText(const char** map, char terminator, uint8_t* mappedText, size_t len, const std::string& string) const {
 	if (!len) {
 		return;
 	}

@@ -22,9 +22,21 @@ enum {
 };
 
 const GameBoyGame::ChecksumMapping Generation1::s_checksums[] = {
-	{ 0x66B8, Game::G10J_RED },
-	{ 0xC1A2, Game::G10J_RED },
-	{ 0xE691, Game::G10E_RED },
+	{ 0x66B8, Game::G10_RED | Game::JAPANESE },
+	{ 0xC1A2, Game::G10_RED | Game::JAPANESE },
+	{ 0xE691, Game::G10_RED | Game::ENGLISH },
+	{ 0xDC5C, Game::G10_RED | Game::GERMAN },
+	{ 0xFC7A, Game::G10_RED | Game::FRENCH },
+	{ 0x4A38, Game::G10_RED | Game::SPANISH },
+	{ 0xD289, Game::G10_RED | Game::ITALIAN },
+	{ 0xD5DD, Game::G10_GREEN | Game::JAPANESE },
+	{ 0x47F5, Game::G10_GREEN | Game::JAPANESE },
+	{ 0x0A9D, Game::G10_BLUE | Game::ENGLISH },
+	{ 0xBC2E, Game::G10_BLUE | Game::GERMAN },
+	{ 0xA456, Game::G10_BLUE | Game::FRENCH },
+	{ 0xD714, Game::G10_BLUE | Game::SPANISH },
+	{ 0x9C5E, Game::G10_BLUE | Game::ITALIAN },
+	{ 0x36DC, Game::G11_BLUE | Game::JAPANESE },
 	{ 0, Game::INVALID }
 };
 
@@ -49,25 +61,25 @@ Generation1* Generation1::Loader::load(uint8_t* memory, const uint8_t* rom) cons
 	return nullptr;
 }
 
-Game::Version Generation1::Loader::detect(const uint8_t* rom) const {
+Game::Edition Generation1::Loader::detect(const uint8_t* rom) const {
 	uint16_t checksum = *(uint16_t*) &rom[0x14E];
-	return GameBoyGame::version(Generation1::s_checksums, checksum);
+	return GameBoyGame::findVersion(Generation1::s_checksums, checksum);
 }
 
 unsigned Generation1::numBoxes() const {
 	return 12;
 }
 
-Game::Version Generation1::version() const {
+Game::Edition Generation1::version() const {
 	uint16_t checksum = *(uint16_t*) &m_rom[0x14E];
-	return GameBoyGame::version(s_checksums, checksum);
+	return GameBoyGame::findVersion(s_checksums, checksum);
 }
 
 const PokemonSpecies* Generation1::species(PokemonSpecies::Id id, PokemonSpecies::Forme) {
 	const PokemonSpecies* species = Game::species(id);
 	if (!species) {
 		const G1PokemonBaseStats* stats;
-		if (id == PokemonSpecies::MEW && version() != Game::G11E_YELLOW) {
+		if (id == PokemonSpecies::MEW && (version() & Game::MASK_GAME) != Game::G12_YELLOW) {
 			stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_MEW_STATS]);
 		} else {
 			stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_BASE_STATS]);

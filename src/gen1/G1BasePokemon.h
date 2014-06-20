@@ -8,7 +8,7 @@ enum {
 };
 
 struct G1BasePokemonData {
-	const static int GENERATION = 1;
+	const static int GENERATION = 0x100;
 
 	uint8_t species;
 	uint16_t currentHp;

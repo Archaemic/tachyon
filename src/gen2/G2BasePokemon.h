@@ -4,7 +4,7 @@
 #include "common/GBPokemon.h"
 
 struct G2BasePokemonData {
-	const static int GENERATION = 2;
+	const static int GENERATION = 0x200;
 
 	uint8_t species;
 	uint8_t heldItem;

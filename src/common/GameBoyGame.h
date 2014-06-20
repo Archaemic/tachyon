@@ -12,20 +12,20 @@ public:
 	GameBoyGame(uint8_t* memory, const uint8_t* rom);
 
 private:
-	const static char* charMapGBEn[0x100];
+	const static char** charMapGB[];
 
 protected:
 	struct ChecksumMapping {
 		uint16_t checksum;
-		Game::Version version;
+		Game::Edition version;
 	};
 
-	static Version version(const ChecksumMapping* checksums, uint16_t checksum);
+	static Game::Edition findVersion(const ChecksumMapping* checksums, uint16_t checksum);
 
 public:
 	static const Type typeMapping[256];
-	static std::string gameTextToUTF8(const uint8_t* gameText, size_t len);
-	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) override;
+	std::string gameTextToUTF8(const uint8_t* gameText, size_t len) const;
+	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) const override;
 
 	static void arrangeTiles(const uint8_t* src, uint8_t* dest, unsigned width, unsigned height);
 };

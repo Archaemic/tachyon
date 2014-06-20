@@ -28,7 +28,7 @@ friend class GameRegistryListModel; // TODO: Remove friend relationship
 public:
 	struct GameInfo {
 		int id;
-		Game::Version version;
+		Game::Edition version;
 		uint8_t* rom;
 		QFile* file;
 	};

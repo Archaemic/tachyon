@@ -52,7 +52,7 @@ static const Range checksumRegionsG21E[2] = {
 };
 
 const GameBoyGame::ChecksumMapping Generation2::s_checksums[] = {
-	{ 0x2D68, Game::G20E_GOLD },
+	{ 0x2D68, Game::G20_GOLD | Game::ENGLISH },
 	{ 0, Game::INVALID }
 };
 
@@ -77,34 +77,31 @@ Generation2* Generation2::Loader::load(uint8_t* memory, const uint8_t* rom) cons
 	return nullptr;
 }
 
-Game::Version Generation2::Loader::detect(const uint8_t* rom) const {
+Game::Edition Generation2::Loader::detect(const uint8_t* rom) const {
 	uint16_t checksum = *(uint16_t*) &rom[0x14E];
-	return GameBoyGame::version(Generation2::s_checksums, checksum);
+	return GameBoyGame::findVersion(Generation2::s_checksums, checksum);
 }
 
 unsigned Generation2::numBoxes() const {
 	return 14;
 }
 
-Game::Version Generation2::version() const {
+Game::Edition Generation2::version() const {
 	uint16_t checksum = *(uint16_t*) &m_rom[0x14E];
-	return GameBoyGame::version(s_checksums, checksum);
+	return GameBoyGame::findVersion(s_checksums, checksum);
 }
 
 const PokemonSpecies* Generation2::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
 	const PokemonSpecies* species = Game::species(id, forme);
 	if (!species) {
 		const G2PokemonBaseStats* stats;
-		switch (version()) {
-		case Game::G20E_GOLD:
-		case Game::G20J_GOLD:
-		case Game::G20E_SILVER:
-		case Game::G20J_SILVER:
+		switch (version() & Game::MASK_GAME) {
+		case Game::G20_GOLD:
+		case Game::G20_SILVER:
 		default:
 			stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20E_BASE_STATS]);
 			break;
-		case Game::G21E_CRYSTAL:
-		case Game::G21J_CRYSTAL:
+		case Game::G21_CRYSTAL:
 			stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20E_BASE_STATS]);
 			break;
 		}
@@ -124,11 +121,9 @@ const PokemonSpecies* Generation2::species(PokemonSpecies::Id id, PokemonSpecies
 void Generation2::finalize() {
 	uint16_t checksum = 0;
 	uint8_t* memory = ram();
-	switch (version()) {
-	case Game::G20E_GOLD:
-	case Game::G20J_GOLD:
-	case Game::G20E_SILVER:
-	case Game::G20J_SILVER:
+	switch (version() & Game::MASK_GAME) {
+	case Game::G20_GOLD:
+	case Game::G20_SILVER:
 	default:
 		for (unsigned i = 0; i < 5; ++i) {
 			unsigned start = checksumRegionsG20E[0][i].start;
@@ -142,8 +137,7 @@ void Generation2::finalize() {
 		*reinterpret_cast<uint16_t*>(&memory[G20E_CHECKSUM_1]) = checksum;
 		*reinterpret_cast<uint16_t*>(&memory[G20E_CHECKSUM_2]) = checksum;
 		break;
-	case Game::G21E_CRYSTAL:
-	case Game::G21J_CRYSTAL:
+	case Game::G21_CRYSTAL:
 		unsigned start = checksumRegionsG21E[0].start;
 		unsigned newStart = checksumRegionsG21E[1].start;
 		unsigned end = checksumRegionsG21E[0].end;
@@ -176,11 +170,9 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 		uint16_t shinyColorB;
 	} __attribute__((packed))* palette;
 
-	switch (version()) {
-	case Game::G20E_GOLD:
-	case Game::G20J_GOLD:
-	case Game::G20E_SILVER:
-	case Game::G20J_SILVER:
+	switch (version() & Game::MASK_GAME) {
+	case Game::G20_GOLD:
+	case Game::G20_SILVER:
 	default:
 		if (species->id() != PokemonSpecies::UNOWN) {
 			mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_SPRITE_MAPPING_BASE])[species->id() - 1];
@@ -189,8 +181,7 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 		}
 		palette = &reinterpret_cast<const Palette*>(&rom()[G20E_PALETTES])[species->id() - 1];
 		break;
-	case Game::G21E_CRYSTAL:
-	case Game::G21J_CRYSTAL:
+	case Game::G21_CRYSTAL:
 		if (species->id() != PokemonSpecies::UNOWN) {
 			mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_SPRITE_MAPPING_BASE])[species->id() - 1];
 		} else {
@@ -201,13 +192,8 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 	}
 
 	unsigned bank = mapping->frontBank;
-	switch (version()) {
-	case Game::G21E_CRYSTAL:
-	case Game::G21J_CRYSTAL:
+	if ((version() & MASK_GAME) == Game::G21_CRYSTAL) {
 		bank += 0x36;
-		break;
-	default:
-		break;
 	}
 
 	switch (bank) {

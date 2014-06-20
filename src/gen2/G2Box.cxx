@@ -19,11 +19,9 @@ G2Box::G2Box(Generation2* gen, unsigned box)
 	: GBGroup<G2BasePokemon>(gen)
 {
 	uint8_t* start = gen->ram();
-	switch (gen->version()) {
-	case Game::G20E_GOLD:
-	case Game::G20J_GOLD:
-	case Game::G20E_SILVER:
-	case Game::G20J_SILVER:
+	switch (gen->version() & Game::MASK_GAME) {
+	case Game::G20_GOLD:
+	case Game::G20_SILVER:
 	default:
 		if (box == (gen->ram()[G20E_CURRENT_BOX_ID] & 0xF)) {
 			start += G20E_CURRENT_BOX;
@@ -36,8 +34,7 @@ G2Box::G2Box(Generation2* gen, unsigned box)
 		}
 		m_name = gen->gameTextToUTF8(&gen->ram()[G20E_BOX_NAMES + 9 * box], 9);
 		break;
-	case Game::G21E_CRYSTAL:
-	case Game::G21J_CRYSTAL:
+	case Game::G21_CRYSTAL:
 		if (box == (gen->ram()[G21E_CURRENT_BOX_ID] & 0xF)) {
 			start += G21E_CURRENT_BOX;
 		} else if (box < 7) {

@@ -43,7 +43,7 @@ public:
 
 	virtual unsigned numBoxes() const;
 
-	virtual Version version() const override;
+	virtual Edition version() const override;
 	virtual int generation() const { return 3; }
 
 	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
@@ -61,7 +61,7 @@ public:
 private:
 	struct NameMapping {
 		uint32_t name;
-		Game::Version version;
+		Game::Edition version;
 	};
 
 	const static NameMapping s_names[];
@@ -72,17 +72,17 @@ private:
 
 	void loadSprites(PokemonSpecies* species) const;
 
-	static Version version(const struct NameMapping* names, uint32_t name);
-	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) override;
+	static Edition version(const struct NameMapping* names, uint32_t name);
+	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) const override;
 
 	class Loader : public Game::Loader {
 	public:
 		virtual Generation3* load(uint8_t* memory, const uint8_t* rom) const override;
-		virtual Version detect(const uint8_t* rom) const override;
+		virtual Edition detect(const uint8_t* rom) const override;
 	};
 
 public:
-	static std::string gameTextToUTF8(const uint8_t* gameText, size_t len);
+	std::string gameTextToUTF8(const uint8_t* gameText, size_t len) const;
 };
 
 #endif

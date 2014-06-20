@@ -87,8 +87,8 @@ GBPokemon<T>::GBPokemon(GameBoyGame* gen, uint8_t* data, const uint8_t* name, co
 	: m_gen(gen)
 	, m_data(new T(*reinterpret_cast<T*>(data)))
 {
-	setName(GameBoyGame::gameTextToUTF8(name, 11));
-	setOtName(GameBoyGame::gameTextToUTF8(ot, 8));
+	setName(gen->gameTextToUTF8(name, 11));
+	setOtName(gen->gameTextToUTF8(ot, 8));
 }
 
 template <typename T>
@@ -101,7 +101,7 @@ GBPokemon<T>::GBPokemon(GameBoyGame* gen)
 
 template <typename T>
 std::unique_ptr<GBPokemon<T>> GBPokemon<T>::copy(GameBoyGame* gen, const Pokemon& pokemon) {
-	if (gen->generation() != T::GENERATION) {
+	if ((gen->version() & Game::MASK_GENERATION) != T::GENERATION) {
 		return nullptr;
 	}
 
@@ -384,7 +384,7 @@ const uint8_t* GBPokemon<T>::data(unsigned* size) const {
 
 template <typename T>
 bool GBPokemon<T>::copy(const Pokemon& other) {
-	if (other.game()->generation() != T::GENERATION) {
+	if ((other.game()->version() & Game::MASK_GENERATION) != T::GENERATION) {
 		return false;
 	}
 

@@ -40,7 +40,7 @@ GBPartyPokemon<T>::GBPartyPokemon(GameBoyGame* gen)
 
 template <typename T>
 std::unique_ptr<GBPartyPokemon<T>> GBPartyPokemon<T>::copy(GameBoyGame* gen, const Pokemon& pokemon) {
-	if (gen->generation() != T::GENERATION) {
+	if ((gen->version() & Game::MASK_GENERATION) != T::GENERATION) {
 		return nullptr;
 	}
 

@@ -16,7 +16,7 @@ public:
 
 	virtual unsigned numBoxes() const override;
 
-	virtual Version version() const override;
+	virtual Edition version() const override;
 	virtual int generation() const { return 1; }
 
 	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
@@ -35,7 +35,7 @@ private:
 	class Loader : public Game::Loader {
 	public:
 		virtual Generation1* load(uint8_t* memory, const uint8_t* rom) const override;
-		virtual Version detect(const uint8_t* rom) const override;
+		virtual Edition detect(const uint8_t* rom) const override;
 	};
 };
 

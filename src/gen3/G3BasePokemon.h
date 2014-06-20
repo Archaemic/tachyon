@@ -180,8 +180,8 @@ G3Pokemon<T>::G3Pokemon(Generation3* gen, T* data)
 	, m_data(new T(*data))
 {
 	crypt();
-	setName(Generation3::gameTextToUTF8(m_data->name, 10));
-	setOtName(Generation3::gameTextToUTF8(m_data->otName, 7));
+	setName(gen->gameTextToUTF8(m_data->name, 10));
+	setOtName(gen->gameTextToUTF8(m_data->otName, 7));
 }
 
 template <typename T>
@@ -540,7 +540,7 @@ const uint8_t* G3Pokemon<T>::data(unsigned* size) const {
 
 template <typename T>
 bool G3Pokemon<T>::copy(const Pokemon& other) {
-	if (other.game()->generation() != 3) {
+	if ((other.game()->version() & Game::MASK_GENERATION) != 0x300) {
 		return false;
 	}
 

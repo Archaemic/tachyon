@@ -494,21 +494,21 @@ const uint16_t Generation3::reverseIdMapping[387] = {
 };
 
 const Generation3::NameMapping Generation3::s_names[] = {
-	{ 'JVXA', Game::G30J_RUBY },
-	{ 'EVXA', Game::G30E_RUBY },
-	{ 'JPXA', Game::G30J_SAPPHIRE },
-	{ 'EPXA', Game::G30E_SAPPHIRE },
-	{ 'JEPB', Game::G31J_EMERALD },
-	{ 'EEPB', Game::G31E_EMERALD },
-	{ 'JRPB', Game::G32J_FIRE_RED },
-	{ 'ERPB', Game::G32E_FIRE_RED },
-	{ 'JGPB', Game::G32J_LEAF_GREEN },
-	{ 'EGPB', Game::G32E_LEAF_GREEN },
+	{ 'JVXA', Game::G30_RUBY | Game::JAPANESE },
+	{ 'EVXA', Game::G30_RUBY | Game::ENGLISH },
+	{ 'JPXA', Game::G30_SAPPHIRE | Game::JAPANESE },
+	{ 'EPXA', Game::G30_SAPPHIRE | Game::ENGLISH },
+	{ 'JEPB', Game::G31_EMERALD | Game::JAPANESE },
+	{ 'EEPB', Game::G31_EMERALD | Game::ENGLISH },
+	{ 'JRPB', Game::G32_FIRE_RED | Game::JAPANESE },
+	{ 'ERPB', Game::G32_FIRE_RED | Game::ENGLISH },
+	{ 'JGPB', Game::G32_LEAF_GREEN | Game::JAPANESE },
+	{ 'EGPB', Game::G32_LEAF_GREEN | Game::ENGLISH },
 	{ 0, Game::INVALID }
 };
 
 enum {
-	G30E_TRAINER_NAME = 0x000
+	G30E_TRAINER_NAME = 0x000,
 };
 
 Generation3::Generation3(uint8_t* memory, const uint8_t* rom)
@@ -566,12 +566,12 @@ Generation3* Generation3::Loader::load(uint8_t* memory, const uint8_t* rom) cons
 	return nullptr;
 }
 
-Game::Version Generation3::Loader::detect(const uint8_t* rom) const {
+Game::Edition Generation3::Loader::detect(const uint8_t* rom) const {
 	uint32_t name = *(uint32_t*) &rom[0xAC];
 	return version(s_names, name);
 }
 
-std::string Generation3::gameTextToUTF8(const uint8_t* gameText, size_t len) {
+std::string Generation3::gameTextToUTF8(const uint8_t* gameText, size_t len) const {
 	std::stringstream stream;
 	for (size_t i = 0; i < len; ++i) {
 		if (gameText[i] == 0xFF) {
@@ -586,7 +586,7 @@ unsigned Generation3::numBoxes() const {
 	return 14;
 }
 
-Game::Version Generation3::version() const {
+Game::Edition Generation3::version() const {
 	uint32_t name = *(uint32_t*) &rom()[0xAC];
 	return version(s_names, name);
 }
@@ -596,28 +596,28 @@ const PokemonSpecies* Generation3::species(PokemonSpecies::Id id, PokemonSpecies
 	if (!species && id <= PokemonSpecies::DEOXYS) {
 		const G3PokemonBaseStats* stats;
 		switch (version()) {
-		case Game::G30E_RUBY:
+		case Game::G30_RUBY | Game::ENGLISH:
 			stats = reinterpret_cast<const G3PokemonBaseStats*>(&rom()[G30E_RUBY_BASE_STATS]);
 			break;
-		case Game::G30E_SAPPHIRE:
+		case Game::G30_SAPPHIRE | Game::ENGLISH:
 			stats = reinterpret_cast<const G3PokemonBaseStats*>(&rom()[G30E_SAPPHIRE_BASE_STATS]);
 			break;
-		case Game::G31J_EMERALD:
+		case Game::G31_EMERALD | Game::JAPANESE:
 			stats = reinterpret_cast<const G3PokemonBaseStats*>(&rom()[G31J_BASE_STATS]);
 			break;
-		case Game::G31E_EMERALD:
+		case Game::G31_EMERALD | Game::ENGLISH:
 			stats = reinterpret_cast<const G3PokemonBaseStats*>(&rom()[G31E_BASE_STATS]);
 			break;
-		case Game::G32J_FIRE_RED:
+		case Game::G32_FIRE_RED | Game::JAPANESE:
 			stats = reinterpret_cast<const G3PokemonBaseStats*>(&rom()[G32J_FIRE_RED_BASE_STATS]);
 			break;
-		case Game::G32E_FIRE_RED:
+		case Game::G32_FIRE_RED | Game::ENGLISH:
 			stats = reinterpret_cast<const G3PokemonBaseStats*>(&rom()[G32E_FIRE_RED_BASE_STATS]);
 			break;
-		case Game::G32J_LEAF_GREEN:
+		case Game::G32_LEAF_GREEN | Game::JAPANESE:
 			stats = reinterpret_cast<const G3PokemonBaseStats*>(&rom()[G32J_LEAF_GREEN_BASE_STATS]);
 			break;
-		case Game::G32E_LEAF_GREEN:
+		case Game::G32_LEAF_GREEN | Game::ENGLISH:
 			stats = reinterpret_cast<const G3PokemonBaseStats*>(&rom()[G32E_LEAF_GREEN_BASE_STATS]);
 			break;
 		default:
@@ -636,7 +636,7 @@ const PokemonSpecies* Generation3::species(PokemonSpecies::Id id, PokemonSpecies
 	return species;
 }
 
-Game::Version Generation3::version(const NameMapping* mapping, uint32_t name) {
+Game::Edition Generation3::version(const NameMapping* mapping, uint32_t name) {
 	while (mapping->name) {
 		if (mapping->name == name) {
 			break;
@@ -701,17 +701,17 @@ void Generation3::loadSprites(PokemonSpecies* species) const {
 	const Mapping* shinyPaletteMapping;
 
 	switch (version()) {
-	case Game::G30E_RUBY:
+	case Game::G30_RUBY | Game::ENGLISH:
 		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_FRONT_SPRITE_MAPPING]);
 		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_PALETTE_MAPPING]);
 		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_SHINY_PALETTE_MAPPING]);
 		break;
-	case Game::G30E_SAPPHIRE:
+	case Game::G30_SAPPHIRE | Game::ENGLISH:
 		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_FRONT_SPRITE_MAPPING]);
 		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_PALETTE_MAPPING]);
 		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_SHINY_PALETTE_MAPPING]);
 		break;
-	case Game::G32E_FIRE_RED:
+	case Game::G32_FIRE_RED | Game::ENGLISH:
 		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_FRONT_SPRITE_MAPPING]);
 		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_PALETTE_MAPPING]);
 		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_SHINY_PALETTE_MAPPING]);
@@ -749,7 +749,7 @@ void Generation3::loadSprites(PokemonSpecies* species) const {
 	species->setFrontSprite(sprite);
 }
 
-void Generation3::stringToGameText(uint8_t* gameText, size_t len, const std::string& string) {
+void Generation3::stringToGameText(uint8_t* gameText, size_t len, const std::string& string) const {
 	stringToMappedText(charMapEn, 0xFF, gameText, len, string);
 }
 
