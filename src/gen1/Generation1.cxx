@@ -20,6 +20,7 @@ enum {
 	G10F_PALETTE_MAPPING = 0x072599,
 	G10S_PALETTE_MAPPING = 0x0725B8,
 	G10I_PALETTE_MAPPING = 0x072608,
+	G11J_PALETTE_MAPPING = 0x072A0D,
 
 	G10J_PALETTES = 0x072AB6,
 	G10E_PALETTES = 0x072660,
@@ -27,6 +28,7 @@ enum {
 	G10F_PALETTES = 0x072631,
 	G10S_PALETTES = 0x072650,
 	G10I_PALETTES = 0x0726A0,
+	G11J_PALETTES = 0x072AA5,
 
 	G10J_BASE_STATS = 0x038000,
 	G10E_BASE_STATS = 0x0383DE,
@@ -39,6 +41,7 @@ enum {
 	G10F_ID_MAPPING = 0x040FA9,
 	G10I_ID_MAPPING = 0x040FB5,
 	G10S_ID_MAPPING = 0x040FB3,
+	G11J_ID_MAPPING = 0x042783,
 };
 
 const GameBoyGame::ChecksumMapping Generation1::s_checksums[] = {
@@ -99,7 +102,7 @@ const PokemonSpecies* Generation1::species(PokemonSpecies::Id id, PokemonSpecies
 	const PokemonSpecies* species = Game::species(id);
 	if (!species) {
 		const G1PokemonBaseStats* stats;
-		if ((version() & Game::MASK_LOCALIZATION) == Game::JAPANESE) {
+		if ((version() & Game::MASK_LOCALIZATION) == Game::JAPANESE && (version() & Game::MASK_GAME) != Game::G11_BLUE) {
 			if (id == PokemonSpecies::MEW && (version() & Game::MASK_GAME) != Game::G12_YELLOW) {
 				stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10J_MEW_STATS]);
 			} else {
@@ -135,7 +138,11 @@ PokemonSpecies::Id Generation1::mapId(unsigned id) const {
 	const uint8_t* idMapping;
 	switch (version() & Game::MASK_LOCALIZATION) {
 	case Game::JAPANESE:
-		idMapping = &rom()[G10J_ID_MAPPING];
+		if ((version() & Game::MASK_GAME) == Game::G11_BLUE) {
+			idMapping = &rom()[G11J_ID_MAPPING];
+		} else {
+			idMapping = &rom()[G10J_ID_MAPPING];
+		}
 		break;
 	case Game::ENGLISH:
 	default:
@@ -170,9 +177,15 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 
 	switch (version() & Game::MASK_LOCALIZATION) {
 	case Game::JAPANESE:
-		idMapping = &rom()[G10J_ID_MAPPING];
-		mapping = rom()[G10J_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G10J_PALETTES])[mapping];
+		if ((version() & Game::MASK_GAME) == Game::G11_BLUE) {
+			idMapping = &rom()[G11J_ID_MAPPING];
+			mapping = rom()[G11J_PALETTE_MAPPING + species->id()];
+			palette = &reinterpret_cast<const Palette*>(&rom()[G11J_PALETTES])[mapping];
+		} else {
+			idMapping = &rom()[G10J_ID_MAPPING];
+			mapping = rom()[G10J_PALETTE_MAPPING + species->id()];
+			palette = &reinterpret_cast<const Palette*>(&rom()[G10J_PALETTES])[mapping];
+		}
 		break;
 	case Game::ENGLISH:
 	default:
