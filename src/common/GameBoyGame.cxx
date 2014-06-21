@@ -353,7 +353,7 @@ void GameBoyGame::arrangeTiles(const uint8_t* source, uint8_t* dest, unsigned wi
 				row |= (upper & (1 << i)) << (i + 1);
 				row |= (lower & (1 << i)) << i;
 			}
-			reinterpret_cast<uint16_t*>(dest)[y * width + (tile % width) * 8 * width + tile / width] = row;
+			reinterpret_cast<uint16_t*>(dest)[y * width + (tile % height) * 8 * width + tile / height] = row;
 		}
 	}
 }
