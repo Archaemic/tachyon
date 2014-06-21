@@ -156,6 +156,11 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 		return;
 	}
 
+	unsigned size = data->spriteDim & 0xF;
+	if (!size) {
+		return;
+	}
+
 	const struct Mapping {
 		uint8_t frontBank;
 		uint16_t frontPointer;
@@ -208,8 +213,6 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 
 	unsigned address = mapping->frontPointer;
 	address = bank * 0x4000 + (address & 0x3FFF);
-
-	unsigned size = data->spriteDim & 0xF;
 
 	uint8_t* rawSpriteData = new uint8_t[size * size * 16];
 	uint8_t* spriteData = new uint8_t[size * size * 16];
