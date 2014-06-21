@@ -11,6 +11,7 @@ enum {
 	G21E_CHECKSUM_1 = 0x2D0D,
 	G21E_CHECKSUM_2 = 0x1F0D,
 
+	G20J_BASE_STATS = 0x051AA9,
 	G20E_BASE_STATS = 0x051B0B,
 	G21E_BASE_STATS = 0x051424,
 
@@ -20,6 +21,7 @@ enum {
 	G20E_UNOWN_SPRITE_MAPPING_BASE = 0x07C000,
 	G21E_UNOWN_SPRITE_MAPPING_BASE = 0x124000,
 
+	G20J_PALETTES = 0x00ACCB,
 	G20E_PALETTES = 0x00AD45,
 	G21E_PALETTES = 0x00A8D6,
 };
@@ -52,6 +54,7 @@ static const Range checksumRegionsG21E[2] = {
 };
 
 const GameBoyGame::ChecksumMapping Generation2::s_checksums[] = {
+	{ 0x708A, Game::G20_GOLD | Game::JAPANESE },
 	{ 0x2D68, Game::G20_GOLD | Game::ENGLISH },
 	{ 0, Game::INVALID }
 };
@@ -95,15 +98,20 @@ const PokemonSpecies* Generation2::species(PokemonSpecies::Id id, PokemonSpecies
 	const PokemonSpecies* species = Game::species(id, forme);
 	if (!species) {
 		const G2PokemonBaseStats* stats;
-		switch (version() & Game::MASK_GAME) {
-		case Game::G20_GOLD:
-		case Game::G20_SILVER:
+		switch (version()) {
+		case Game::G20_GOLD | Game::JAPANESE:
+		case Game::G20_SILVER | Game::JAPANESE:
+			stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20J_BASE_STATS]);
+			break;
+		case Game::G20_GOLD | Game::ENGLISH:
+		case Game::G20_SILVER | Game::ENGLISH:
+			stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20E_BASE_STATS]);
+			break;
+		case Game::G21_CRYSTAL | Game::ENGLISH:
+			stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20E_BASE_STATS]);
+			break;
 		default:
-			stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20E_BASE_STATS]);
-			break;
-		case Game::G21_CRYSTAL:
-			stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20E_BASE_STATS]);
-			break;
+			return nullptr;
 		}
 		if (id <= 251) {
 			stats = &stats[id - 1];
@@ -184,7 +192,15 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 		} else {
 			mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_UNOWN_SPRITE_MAPPING_BASE])[species->forme()];
 		}
-		palette = &reinterpret_cast<const Palette*>(&rom()[G20E_PALETTES])[species->id() - 1];
+		switch (version() & Game::MASK_LOCALIZATION) {
+		case Game::JAPANESE:
+		default:
+			palette = &reinterpret_cast<const Palette*>(&rom()[G20J_PALETTES])[species->id() - 1];
+			break;
+		case Game::ENGLISH:
+			palette = &reinterpret_cast<const Palette*>(&rom()[G20E_PALETTES])[species->id() - 1];
+			break;
+		}
 		break;
 	case Game::G21_CRYSTAL:
 		if (species->id() != PokemonSpecies::UNOWN) {
