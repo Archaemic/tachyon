@@ -1,6 +1,5 @@
 #include "common/Game.h"
 
-#include <codecvt>
 #include <iostream>
 
 std::vector<std::unique_ptr<Game::Loader>> Game::s_loaders;
@@ -84,35 +83,39 @@ void Game::stringToMappedText(const char** map, char terminator, uint8_t* mapped
 	if (!len) {
 		return;
 	}
-	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
-	std::u32string widestring = utf32conv.from_bytes(string);
-	auto iter = widestring.begin();
-	while (len && iter != widestring.end()) {
-		std::u32string current;
-		current.push_back(*iter);
-		for (size_t m = 0; m < 0x100; ++m) {
-			std::u32string mapItem = utf32conv.from_bytes(map[m]);
-			auto oldIter = iter;
-			std::u32string fullCurrent(current);
-			for (size_t i = 0; i < mapItem.size(); ++i) {
-				if (mapItem[i] == fullCurrent[i]) {
-					if (mapItem == fullCurrent) {
-						*mappedText = m;
-						--len;
-						++mappedText;
-						goto loopEnd;
-					}
-					++iter;
-					if (iter == widestring.end()) {
-						break;
-						iter = oldIter;
-					}
-					fullCurrent.push_back(*iter);
+	auto cursor = string.begin();
+	while (len && cursor != string.end()) {
+		auto lookahead = cursor;
+		int bestMatch = -1;
+		while (lookahead != string.end()) {
+			++lookahead;
+			std::string current(cursor, lookahead);
+			int thisMatch = -1;
+			for (int m = 0; m < 0x100; ++m) {
+				std::string mapItem(map[m]);
+				mapItem.resize(current.size());
+				if (mapItem == current) {
+					thisMatch = m;
 				}
 			}
+			if (thisMatch >= 0) {
+				bestMatch = thisMatch;
+			} else {
+				--lookahead;
+				break;
+			}
 		}
-		loopEnd:
-		++iter;
+		if (bestMatch >= 0) {
+			mappedText[0] = bestMatch;
+			++mappedText;
+			--len;
+		}
+		if (cursor != lookahead) {
+			cursor = lookahead;
+		} else {
+			// Skip characters we don't have a replacement for
+			++cursor;
+		}
 	}
 	for (size_t i = 0; i < len; ++i) {
 		mappedText[i] = terminator;
