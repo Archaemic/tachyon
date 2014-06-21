@@ -15,7 +15,7 @@ G2Party::G2Party(Generation2* gen)
 	case Game::G20_GOLD | Game::JAPANESE:
 	case Game::G20_SILVER | Game::JAPANESE:
 		setStart(&gen->ram()[G20J_PARTY_POKEMON]);
-		setOtNameLength(6);
+		setNameLength(6);
 		break;
 	case Game::G20_GOLD | Game::ENGLISH:
 	case Game::G20_SILVER | Game::ENGLISH:

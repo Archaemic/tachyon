@@ -18,19 +18,19 @@ public:
 
 protected:
 	void setStart(uint8_t* start);
-	void setOtNameLength(unsigned);
+	void setNameLength(unsigned);
 
 private:
 	GameBoyGame* m_gen;
 	uint8_t* m_start;
-	uint8_t m_otNameLength;
+	uint8_t m_nameLength;
 };
 
 template <typename T>
 GBGroup<T>::GBGroup(GameBoyGame* gen)
 	: m_gen(gen)
 	, m_start(gen->ram())
-	, m_otNameLength(11)
+	, m_nameLength(11)
 {
 }
 
@@ -40,8 +40,8 @@ std::unique_ptr<Pokemon> GBGroup<T>::at(unsigned i) {
 		return nullptr;
 	}
 	uint8_t* pstart = &m_start[2 + capacity() + sizeof(typename T::DataType) * i];
-	uint8_t* nstart = &m_start[2 + (sizeof(typename T::DataType) + 1 + m_otNameLength) * capacity() + 11 * i];
-	uint8_t* tstart = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + m_otNameLength * i];
+	uint8_t* nstart = &m_start[2 + (sizeof(typename T::DataType) + 1 + m_nameLength) * capacity() + m_nameLength * i];
+	uint8_t* tstart = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + m_nameLength * i];
 	return std::unique_ptr<Pokemon>(new T(m_gen, pstart, nstart, tstart));
 }
 
@@ -67,12 +67,12 @@ bool GBGroup<T>::insert(const Pokemon& pokemon) {
 	++m_start[0];
 	uint8_t* sstart = &m_start[1 + len];
 	uint8_t* pstart = &m_start[2 + capacity() + sizeof(typename T::DataType) * len];
-	uint8_t* nstart = &m_start[2 + (sizeof(typename T::DataType) + 1 + m_otNameLength) * capacity() + 11 * len];
-	uint8_t* tstart = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + m_otNameLength * len];
+	uint8_t* nstart = &m_start[2 + (sizeof(typename T::DataType) + 1 + m_nameLength) * capacity() + m_nameLength * len];
+	uint8_t* tstart = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + m_nameLength * len];
 	*sstart = data->species;
 	memmove(pstart, data, sizeof(typename T::DataType));
-	m_gen->stringToGameText(nstart, 11, pokemon.name());
-	m_gen->stringToGameText(tstart, m_otNameLength, pokemon.otName());
+	m_gen->stringToGameText(nstart, m_nameLength, pokemon.name());
+	m_gen->stringToGameText(tstart, m_nameLength, pokemon.otName());
 
 	return true;
 }
@@ -90,20 +90,20 @@ void GBGroup<T>::remove(unsigned i) {
 	uint8_t* pstart = &m_start[2 + capacity() + sizeof(typename T::DataType) * i];
 	uint8_t* pnext = &m_start[2 + capacity() + sizeof(typename T::DataType) * (i + 1)];
 	uint8_t* pend = &m_start[2 + capacity() + sizeof(typename T::DataType) * m_start[0]];
-	uint8_t* nstart = &m_start[2 + (sizeof(typename T::DataType) + 1 + m_otNameLength) * capacity() + 11 * i];
-	uint8_t* nnext = &m_start[2 + (sizeof(typename T::DataType) + 1 + m_otNameLength) * capacity() + 11 * (i + 1)];
-	uint8_t* nend = &m_start[2 + (sizeof(typename T::DataType) + 1 + m_otNameLength) * capacity() + 11 * m_start[0]];
-	uint8_t* tstart = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + m_otNameLength * i];
-	uint8_t* tnext = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + m_otNameLength * (i + 1)];
-	uint8_t* tend = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + m_otNameLength * m_start[0]];
+	uint8_t* nstart = &m_start[2 + (sizeof(typename T::DataType) + 1 + m_nameLength) * capacity() + m_nameLength * i];
+	uint8_t* nnext = &m_start[2 + (sizeof(typename T::DataType) + 1 + m_nameLength) * capacity() + m_nameLength * (i + 1)];
+	uint8_t* nend = &m_start[2 + (sizeof(typename T::DataType) + 1 + m_nameLength) * capacity() + m_nameLength * m_start[0]];
+	uint8_t* tstart = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + m_nameLength * i];
+	uint8_t* tnext = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + m_nameLength * (i + 1)];
+	uint8_t* tend = &m_start[2 + (sizeof(typename T::DataType) + 1) * capacity() + m_nameLength * m_start[0]];
 	memmove(sstart, snext, len - i - 1);
 	memset(send, 0xFF, capacity() - m_start[0]);
 	memmove(pstart, pnext, sizeof(typename T::DataType) * (len - i - 1));
 	memset(pend, 0, sizeof(typename T::DataType) * (capacity() - m_start[0]));
-	memmove(nstart, nnext, 11 * (len - i - 1));
-	memset(nend, 0, 11 * (capacity() - m_start[0]));
-	memmove(tstart, tnext, 11 * (len - i - 1));
-	memset(tend, 0, 11 * (capacity() - m_start[0]));
+	memmove(nstart, nnext, m_nameLength * (len - i - 1));
+	memset(nend, 0, m_nameLength * (capacity() - m_start[0]));
+	memmove(tstart, tnext, m_nameLength * (len - i - 1));
+	memset(tend, 0, m_nameLength * (capacity() - m_start[0]));
 }
 
 template <typename T>
@@ -112,8 +112,8 @@ void GBGroup<T>::setStart(uint8_t* start) {
 }
 
 template <typename T>
-void GBGroup<T>::setOtNameLength(unsigned length) {
-	m_otNameLength = length;
+void GBGroup<T>::setNameLength(unsigned length) {
+	m_nameLength = length;
 }
 
 #endif
