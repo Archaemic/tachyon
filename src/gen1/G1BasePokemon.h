@@ -3,10 +3,6 @@
 
 #include "common/GBPokemon.h"
 
-enum {
-	G10E_ID_MAPPING = 0x041023,
-};
-
 struct G1BasePokemonData {
 	const static int GENERATION = 0x100;
 
