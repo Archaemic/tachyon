@@ -34,6 +34,7 @@ public:
 		G10_BLUE = 0x102,
 		G11_BLUE = 0x103,
 		G12_YELLOW = 0x104,
+		G13_YELLOW = 0x105,
 
 		G20_GOLD = 0x201,
 		G20_SILVER = 0x202,
