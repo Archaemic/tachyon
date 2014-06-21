@@ -334,28 +334,48 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 		bank = 0x0D;
 	}
 
-	unsigned address = data->frontSprite;
-	address = bank * 0x4000 + (address & 0x3FFF);
-
 	uint8_t* rawSpriteData = new uint8_t[width * height * 16];
 	uint8_t* spriteData = new uint8_t[width * height * 16];
+	uint8_t* rawBackSpriteData = new uint8_t[256];
+	uint8_t* backSpriteData = new uint8_t[256];
 	uint16_t* paletteData = new uint16_t[16];
+	uint16_t* backPaletteData = new uint16_t[16];
 
 	paletteData[0] = palette->color[0];
 	paletteData[1] = palette->color[1];
 	paletteData[2] = palette->color[2];
 	paletteData[3] = palette->color[3];
+	backPaletteData[0] = palette->color[0];
+	backPaletteData[1] = palette->color[1];
+	backPaletteData[2] = palette->color[2];
+	backPaletteData[3] = palette->color[3];
 
-	const uint8_t* spritePointer = &rom()[address & (Generation1::SIZE_ROM - 1)];
+	unsigned frontAddress = data->frontSprite;
+	frontAddress = bank * 0x4000 + (frontAddress & 0x3FFF);
+
+	unsigned backAddress = data->backSprite;
+	backAddress = bank * 0x4000 + (backAddress & 0x3FFF);
+
+	const uint8_t* spritePointer = &rom()[frontAddress & (Generation1::SIZE_ROM - 1)];
+	const uint8_t* backSpritePointer = &rom()[backAddress & (Generation1::SIZE_ROM - 1)];
 
 	G1SpriteDecompressor decomp(spritePointer, 0x400);
 	decomp.decompress();
 	memcpy(rawSpriteData, decomp.output(), std::min<size_t>(width * height * 16, decomp.size()));
 
+	decomp = G1SpriteDecompressor(backSpritePointer, 0x200);
+	decomp.decompress();
+	memcpy(rawBackSpriteData, decomp.output(), std::min<size_t>(256, decomp.size()));
+
 	arrangeTiles(rawSpriteData, spriteData, width, height);
+	arrangeTiles(rawBackSpriteData, backSpriteData, 4, 4);
 
 	delete [] rawSpriteData;
+	delete [] rawBackSpriteData;
 
 	MultipaletteSprite* sprite = new MultipaletteSprite(width * 8, height * 8, spriteData, paletteData, Sprite::GB_2);
 	species->setFrontSprite(sprite);
+
+	sprite = new MultipaletteSprite(32, 32, backSpriteData, backPaletteData, Sprite::GB_2);
+	species->setBackSprite(sprite);
 }

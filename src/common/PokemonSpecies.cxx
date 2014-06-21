@@ -731,6 +731,15 @@ void PokemonSpecies::setFrontSprite(MultipaletteSprite* sprite) {
 	m_frontSprite = std::unique_ptr<MultipaletteSprite>(sprite);
 }
 
+const MultipaletteSprite* PokemonSpecies::backSprite() const {
+	return m_backSprite.get();
+}
+
+
+void PokemonSpecies::setBackSprite(MultipaletteSprite* sprite) {
+	m_backSprite = std::unique_ptr<MultipaletteSprite>(sprite);
+}
+
 const char* PokemonSpecies::readable() const {
 	return speciesNames[id()];
 }
