@@ -136,14 +136,14 @@ const PokemonSpecies* Generation1::species(PokemonSpecies::Id id, PokemonSpecies
 				stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10J_MEW_STATS]);
 			} else {
 				stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10J_BASE_STATS]);
-				stats = &stats[id - 1];
+				stats = &stats[(id - 1) & 0xFF];
 			}
 		} else {
 			if (id == PokemonSpecies::MEW && (version() & Game::MASK_GAME) < Game::G12_YELLOW) {
 				stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_MEW_STATS]);
 			} else {
 				stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_BASE_STATS]);
-				stats = &stats[id - 1];
+				stats = &stats[(id - 1) & 0xFF];
 			}
 		}
 		PokemonSpecies* newSpecies = new G1PokemonSpecies(stats);
