@@ -1,6 +1,8 @@
 #ifndef PTXN_Q_POKEMON_STATUS_H
 #define PTXN_Q_POKEMON_STATUS_H
 
+#include "ui_PokemonStatus.h"
+
 #include "common/Pokemon.h"
 
 #include <QWidget>
@@ -19,13 +21,9 @@ public:
 	void setPokemon(std::unique_ptr<Pokemon> pokemon);
 
 private:
-	std::unique_ptr<Pokemon> m_activePokemon;
+	Ui::PokemonStatus m_ui;
 
-	QLabel* m_name;
-	QLabel* m_species;
-	QLabel* m_speciesNo;
-	QLabel* m_frontSprite;
-	QLabel* m_backSprite;
+	std::unique_ptr<Pokemon> m_activePokemon;
 };
 
 #endif

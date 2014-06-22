@@ -23,7 +23,11 @@ set(SRC
 	SpriteUtilities.cxx
 )
 
-add_executable(QTachyon WIN32 MACOSX_BUNDLE main.cxx ${SRC})
+qt5_wrap_ui(UI_SRC
+	PokemonStatus.ui
+)
+
+add_executable(QTachyon WIN32 MACOSX_BUNDLE main.cxx ${SRC} ${UI_SRC})
 set_property(TARGET QTachyon PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/src/qt/Info.plist.in)
 
 qt5_use_modules(QTachyon Widgets)
