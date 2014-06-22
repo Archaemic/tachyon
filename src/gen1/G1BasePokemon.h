@@ -1,7 +1,7 @@
 #ifndef PTXN_G1_BASE_POKEMON
 #define PTXN_G1_BASE_POKEMON
 
-#include "common/GBPokemon.h"
+#include "gb/GBPokemon.h"
 
 struct G1BasePokemonData {
 	const static int GENERATION = 0x100;

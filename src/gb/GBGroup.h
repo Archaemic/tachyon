@@ -1,9 +1,9 @@
 #ifndef PTXN_GB_GROUP_H
 #define PTXN_GB_GROUP_H
 
-#include "common/GameBoyGame.h"
 #include "common/Group.h"
 #include "common/Pokemon.h"
+#include "gb/GameBoyGame.h"
 
 template<typename T>
 class GBGroup : public Group {

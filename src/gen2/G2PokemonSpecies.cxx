@@ -1,6 +1,6 @@
 #include "gen2/G2PokemonSpecies.h"
 
-#include "common/GameBoyGame.h"
+#include "gb/GameBoyGame.h"
 #include "gen2/Generation2.h"
 
 G2PokemonSpecies::G2PokemonSpecies(const G2PokemonBaseStats* data, PokemonSpecies::Forme forme)

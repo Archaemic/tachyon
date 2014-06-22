@@ -1,8 +1,8 @@
 #ifndef PTXN_GENERATION_2_H
 #define PTXN_GENERATION_2_H
 
-#include "common/GameBoyGame.h"
 #include "common/MultipaletteSprite.h"
+#include "gb/GameBoyGame.h"
 
 struct G2PokemonBaseStats;
 

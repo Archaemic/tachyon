@@ -1,4 +1,4 @@
-#include "common/GameBoyGame.h"
+#include "gb/GameBoyGame.h"
 
 #include <sstream>
 

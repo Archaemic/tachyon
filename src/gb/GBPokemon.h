@@ -1,8 +1,8 @@
 #ifndef PTXN_GB_POKEMON_H
 #define PTXN_GB_POKEMON_H
 
-#include "common/GameBoyGame.h"
 #include "common/Pokemon.h"
+#include "gb/GameBoyGame.h"
 
 template <typename T>
 class GBPokemon : public Pokemon {

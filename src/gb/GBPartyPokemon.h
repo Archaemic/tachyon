@@ -1,7 +1,7 @@
 #ifndef PTXN_GB_PARTY_POKEMON_H
 #define PTXN_GB_PARTY_POKEMON_H
 
-#include "common/GBPokemon.h"
+#include "gb/GBPokemon.h"
 
 template<typename T>
 class GBPartyPokemon : public GBPokemon<T> {

@@ -1,7 +1,7 @@
 #ifndef PTXN_G2_PARTY_H
 #define PTXN_G2_PARTY_H
 
-#include "common/GBGroup.h"
+#include "gb/GBGroup.h"
 #include "gen2/G2PartyPokemon.h"
 
 class Generation2;

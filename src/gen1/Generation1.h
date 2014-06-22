@@ -1,7 +1,7 @@
 #ifndef PTXN_GENERATION_1_H
 #define PTXN_GENERATION_1_H
 
-#include "common/GameBoyGame.h"
+#include "gb/GameBoyGame.h"
 
 struct G1PokemonBaseStats;
 
