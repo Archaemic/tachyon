@@ -6,8 +6,6 @@
 #include "gen1/G1SpriteDecompressor.h"
 
 enum {
-	G1_BOX_SIZE = 1122,
-
 	G10E_SUM_REGION_START = 0x2598,
 	G10E_SUM_REGION_END = 0x3523,
 
@@ -53,8 +51,8 @@ enum {
 	G10E_ID_MAPPING = 0x041023,
 	G10G_ID_MAPPING = 0x040F95,
 	G10F_ID_MAPPING = 0x040FA9,
-	G10I_ID_MAPPING = 0x040FB5,
 	G10S_ID_MAPPING = 0x040FB3,
+	G10I_ID_MAPPING = 0x040FB5,
 	G11J_ID_MAPPING = 0x042783,
 	G12J_ID_MAPPING = 0x04282C,
 	G12E_ID_MAPPING = 0x0410B0,
@@ -321,7 +319,7 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 
 	unsigned bank;
 
-	if (gameId == 0x15 && (version() & Game::MASK_GAME) < Game::G12_YELLOW){
+	if (gameId == 0x15 && (version() & Game::MASK_GAME) < Game::G12_YELLOW) {
 		bank = 0x01;
 	} else if (gameId == 0xB6) {
 		bank = 0x0B;
