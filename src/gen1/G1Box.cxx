@@ -23,8 +23,7 @@ G1Box::G1Box(Generation1* gen, unsigned box)
 	, m_box(box)
 {
 	uint8_t* start = gen->ram();
-	switch (gen->version() & Game::MASK_LOCALIZATION) {
-	case Game::JAPANESE:
+	if ((gen->version() & Game::MASK_LOCALIZATION) == Game::JAPANESE) {
 		if (box == (start[G10J_CURRENT_BOX_ID] & 0xF)) {
 			start += G10J_CURRENT_BOX;
 		} else if (box < 4) {
@@ -35,8 +34,7 @@ G1Box::G1Box(Generation1* gen, unsigned box)
 			start += G10J_CURRENT_BOX;
 		}
 		setNameLength(6);
-		break;
-	case Game::ENGLISH:
+	} else {
 		if (box == (start[G10E_CURRENT_BOX_ID] & 0xF)) {
 			start += G10E_CURRENT_BOX;
 		} else if (box < 6) {
@@ -46,7 +44,6 @@ G1Box::G1Box(Generation1* gen, unsigned box)
 		} else {
 			start += G10E_CURRENT_BOX;
 		}
-		break;
 	}
 	setStart(start);
 }
