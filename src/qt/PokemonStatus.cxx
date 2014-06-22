@@ -26,6 +26,17 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 		m_ui.name->setText(QString::fromUtf8(m_activePokemon->name().c_str()));
 		m_ui.species->setText(QString::fromUtf8(m_activePokemon->species()->readable()));
 		m_ui.speciesNo->setText(tr("#%1").arg(QString::number(m_activePokemon->species()->id()), 3, '0'));
+		switch (m_activePokemon->gender()) {
+		case Pokemon::MALE:
+			m_ui.gender->setText(tr("♂"));
+			break;
+		case Pokemon::FEMALE:
+			m_ui.gender->setText(tr("♀"));
+			break;
+		case Pokemon::GENDERLESS:
+			m_ui.gender->clear();
+			break;
+		}
 		if (m_activePokemon->shiny()) {
 			m_ui.shiny->setText(tr("⁂"));
 		} else {
@@ -76,6 +87,7 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 		m_ui.name->setText(tr("(No selection)"));
 		m_ui.species->clear();
 		m_ui.speciesNo->clear();
+		m_ui.gender->clear();
 		m_ui.shiny->clear();
 
 		m_ui.frontSprite->setPixmap(nullPixmap);

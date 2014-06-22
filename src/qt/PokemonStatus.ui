@@ -99,7 +99,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0">
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0">
         <item>
          <widget class="QLabel" name="name">
           <property name="styleSheet">
@@ -107,6 +107,13 @@
           </property>
           <property name="text">
            <string>Name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="gender">
+          <property name="text">
+           <string>⚥</string>
           </property>
          </widget>
         </item>
