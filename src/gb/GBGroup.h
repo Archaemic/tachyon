@@ -48,6 +48,9 @@ std::unique_ptr<Pokemon> GBGroup<T>::at(unsigned i) {
 
 template <typename T>
 unsigned GBGroup<T>::length() const {
+	if (m_start[0] == 0xFF) {
+		return 0;
+	}
 	return std::min<unsigned>(m_start[0], capacity());
 }
 
