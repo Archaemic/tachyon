@@ -1,7 +1,7 @@
 #ifndef PTXN_G1_SPRITE_DECOMPRESSOR_H
 #define PTXN_G1_SPRITE_DECOMPRESSOR_H
 
-#include "common/Bitstream.h"
+#include "util/Bitstream.h"
 
 class G1SpriteDecompressor {
 public:

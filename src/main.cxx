@@ -12,7 +12,7 @@
 #include "gen1/Generation1.h"
 #include "gen2/Generation2.h"
 #include "gen3/Generation3.h"
-#include "util.h"
+#include "util/Table.h"
 
 int main(int, char**) {
 	Generation1::registerLoader();

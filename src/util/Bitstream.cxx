@@ -1,4 +1,4 @@
-#include "common/Bitstream.h"
+#include "util/Bitstream.h"
 
 Bitstream::Bitstream(const uint8_t* bits, size_t length)
     : m_bits(bits)
