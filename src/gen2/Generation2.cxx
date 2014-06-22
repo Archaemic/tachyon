@@ -212,28 +212,45 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 		break;
 	}
 
-	unsigned bank = mapping->frontBank;
+	unsigned frontBank = mapping->frontBank;
+	unsigned backBank = mapping->backBank;
 	if ((version() & MASK_GAME) == Game::G21_CRYSTAL) {
-		bank += 0x36;
+		frontBank += 0x36;
 	}
 
-	switch (bank) {
+	switch (frontBank) {
 	case 0x13:
 	case 0x14:
-		bank += 0xC;
+		frontBank += 0xC;
 		break;
 	case 0x1F:
-		bank += 0xF;
+		frontBank += 0xF;
 		break;
 	}
 
-	unsigned address = mapping->frontPointer;
-	address = bank * 0x4000 + (address & 0x3FFF);
+	switch (backBank) {
+	case 0x13:
+	case 0x14:
+		backBank += 0xC;
+		break;
+	case 0x1F:
+		backBank += 0xF;
+		break;
+	}
+
+	unsigned frontAddress = mapping->frontPointer;
+	frontAddress = frontBank * 0x4000 + (frontAddress & 0x3FFF);
+	unsigned backAddress = mapping->backPointer;
+	backAddress = backBank * 0x4000 + (backAddress & 0x3FFF);
 
 	uint8_t* rawSpriteData = new uint8_t[size * size * 16];
 	uint8_t* spriteData = new uint8_t[size * size * 16];
+	uint8_t* rawBackSpriteData = new uint8_t[6 * 6 * 16];
+	uint8_t* backSpriteData = new uint8_t[6 * 6 * 16];
 	uint16_t* paletteData = new uint16_t[16];
 	uint16_t* shinyPaletteData = new uint16_t[16];
+	uint16_t* backPaletteData = new uint16_t[16];
+	uint16_t* shinyBackPaletteData = new uint16_t[16];
 
 	paletteData[0] = 0x7FFF;
 	paletteData[1] = palette->colorA;
@@ -243,17 +260,33 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 	shinyPaletteData[1] = palette->shinyColorA;
 	shinyPaletteData[2] = palette->shinyColorB;
 	shinyPaletteData[3] = 0x0000;
+	backPaletteData[0] = 0x7FFF;
+	backPaletteData[1] = palette->colorA;
+	backPaletteData[2] = palette->colorB;
+	backPaletteData[3] = 0x0000;
+	shinyBackPaletteData[0] = 0x7FFF;
+	shinyBackPaletteData[1] = palette->shinyColorA;
+	shinyBackPaletteData[2] = palette->shinyColorB;
+	shinyBackPaletteData[3] = 0x0000;
 
-	const uint8_t* spritePointer = &rom()[address & (SIZE_ROM - 1)];
+	const uint8_t* spritePointer = &rom()[frontAddress & (SIZE_ROM - 1)];
+	const uint8_t* backSpritePointer = &rom()[backAddress & (SIZE_ROM - 1)];
 	lzDecompress(spritePointer, rawSpriteData, size * size * 16);
+	lzDecompress(backSpritePointer, rawBackSpriteData, 6 * 6 * 16);
 
 	arrangeTiles(rawSpriteData, spriteData, size, size);
+	arrangeTiles(rawBackSpriteData, backSpriteData, 6, 6);
 
 	delete [] rawSpriteData;
+	delete [] rawBackSpriteData;
 
 	MultipaletteSprite* sprite = new MultipaletteSprite(size * 8, size * 8, spriteData, paletteData, Sprite::GB_2);
 	sprite->addPalette(shinyPaletteData);
 	species->setFrontSprite(sprite);
+
+	sprite = new MultipaletteSprite(6 * 8, 6 * 8, backSpriteData, backPaletteData, Sprite::GB_2);
+	sprite->addPalette(shinyBackPaletteData);
+	species->setBackSprite(sprite);
 }
 
 void Generation2::lzDecompress(const uint8_t* source, uint8_t* dest, size_t maxLength) {
