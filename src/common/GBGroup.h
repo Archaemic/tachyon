@@ -20,8 +20,9 @@ protected:
 	void setStart(uint8_t* start);
 	void setNameLength(unsigned);
 
-private:
 	GameBoyGame* m_gen;
+
+private:
 	uint8_t* m_start;
 	uint8_t m_nameLength;
 };
