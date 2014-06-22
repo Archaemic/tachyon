@@ -28,6 +28,10 @@ enum {
 	G30E_SAPPHIRE_FRONT_SPRITE_MAPPING = 0x1E82E4,
 	G32E_FIRE_RED_FRONT_SPRITE_MAPPING = 0x2350AC,
 
+	G30E_RUBY_BACK_SPRITE_MAPPING = 0x1E97F4,
+	G30E_SAPPHIRE_BACK_SPRITE_MAPPING = 0x1E9784,
+	G32E_FIRE_RED_BACK_SPRITE_MAPPING = 0x23654C,
+
 	G30E_RUBY_PALETTE_MAPPING = 0x1EA5B4,
 	G30E_SAPPHIRE_PALETTE_MAPPING = 0x1EA544,
 	G32E_FIRE_RED_PALETTE_MAPPING = 0x23730C,
@@ -697,22 +701,26 @@ void Generation3::loadSprites(PokemonSpecies* species) const {
 	};
 
 	const Mapping* spriteMapping;
+	const Mapping* backSpriteMapping;
 	const Mapping* paletteMapping;
 	const Mapping* shinyPaletteMapping;
 
 	switch (version()) {
 	case Game::G30_RUBY | Game::ENGLISH:
 		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_FRONT_SPRITE_MAPPING]);
+		backSpriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_BACK_SPRITE_MAPPING]);
 		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_PALETTE_MAPPING]);
 		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_SHINY_PALETTE_MAPPING]);
 		break;
 	case Game::G30_SAPPHIRE | Game::ENGLISH:
 		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_FRONT_SPRITE_MAPPING]);
+		backSpriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_FRONT_SPRITE_MAPPING]);
 		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_PALETTE_MAPPING]);
 		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_SHINY_PALETTE_MAPPING]);
 		break;
 	case Game::G32_FIRE_RED | Game::ENGLISH:
 		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_FRONT_SPRITE_MAPPING]);
+		backSpriteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_BACK_SPRITE_MAPPING]);
 		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_PALETTE_MAPPING]);
 		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_SHINY_PALETTE_MAPPING]);
 		break;
@@ -720,33 +728,48 @@ void Generation3::loadSprites(PokemonSpecies* species) const {
 		return;
 	}
 	spriteMapping += gameId;
+	backSpriteMapping += gameId;
 	paletteMapping += gameId;
 	shinyPaletteMapping += gameId;
 
 	uint8_t* rawSpriteData = new uint8_t[64 * 32];
 	uint8_t* spriteData = new uint8_t[64 * 32];
+	uint8_t* rawBackSpriteData = new uint8_t[64 * 32];
+	uint8_t* backSpriteData = new uint8_t[64 * 32];
 	uint16_t* paletteData = new uint16_t[16];
 	uint16_t* shinyPaletteData = new uint16_t[16];
+	uint16_t* backPaletteData = new uint16_t[16];
+	uint16_t* shinyBackPaletteData = new uint16_t[16];
 
 	const uint8_t* spritePointer = &rom()[spriteMapping->pointer & (SIZE_ROM - 1)];
+	const uint8_t* backSpritePointer = &rom()[backSpriteMapping->pointer & (SIZE_ROM - 1)];
 	const uint8_t* palettePointer = &rom()[paletteMapping->pointer & (SIZE_ROM - 1)];
 	const uint8_t* shinyPalettePointer = &rom()[shinyPaletteMapping->pointer & (SIZE_ROM - 1)];
 
 	lz77Decompress(spritePointer, rawSpriteData, 64 * 32);
+	lz77Decompress(backSpritePointer, rawBackSpriteData, 64 * 32);
 	lz77Decompress(palettePointer, reinterpret_cast<uint8_t*>(paletteData), 32);
 	lz77Decompress(shinyPalettePointer, reinterpret_cast<uint8_t*>(shinyPaletteData), 32);
 
 	for (unsigned tile = 0; tile < 64; ++tile) {
 		for (unsigned y = 0; y < 8; ++y) {
 			reinterpret_cast<uint32_t*>(spriteData)[y * 8 + (tile & 7) + (tile >> 3) * 64] = reinterpret_cast<uint32_t*>(rawSpriteData)[y + tile * 8];
+			reinterpret_cast<uint32_t*>(backSpriteData)[y * 8 + (tile & 7) + (tile >> 3) * 64] = reinterpret_cast<uint32_t*>(rawBackSpriteData)[y + tile * 8];
 		}
 	}
+
+	memcpy(backPaletteData, paletteData, 32);
+	memcpy(shinyBackPaletteData, shinyPaletteData, 32);
 
 	delete [] rawSpriteData;
 
 	MultipaletteSprite* sprite = new MultipaletteSprite(64, 64, spriteData, paletteData, Sprite::GBA_4);
 	sprite->addPalette(shinyPaletteData);
 	species->setFrontSprite(sprite);
+
+	sprite = new MultipaletteSprite(64, 64, backSpriteData, backPaletteData, Sprite::GBA_4);
+	sprite->addPalette(shinyBackPaletteData);
+	species->setBackSprite(sprite);
 }
 
 void Generation3::stringToGameText(uint8_t* gameText, size_t len, const std::string& string) const {
