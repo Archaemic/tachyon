@@ -32,6 +32,9 @@ enum {
 	G30E_SAPPHIRE_BACK_SPRITE_MAPPING = 0x1E9784,
 	G32E_FIRE_RED_BACK_SPRITE_MAPPING = 0x23654C,
 
+	G30E_RUBY_MENU_SPRITE_MAPPING = 0x3BBD20,
+	G32E_FIRE_RED_MENU_SPRITE_MAPPING = 0x3D37A0,
+
 	G30E_RUBY_PALETTE_MAPPING = 0x1EA5B4,
 	G30E_SAPPHIRE_PALETTE_MAPPING = 0x1EA544,
 	G32E_FIRE_RED_PALETTE_MAPPING = 0x23730C,
@@ -39,6 +42,16 @@ enum {
 	G30E_RUBY_SHINY_PALETTE_MAPPING = 0x1EB374,
 	G30E_SAPPHIRE_SHINY_PALETTE_MAPPING = 0x1EB304,
 	G32E_FIRE_RED_SHINY_PALETTE_MAPPING = 0x2380CC,
+
+	G30E_RUBY_MENU_PALETTES = 0xE966D8,
+	G32E_FIRE_RED_MENU_PALETTES = 0x3D3740,
+
+	G30E_RUBY_MENU_PALETTE_MAPPING = 0x3BC400,
+	G32E_FIRE_RED_MENU_PALETTE_MAPPING = 0x3D3E80,
+
+	// TODO: Find the real offsets
+	G30E_RUBY_MENU_SHINY_PALETTE_MAPPING = 0x3BC400,
+	G32E_FIRE_RED_MENU_SHINY_PALETTE_MAPPING = 0x3D3E80,
 };
 
 static const char* charMapEn[0x100] = {
@@ -704,6 +717,10 @@ void Generation3::loadSprites(PokemonSpecies* species) const {
 	const Mapping* backSpriteMapping;
 	const Mapping* paletteMapping;
 	const Mapping* shinyPaletteMapping;
+	const uint32_t* menuSpriteMapping;
+	const uint8_t* menuPaletteMapping;
+	const uint8_t* shinyMenuPaletteMapping;
+	uint32_t menuPaletteBase;
 
 	switch (version()) {
 	case Game::G30_RUBY | Game::ENGLISH:
@@ -711,40 +728,56 @@ void Generation3::loadSprites(PokemonSpecies* species) const {
 		backSpriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_BACK_SPRITE_MAPPING]);
 		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_PALETTE_MAPPING]);
 		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_RUBY_SHINY_PALETTE_MAPPING]);
+		menuSpriteMapping = reinterpret_cast<const uint32_t*>(&rom()[G30E_RUBY_MENU_SPRITE_MAPPING]);
+		menuPaletteMapping = reinterpret_cast<const uint8_t*>(&rom()[G30E_RUBY_MENU_PALETTE_MAPPING]);
+		shinyMenuPaletteMapping = reinterpret_cast<const uint8_t*>(&rom()[G30E_RUBY_MENU_SHINY_PALETTE_MAPPING]);
+		menuPaletteBase = G30E_RUBY_MENU_PALETTES;
 		break;
 	case Game::G30_SAPPHIRE | Game::ENGLISH:
 		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_FRONT_SPRITE_MAPPING]);
 		backSpriteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_FRONT_SPRITE_MAPPING]);
 		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_PALETTE_MAPPING]);
 		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G30E_SAPPHIRE_SHINY_PALETTE_MAPPING]);
+		// TODO: Find Sapphire mappings
+		menuSpriteMapping = reinterpret_cast<const uint32_t*>(&rom()[G30E_RUBY_MENU_SPRITE_MAPPING]);
+		menuPaletteMapping = reinterpret_cast<const uint8_t*>(&rom()[G30E_RUBY_MENU_PALETTE_MAPPING]);
+		shinyMenuPaletteMapping = reinterpret_cast<const uint8_t*>(&rom()[G30E_RUBY_MENU_SHINY_PALETTE_MAPPING]);
+		menuPaletteBase = G30E_RUBY_MENU_PALETTES;
 		break;
 	case Game::G32_FIRE_RED | Game::ENGLISH:
 		spriteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_FRONT_SPRITE_MAPPING]);
 		backSpriteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_BACK_SPRITE_MAPPING]);
 		paletteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_PALETTE_MAPPING]);
 		shinyPaletteMapping = reinterpret_cast<const Mapping*>(&rom()[G32E_FIRE_RED_SHINY_PALETTE_MAPPING]);
+		menuSpriteMapping = reinterpret_cast<const uint32_t*>(&rom()[G32E_FIRE_RED_MENU_SPRITE_MAPPING]);
+		menuSpriteMapping = reinterpret_cast<const uint32_t*>(&rom()[G32E_FIRE_RED_MENU_SPRITE_MAPPING]);
+		menuPaletteMapping = reinterpret_cast<const uint8_t*>(&rom()[G32E_FIRE_RED_MENU_PALETTE_MAPPING]);
+		shinyMenuPaletteMapping = reinterpret_cast<const uint8_t*>(&rom()[G32E_FIRE_RED_MENU_SHINY_PALETTE_MAPPING]);
+		menuPaletteBase = G32E_FIRE_RED_MENU_PALETTES;
 		break;
 	default:
 		return;
 	}
-	spriteMapping += gameId;
-	backSpriteMapping += gameId;
-	paletteMapping += gameId;
-	shinyPaletteMapping += gameId;
 
 	uint8_t* rawSpriteData = new uint8_t[64 * 32];
 	uint8_t* spriteData = new uint8_t[64 * 32];
 	uint8_t* rawBackSpriteData = new uint8_t[64 * 32];
 	uint8_t* backSpriteData = new uint8_t[64 * 32];
+	uint8_t* menuSpriteData = new uint8_t[32 * 16];
 	uint16_t* paletteData = new uint16_t[16];
 	uint16_t* shinyPaletteData = new uint16_t[16];
 	uint16_t* backPaletteData = new uint16_t[16];
 	uint16_t* shinyBackPaletteData = new uint16_t[16];
+	uint16_t* menuPaletteData = new uint16_t[16];
+	uint16_t* shinyMenuPaletteData = new uint16_t[16];
 
-	const uint8_t* spritePointer = &rom()[spriteMapping->pointer & (SIZE_ROM - 1)];
-	const uint8_t* backSpritePointer = &rom()[backSpriteMapping->pointer & (SIZE_ROM - 1)];
-	const uint8_t* palettePointer = &rom()[paletteMapping->pointer & (SIZE_ROM - 1)];
-	const uint8_t* shinyPalettePointer = &rom()[shinyPaletteMapping->pointer & (SIZE_ROM - 1)];
+	const uint8_t* spritePointer = &rom()[spriteMapping[gameId].pointer & (SIZE_ROM - 1)];
+	const uint8_t* backSpritePointer = &rom()[backSpriteMapping[gameId].pointer & (SIZE_ROM - 1)];
+	const uint8_t* palettePointer = &rom()[paletteMapping[gameId].pointer & (SIZE_ROM - 1)];
+	const uint8_t* shinyPalettePointer = &rom()[shinyPaletteMapping[gameId].pointer & (SIZE_ROM - 1)];
+	const uint8_t* menuSpritePointer = &rom()[menuSpriteMapping[gameId] & (SIZE_ROM - 1)];
+	const uint8_t* menuPalettePointer = &rom()[menuPaletteMapping[gameId] * 32 + menuPaletteBase];
+	const uint8_t* shinyMenuPalettePointer = &rom()[shinyMenuPaletteMapping[gameId] * 32 + menuPaletteBase];
 
 	lz77Decompress(spritePointer, rawSpriteData, 64 * 32);
 	lz77Decompress(backSpritePointer, rawBackSpriteData, 64 * 32);
@@ -758,8 +791,16 @@ void Generation3::loadSprites(PokemonSpecies* species) const {
 		}
 	}
 
+	for (unsigned tile = 0; tile < 12; ++tile) {
+		for (unsigned y = 0; y < 8; ++y) {
+			reinterpret_cast<uint32_t*>(menuSpriteData)[y * 4 + (tile & 3) + (tile >> 2) * 32] = reinterpret_cast<const uint32_t*>(menuSpritePointer)[y + (tile + 4) * 8];
+		}
+	}
+
 	memcpy(backPaletteData, paletteData, 32);
 	memcpy(shinyBackPaletteData, shinyPaletteData, 32);
+	memcpy(menuPaletteData, menuPalettePointer, 16 * 2);
+	memcpy(shinyMenuPaletteData, shinyMenuPalettePointer, 16 * 2);
 
 	delete [] rawSpriteData;
 
@@ -770,6 +811,10 @@ void Generation3::loadSprites(PokemonSpecies* species) const {
 	sprite = new MultipaletteSprite(64, 64, backSpriteData, backPaletteData, Sprite::GBA_4);
 	sprite->addPalette(shinyBackPaletteData);
 	species->setBackSprite(sprite);
+
+	sprite = new MultipaletteSprite(32, 24, menuSpriteData, menuPaletteData, Sprite::GBA_4);
+	sprite->addPalette(shinyMenuPaletteData);
+	species->setMenuSprite(sprite);
 }
 
 void Generation3::stringToGameText(uint8_t* gameText, size_t len, const std::string& string) const {

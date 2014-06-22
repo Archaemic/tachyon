@@ -735,9 +735,16 @@ const MultipaletteSprite* PokemonSpecies::backSprite() const {
 	return m_backSprite.get();
 }
 
-
 void PokemonSpecies::setBackSprite(MultipaletteSprite* sprite) {
 	m_backSprite = std::unique_ptr<MultipaletteSprite>(sprite);
+}
+
+const MultipaletteSprite* PokemonSpecies::menuSprite() const {
+	return m_menuSprite.get();
+}
+
+void PokemonSpecies::setMenuSprite(MultipaletteSprite* sprite) {
+	m_menuSprite = std::unique_ptr<MultipaletteSprite>(sprite);
 }
 
 const char* PokemonSpecies::readable() const {

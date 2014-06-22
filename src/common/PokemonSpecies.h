@@ -795,12 +795,16 @@ public:
 	const MultipaletteSprite* backSprite() const;
 	void setBackSprite(MultipaletteSprite*);
 
+	const MultipaletteSprite* menuSprite() const;
+	void setMenuSprite(MultipaletteSprite*);
+
 	const char* readable() const;
 	static const char* readable(Id id);
 
 private:
 	std::unique_ptr<MultipaletteSprite> m_frontSprite;
 	std::unique_ptr<MultipaletteSprite> m_backSprite;
+	std::unique_ptr<MultipaletteSprite> m_menuSprite;
 };
 
 #endif
