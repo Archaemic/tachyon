@@ -18,7 +18,9 @@ set(SRC
 	GameRegistryView.cxx
 	PokemonList.cxx
 	PokemonSelector.cxx
+	PokemonStatus.cxx
 	PokemonTable.cxx
+	SpriteUtilities.cxx
 )
 
 add_executable(QTachyon WIN32 MACOSX_BUNDLE main.cxx ${SRC})
