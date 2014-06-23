@@ -67,6 +67,13 @@ enum {
 	G10F_MENU_SPRITE_MAPPING = 0x0718DE,
 	G10S_MENU_SPRITE_MAPPING = 0x0718FD,
 	G10I_MENU_SPRITE_MAPPING = 0x07194D,
+	G11J_MENU_SPRITE_MAPPING = 0x071DC1,
+	G12J_MENU_SPRITE_MAPPING = 0x071911,
+	G12E_MENU_SPRITE_MAPPING = 0x0719BA,
+	G12G_MENU_SPRITE_MAPPING = 0x071999,
+	G12F_MENU_SPRITE_MAPPING = 0x07198B,
+	G12S_MENU_SPRITE_MAPPING = 0x0719AA,
+	G12I_MENU_SPRITE_MAPPING = 0x0719FA,
 
 	G10J_MENU_SPRITE_COMMANDS = 0x071C84,
 	G10E_MENU_SPRITE_COMMANDS = 0x0717C0,
@@ -74,6 +81,13 @@ enum {
 	G10F_MENU_SPRITE_COMMANDS = 0x071791,
 	G10S_MENU_SPRITE_COMMANDS = 0x0717B0,
 	G10I_MENU_SPRITE_COMMANDS = 0x071800,
+	G11J_MENU_SPRITE_COMMANDS = 0x071C74,
+	G12J_MENU_SPRITE_COMMANDS = 0x0717A4,
+	G12E_MENU_SPRITE_COMMANDS = 0x07184E,
+	G12G_MENU_SPRITE_COMMANDS = 0x07182C,
+	G12F_MENU_SPRITE_COMMANDS = 0x07181E,
+	G12S_MENU_SPRITE_COMMANDS = 0x07183D,
+	G12I_MENU_SPRITE_COMMANDS = 0x07188E,
 
 	G10_NUM_MENU_SPRITE_COMMANDS = 0x1C,
 };
@@ -302,41 +316,49 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 		idMapping = &rom()[G11J_ID_MAPPING];
 		mapping = rom()[G11J_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G11J_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G11J_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G12_YELLOW | Game::JAPANESE:
 		idMapping = &rom()[G12J_ID_MAPPING];
 		mapping = rom()[G12J_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G12J_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12J_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G12_YELLOW | Game::ENGLISH:
 		idMapping = &rom()[G12E_ID_MAPPING];
 		mapping = rom()[G12E_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G12E_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12E_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G12_YELLOW | Game::GERMAN:
 		idMapping = &rom()[G12G_ID_MAPPING];
 		mapping = rom()[G12G_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G12G_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12G_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G12_YELLOW | Game::FRENCH:
 		idMapping = &rom()[G12F_ID_MAPPING];
 		mapping = rom()[G12F_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G12F_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12F_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G12_YELLOW | Game::SPANISH:
 		idMapping = &rom()[G12S_ID_MAPPING];
 		mapping = rom()[G12S_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G12S_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12S_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G12_YELLOW | Game::ITALIAN:
 		idMapping = &rom()[G12I_ID_MAPPING];
 		mapping = rom()[G12I_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G12I_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12I_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G13_YELLOW | Game::JAPANESE:
 		idMapping = &rom()[G12J_ID_MAPPING];
 		mapping = rom()[G13J_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G13J_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12J_MENU_SPRITE_MAPPING]);
 		break;
 	default:
 		return;
@@ -469,6 +491,35 @@ void Generation1::prepareSprites() {
 		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10I_MENU_SPRITE_COMMANDS]);
 		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
 		break;
+	case Game::G11_BLUE | JAPANESE:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G11J_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G12_YELLOW | JAPANESE:
+	case Game::G13_YELLOW | JAPANESE:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12J_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G12_YELLOW | ENGLISH:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12E_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G12_YELLOW | GERMAN:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12G_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G12_YELLOW | FRENCH:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12F_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G12_YELLOW | SPANISH:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12S_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G12_YELLOW | ITALIAN:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12I_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
 	default:
 		return;
 	}
@@ -477,7 +528,7 @@ void Generation1::prepareSprites() {
 
 	for (unsigned command = 0; command < numCommands; ++command) {
 		size_t romAddress = commands[command].bank * 0x4000 + (commands[command].pointer & 0x3FFF);
-		size_t ramAddress = commands[command].offset & 0x1FFF;
+		size_t ramAddress = commands[command].offset & 0x7FF;
 		size_t size = commands[command].size * 0x10;
 		if (size + ramAddress > 2048) {
 			size = 2048 - ramAddress;
@@ -485,7 +536,7 @@ void Generation1::prepareSprites() {
 		memcpy(&m_spriteMemory[ramAddress], &rom()[romAddress], size);
 	}
 
-	for (unsigned i = 0; i < 10; ++i) {
+	for (unsigned i = 0; i < 11; ++i) {
 		if (i == 2) { // FOSSIL
 			uint8_t buffer[0x10];
 			memcpy(buffer, &m_spriteMemory[0x40 * i + 0x20], 0x10);
