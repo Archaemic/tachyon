@@ -803,6 +803,7 @@ void Generation3::loadSprites(PokemonSpecies* species) const {
 	memcpy(shinyMenuPaletteData, shinyMenuPalettePointer, 16 * 2);
 
 	delete [] rawSpriteData;
+	delete [] rawBackSpriteData;
 
 	MultipaletteSprite* sprite = new MultipaletteSprite(64, 64, spriteData, paletteData, Sprite::GBA_4);
 	sprite->addPalette(shinyPaletteData);
