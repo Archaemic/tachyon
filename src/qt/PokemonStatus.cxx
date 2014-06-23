@@ -1,6 +1,8 @@
 #include "PokemonStatus.h"
 
+#include "common/Move.h"
 #include "common/PokemonSpecies.h"
+#include "common/Type.h"
 
 #include "SpriteUtilities.h"
 
@@ -23,6 +25,7 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 	nullPixmap.fill(Qt::transparent);
 
 	if (m_activePokemon) {
+		setWindowTitle(QString::fromUtf8(m_activePokemon->name().c_str()));
 		m_ui.name->setText(QString::fromUtf8(m_activePokemon->name().c_str()));
 		m_ui.species->setText(QString::fromUtf8(m_activePokemon->species()->readable()));
 		m_ui.speciesNo->setText(tr("#%1").arg(QString::number(m_activePokemon->species()->id()), 3, '0'));
@@ -59,6 +62,16 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 			m_ui.backSprite->setPixmap(nullPixmap);
 		}
 
+		const MultipaletteSprite* menuSprite = m_activePokemon->species()->menuSprite();
+		if (menuSprite) {
+			QImage menuSpriteImage = spriteToQImage(*menuSprite, m_activePokemon->shiny() ? 1 : 0);
+			m_ui.menuSprite->setPixmap(QPixmap::fromImage(menuSpriteImage));
+			m_ui.menuSprite->setMinimumSize(QSize(menuSprite->width(), menuSprite->height()));
+		} else {
+			m_ui.menuSprite->clear();
+			m_ui.menuSprite->setMinimumSize(QSize(16, 16));
+		}
+
 		m_ui.hp->setText(QString("%1/%2").arg(m_activePokemon->currentHp()).arg(m_activePokemon->maxHp()));
 		m_ui.level->setText(QString::number(m_activePokemon->level()));
 		m_ui.attack->setText(QString::number(m_activePokemon->attack()));
@@ -70,6 +83,18 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 			.arg(QString::fromUtf8(m_activePokemon->otName().c_str()))
 			.arg(QString::number(m_activePokemon->otId()), 5, '0')
 			.arg(QString::number(m_activePokemon->otSecretId()), 5, '0'));
+
+		m_ui.exp->setValue(m_activePokemon->xp());
+		m_ui.expProgress->setMaximum(m_activePokemon->species()->expToLevel(m_activePokemon->level() + 1) - m_activePokemon->species()->expToLevel(m_activePokemon->level()));
+		m_ui.expProgress->setValue(m_activePokemon->xp() - m_activePokemon->species()->expToLevel(m_activePokemon->level()));
+
+		m_ui.type1->setText(QString::fromUtf8(TypeReadable(m_activePokemon->type1())));
+		if (m_activePokemon->type1() != m_activePokemon->type2()) {
+			m_ui.type2->setText(QString::fromUtf8(TypeReadable(m_activePokemon->type2())));
+		} else {
+			m_ui.type2->clear();
+		}
+		m_ui.nature->setText(QString::fromUtf8(m_activePokemon->natureReadable()));
 
 		m_ui.ivHp->setValue(m_activePokemon->ivHp());
 		m_ui.ivAttack->setValue(m_activePokemon->ivAttack());
@@ -83,7 +108,13 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 		m_ui.evSpeed->setValue(m_activePokemon->evSpeed());
 		m_ui.evSpecialAttack->setValue(m_activePokemon->evSpecialAttack());
 		m_ui.evSpecialDefense->setValue(m_activePokemon->evSpecialDefense());
+
+		m_ui.move1->setText(QString::fromUtf8(MoveReadable(m_activePokemon->move1())));
+		m_ui.move2->setText(QString::fromUtf8(MoveReadable(m_activePokemon->move2())));
+		m_ui.move3->setText(QString::fromUtf8(MoveReadable(m_activePokemon->move3())));
+		m_ui.move4->setText(QString::fromUtf8(MoveReadable(m_activePokemon->move4())));
 	} else {
+		setWindowTitle(tr("Pokémon"));
 		m_ui.name->setText(tr("(No selection)"));
 		m_ui.species->clear();
 		m_ui.speciesNo->clear();
@@ -92,6 +123,8 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 
 		m_ui.frontSprite->setPixmap(nullPixmap);
 		m_ui.backSprite->setPixmap(nullPixmap);
+		m_ui.menuSprite->clear();
+		m_ui.menuSprite->setMinimumSize(QSize(16, 16));
 
 		m_ui.level->setText(tr("-"));
 		m_ui.hp->setText(tr("-/-"));
@@ -100,6 +133,13 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 		m_ui.speed->setText(tr("-"));
 		m_ui.specialAttack->setText(tr("-"));
 		m_ui.specialDefense->setText(tr("-"));
+
+		m_ui.exp->setValue(0);
+		m_ui.expProgress->setValue(0);
+
+		m_ui.type1->setText(tr("-"));
+		m_ui.type2->clear();
+		m_ui.nature->setText(tr("---"));
 
 		m_ui.ivHp->setValue(0);
 		m_ui.ivAttack->setValue(0);
@@ -113,5 +153,10 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 		m_ui.evSpeed->setValue(0);
 		m_ui.evSpecialAttack->setValue(0);
 		m_ui.evSpecialDefense->setValue(0);
+
+		m_ui.move1->setText(tr("-"));
+		m_ui.move2->setText(tr("-"));
+		m_ui.move3->setText(tr("-"));
+		m_ui.move4->setText(tr("-"));
 	}
 }

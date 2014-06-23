@@ -24,7 +24,6 @@ private:
 	Group* m_activeGroup;
 	GroupList* m_groupList;
 	PokemonList* m_pokemonList;
-	PokemonStatus* m_pokemonStatus;
 
 	QListView* m_groupListView;
 	QListView* m_pokemonListView;

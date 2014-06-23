@@ -17,7 +17,6 @@ PokemonSelector::PokemonSelector(QWidget* parent)
 	, m_activeGroup(nullptr)
 	, m_groupList(new GroupList(this))
 	, m_pokemonList(new PokemonList(this))
-	, m_pokemonStatus(new PokemonStatus(this))
 	, m_groupListView(new QListView)
 	, m_pokemonListView(new QListView)
 {
@@ -33,11 +32,10 @@ PokemonSelector::PokemonSelector(QWidget* parent)
 	QHBoxLayout* hbox = new QHBoxLayout;
 	hbox->addWidget(m_groupListView);
 	hbox->addWidget(m_pokemonListView);
-	hbox->addWidget(m_pokemonStatus);
 	setLayout(hbox);
 
 	connect(m_groupListView->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(selectGroup(const QModelIndex&)));
-	connect(m_pokemonListView->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(selectPokemon(const QModelIndex&)));
+	connect(m_pokemonListView, SIGNAL(activated(const QModelIndex&)), this, SLOT(selectPokemon(const QModelIndex&)));
 }
 
 void PokemonSelector::load(Cartridge* cart) {
@@ -52,9 +50,11 @@ void PokemonSelector::selectGroup(const QModelIndex& index) {
 }
 
 void PokemonSelector::selectPokemon(const QModelIndex& index) {
-	if (m_activeGroup && index.isValid()) {
-		m_pokemonStatus->setPokemon(std::move(m_activeGroup->at(index.row())));
-	} else {
-		m_pokemonStatus->setPokemon(nullptr);
+	if (!m_activeGroup || !index.isValid()) {
+		return;
 	}
+	PokemonStatus* status = new PokemonStatus;
+	status->setPokemon(std::move(m_activeGroup->at(index.row())));
+	status->setAttribute(Qt::WA_DeleteOnClose);
+	status->show();
 }
