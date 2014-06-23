@@ -723,6 +723,40 @@ const static char* speciesNames[] = {
 	u8"Diancie",
 };
 
+unsigned PokemonSpecies::expToLevel(unsigned level) const {
+	switch (growthRate()) {
+	case PokemonSpecies::LEVEL_FAST:
+		return 4 * level * level * level / 5;
+	case PokemonSpecies::LEVEL_MEDIUM_FAST:
+		return level * level * level;
+	case PokemonSpecies::LEVEL_MEDIUM_SLOW:
+		return 6 * level * level * level / 5 - 15 * level * level + 100 * level - 140;
+	case PokemonSpecies::LEVEL_SLOW:
+		return 5 * level * level * level / 4;
+	case PokemonSpecies::LEVEL_ERRATIC:
+		if (level <= 50) {
+			return (level * level * level * (100 - level)) / 50;
+		}
+		if (level <= 68) {
+			return (level * level * level * (150 - level)) / 100;
+		}
+		if (level <= 98) {
+			return (level * level * level * (1911 - 10 * level) / 3) / 500;
+		}
+		return (level * level * level * (160 - level)) / 100;
+	case PokemonSpecies::LEVEL_FLUCTUATING:
+		if (level <= 15) {
+			return level * level * level * ((level + 1) / 3 + 24) / 50;
+		}
+		if (level <= 36) {
+			return (level * level * level * (level + 14)) / 50;
+		}
+		return level * level * level * (level / 2 + 32) / 50;
+		break;
+	}
+	return 0;
+}
+
 const MultipaletteSprite* PokemonSpecies::frontSprite() const {
 	return m_frontSprite.get();
 }

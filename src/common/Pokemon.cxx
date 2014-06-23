@@ -31,88 +31,16 @@ const static char* natureNames[] = {
 };
 
 unsigned Pokemon::level() const {
-	switch (species()->growthRate()) {
-	case PokemonSpecies::LEVEL_FAST:
-		for (unsigned i = 0; i <= 100; ++i) {
-			unsigned xpNeeded = 4 * i * i * i / 5;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		break;
-	case PokemonSpecies::LEVEL_MEDIUM_FAST:
-		for (unsigned i = 0; i <= 100; ++i) {
-			unsigned xpNeeded = i * i * i;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		break;
-	case PokemonSpecies::LEVEL_MEDIUM_SLOW:
-		// Complex roots make programmers sad
-		for (unsigned i = 2; i <= 100; ++i) {
-			unsigned xpNeeded = 6 * i * i * i / 5 - 15 * i * i + 100 * i - 140;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		break;
-	case PokemonSpecies::LEVEL_SLOW:
-		for (unsigned i = 0; i <= 100; ++i) {
-			unsigned xpNeeded = 5 * i * i * i / 4;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		break;
-	case PokemonSpecies::LEVEL_ERRATIC:
-		for (unsigned i = 0; i <= 50; ++i) {
-			unsigned xpNeeded = (i * i * i * (100 - i)) / 50;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		for (unsigned i = 51; i <= 68; ++i) {
-			unsigned xpNeeded = (i * i * i * (150 - i)) / 100;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		for (unsigned i = 69; i <= 98; ++i) {
-			unsigned xpNeeded = (i * i * i * (1911 - 10 * i) / 3) / 500;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		for (unsigned i = 99; i <= 100; ++i) {
-			unsigned xpNeeded = (i * i * i * (160 - i)) / 100;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		break;
-	case PokemonSpecies::LEVEL_FLUCTUATING:
-		for (unsigned i = 0; i <= 15; ++i) {
-			unsigned xpNeeded = i * i * i * ((i + 1) / 3 + 24) / 50;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		for (unsigned i = 16; i <= 36; ++i) {
-			unsigned xpNeeded = (i * i * i * (i + 14)) / 50;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		for (unsigned i = 37; i <= 100; ++i) {
-			unsigned xpNeeded = i * i * i * (i / 2 + 32) / 50;
-			if (xpNeeded > xp()) {
-				return i - 1;
-			}
-		}
-		break;
+	unsigned baseLevel = 0;
+	if (species()->growthRate() == PokemonSpecies::LEVEL_MEDIUM_SLOW) {
+		baseLevel = 2;
 	}
-	return 100;
+	for (uint8_t i = baseLevel; i <= 100; ++i) {
+		if (species()->expToLevel(i) > xp()) {
+			return i - 1;
+		}
+	}
+	return 1;
 }
 
 Pokemon::Gender Pokemon::gender() const {

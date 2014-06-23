@@ -787,7 +787,9 @@ public:
 	virtual Type type1() const = 0;
 	virtual Type type2() const = 0;
 	virtual uint8_t genderRatio() const = 0;
+
 	virtual PokemonSpecies::GrowthRate growthRate() const = 0;
+	unsigned expToLevel(unsigned level) const;
 
 	const MultipaletteSprite* frontSprite() const;
 	void setFrontSprite(MultipaletteSprite*);
