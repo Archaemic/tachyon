@@ -60,6 +60,22 @@ enum {
 	G12F_ID_MAPPING = 0x041035,
 	G12S_ID_MAPPING = 0x041040,
 	G12I_ID_MAPPING = 0x041042,
+
+	G10J_MENU_SPRITE_MAPPING = 0x071DD1,
+	G10E_MENU_SPRITE_MAPPING = 0x07190D,
+	G10G_MENU_SPRITE_MAPPING = 0x0718E7,
+	G10F_MENU_SPRITE_MAPPING = 0x0718DE,
+	G10S_MENU_SPRITE_MAPPING = 0x0718FD,
+	G10I_MENU_SPRITE_MAPPING = 0x07194D,
+
+	G10J_MENU_SPRITE_COMMANDS = 0x071C84,
+	G10E_MENU_SPRITE_COMMANDS = 0x0717C0,
+	G10G_MENU_SPRITE_COMMANDS = 0x07179A,
+	G10F_MENU_SPRITE_COMMANDS = 0x071791,
+	G10S_MENU_SPRITE_COMMANDS = 0x0717B0,
+	G10I_MENU_SPRITE_COMMANDS = 0x071800,
+
+	G10_NUM_MENU_SPRITE_COMMANDS = 0x1C,
 };
 
 const GameBoyGame::ChecksumMapping Generation1::s_checksums[] = {
@@ -91,12 +107,19 @@ const GameBoyGame::ChecksumMapping Generation1::s_checksums[] = {
 
 Generation1::Generation1(uint8_t* memory, const uint8_t* rom)
 	: GameBoyGame(memory, rom)
+	, m_spriteMemory(nullptr)
 {
 	setTrainerName(gameTextToUTF8(&memory[G10E_TRAINER_NAME], 8));
 	setParty(new G1Party(this));
 	for (unsigned box = 0; box < numBoxes(); ++box) {
 		addBox(new G1Box(this, box));
 	}
+	prepareSprites();
+}
+
+Generation1::~Generation1() {
+	delete [] m_spriteMemory;
+	m_spriteMemory = nullptr;
 }
 
 void Generation1::registerLoader() {
@@ -225,6 +248,9 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 	// TODO: Handle glitch Pokemon
 	const uint8_t* idMapping;
 	uint8_t mapping;
+
+	const uint8_t* menuIdMapping;
+
 	const struct Palette {
 		uint16_t color[4];
 	} __attribute__((packed))* palette;
@@ -235,36 +261,42 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 		idMapping = &rom()[G10J_ID_MAPPING];
 		mapping = rom()[G10J_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G10J_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10J_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G10_RED | ENGLISH:
 	case Game::G10_BLUE | ENGLISH:
 		idMapping = &rom()[G10E_ID_MAPPING];
 		mapping = rom()[G10E_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G10E_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10E_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G10_RED | Game::GERMAN:
 	case Game::G10_BLUE | Game::GERMAN:
 		idMapping = &rom()[G10G_ID_MAPPING];
 		mapping = rom()[G10G_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G10G_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10G_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G10_RED | Game::FRENCH:
 	case Game::G10_BLUE | Game::FRENCH:
 		idMapping = &rom()[G10F_ID_MAPPING];
 		mapping = rom()[G10F_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G10F_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10F_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G10_RED | Game::SPANISH:
 	case Game::G10_BLUE | Game::SPANISH:
 		idMapping = &rom()[G10S_ID_MAPPING];
 		mapping = rom()[G10S_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G10S_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10S_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G10_RED | Game::ITALIAN:
 	case Game::G10_BLUE | Game::ITALIAN:
 		idMapping = &rom()[G10I_ID_MAPPING];
 		mapping = rom()[G10I_PALETTE_MAPPING + species->id()];
 		palette = &reinterpret_cast<const Palette*>(&rom()[G10I_PALETTES])[mapping];
+		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10I_MENU_SPRITE_MAPPING]);
 		break;
 	case Game::G11_BLUE | Game::JAPANESE:
 		idMapping = &rom()[G11J_ID_MAPPING];
@@ -337,10 +369,12 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 
 	uint8_t* rawSpriteData = new uint8_t[width * height * 16];
 	uint8_t* spriteData = new uint8_t[width * height * 16];
+	uint8_t* menuSpriteData = new uint8_t[16 * 4];
 	uint8_t* rawBackSpriteData = new uint8_t[256];
 	uint8_t* backSpriteData = new uint8_t[256];
 	uint16_t* paletteData = new uint16_t[16];
 	uint16_t* backPaletteData = new uint16_t[16];
+	uint16_t* menuPaletteData = new uint16_t[16];
 
 	paletteData[0] = palette->color[0];
 	paletteData[1] = palette->color[1];
@@ -350,6 +384,10 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 	backPaletteData[1] = palette->color[1];
 	backPaletteData[2] = palette->color[2];
 	backPaletteData[3] = palette->color[3];
+	menuPaletteData[0] = palette[0x10 - mapping].color[0];
+	menuPaletteData[1] = palette[0x10 - mapping].color[0];
+	menuPaletteData[2] = palette[0x10 - mapping].color[1];
+	menuPaletteData[3] = palette[0x10 - mapping].color[3];
 
 	unsigned frontAddress = data->frontSprite;
 	frontAddress = bank * 0x4000 + (frontAddress & 0x3FFF);
@@ -357,8 +395,14 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 	unsigned backAddress = data->backSprite;
 	backAddress = bank * 0x4000 + (backAddress & 0x3FFF);
 
+	uint8_t dexId = ((species->id() - 1) & 0xFF);
+	uint8_t menuSpriteId = menuIdMapping[dexId / 2];
+	menuSpriteId >>= 4 * !(dexId & 1);
+	menuSpriteId &= 0xF;
+
 	const uint8_t* spritePointer = &rom()[frontAddress & (Generation1::SIZE_ROM - 1)];
 	const uint8_t* backSpritePointer = &rom()[backAddress & (Generation1::SIZE_ROM - 1)];
+	const uint8_t* menuSpritePointer = &m_spriteMemory[0x40 * menuSpriteId];
 
 	G1SpriteDecompressor decomp(spritePointer, 0x400);
 	decomp.decompress();
@@ -370,6 +414,7 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 
 	arrangeTiles(rawSpriteData, spriteData, width, height);
 	arrangeTiles(rawBackSpriteData, backSpriteData, 4, 4);
+	arrangeTiles(menuSpritePointer, menuSpriteData, 2, 2);
 
 	delete [] rawSpriteData;
 	delete [] rawBackSpriteData;
@@ -379,4 +424,100 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 
 	sprite = new MultipaletteSprite(32, 32, backSpriteData, backPaletteData, Sprite::GB_2);
 	species->setBackSprite(sprite);
+
+	sprite = new MultipaletteSprite(16, 16, menuSpriteData, menuPaletteData, Sprite::GB_2);
+	species->setMenuSprite(sprite);
+}
+
+void Generation1::prepareSprites() {	
+	const struct LoaderCommand {
+		uint16_t pointer;
+		uint8_t size;
+		uint8_t bank;
+		uint16_t offset;
+	}* commands;
+	unsigned numCommands;
+
+	switch (version()) {
+	case Game::G10_RED | JAPANESE:
+	case Game::G10_GREEN | JAPANESE:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10J_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G10_RED | ENGLISH:
+	case Game::G10_BLUE | ENGLISH:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10E_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G10_RED | GERMAN:
+	case Game::G10_BLUE | GERMAN:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10G_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G10_RED | FRENCH:
+	case Game::G10_BLUE | FRENCH:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10F_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G10_RED | SPANISH:
+	case Game::G10_BLUE | SPANISH:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10S_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	case Game::G10_RED | ITALIAN:
+	case Game::G10_BLUE | ITALIAN:
+		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10I_MENU_SPRITE_COMMANDS]);
+		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
+		break;
+	default:
+		return;
+	}
+
+	m_spriteMemory = new uint8_t[2048];
+
+	for (unsigned command = 0; command < numCommands; ++command) {
+		size_t romAddress = commands[command].bank * 0x4000 + (commands[command].pointer & 0x3FFF);
+		size_t ramAddress = commands[command].offset & 0x1FFF;
+		size_t size = commands[command].size * 0x10;
+		if (size + ramAddress > 2048) {
+			size = 2048 - ramAddress;
+		}
+		memcpy(&m_spriteMemory[ramAddress], &rom()[romAddress], size);
+	}
+
+	for (unsigned i = 0; i < 10; ++i) {
+		if (i == 2) { // FOSSIL
+			uint8_t buffer[0x10];
+			memcpy(buffer, &m_spriteMemory[0x40 * i + 0x20], 0x10);
+			memcpy(&m_spriteMemory[0x40 * i + 0x20], &m_spriteMemory[0x40 * i + 0x10], 0x10);
+			memcpy(&m_spriteMemory[0x40 * i + 0x10], buffer, 0x10);
+
+			memcpy(buffer, &m_spriteMemory[0x400 + 0x40 * i + 0x20], 0x10);
+			memcpy(&m_spriteMemory[0x400 + 0x40 * i + 0x20], &m_spriteMemory[0x400 + 0x40 * i + 0x10], 0x10);
+			memcpy(&m_spriteMemory[0x400 + 0x40 * i + 0x10], buffer, 0x10);
+			continue;
+		}
+		memcpy(&m_spriteMemory[0x40 * i + 0x10], &m_spriteMemory[0x40 * i + 0x20], 0x10);
+		memcpy(&m_spriteMemory[0x400 + 0x40 * i + 0x10], &m_spriteMemory[0x400 + 0x40 * i + 0x20], 0x10);
+
+		for (unsigned byte = 0; byte < 16; ++byte) {
+			m_spriteMemory[0x40 * i + 0x20 + byte] = mirrorByte(m_spriteMemory[0x40 * i + byte]);
+			m_spriteMemory[0x40 * i + 0x30 + byte] = mirrorByte(m_spriteMemory[0x40 * i + 0x10 + byte]);
+			m_spriteMemory[0x400 + 0x40 * i + 0x20 + byte] = mirrorByte(m_spriteMemory[0x400 + 0x40 * i + byte]);
+			m_spriteMemory[0x400 + 0x40 * i + 0x30 + byte] = mirrorByte(m_spriteMemory[0x400 + 0x40 * i + 0x10 + byte]);
+		}
+	}
+}
+
+uint8_t Generation1::mirrorByte(uint8_t byte) {
+	uint8_t out = 0;
+	out |= (byte & 0x1) << 7;
+	out |= (byte & 0x2) << 5;
+	out |= (byte & 0x4) << 3;
+	out |= (byte & 0x8) << 1;
+	out |= (byte & 0x10) >> 1;
+	out |= (byte & 0x20) >> 3;
+	out |= (byte & 0x40) >> 5;
+	out |= (byte & 0x80) >> 7;
+	return out;
 }

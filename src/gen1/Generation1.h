@@ -13,6 +13,7 @@ public:
 	};
 
 	Generation1(uint8_t* memory, const uint8_t* rom);
+	~Generation1();
 
 	virtual unsigned numBoxes() const override;
 
@@ -29,8 +30,12 @@ public:
 
 private:
 	void loadSprites(PokemonSpecies* species, const G1PokemonBaseStats* data) const;
+	void prepareSprites();
+	static uint8_t mirrorByte(uint8_t byte);
 
 	const static ChecksumMapping s_checksums[];
+
+	uint8_t* m_spriteMemory;
 
 	class Loader : public Game::Loader {
 	public:
