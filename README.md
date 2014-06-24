@@ -23,15 +23,15 @@ Most games are currently only partially supported. All games are intended to hav
 
 ### Game List
 
-- Generation 1
-	- Pokémon Red (Full: EFGIJS)
-	- Pokémon Blue (Full: EFGIJS)
-	- Pokémon Green (Full: J)
-	- Pokémon Yellow (Full: EJ, Partial: FGIS)
+- Generation 1 (Full: EFGIJS)
+	- Pokémon Red
+	- Pokémon Blue
+	- Pokémon Green
+	- Pokémon Yellow
 - Generation 2
 	- Pokémon Gold (Partial: EJ, Missing: FGIKS)
 	- Pokémon Silver (Partial: EJ, Missing: FGIKS)
-	- Pokémon Crystal (Missing: EFGIJKS)
+	- Pokémon Crystal (Partial: E, Missing: FGIJKS)
 - Generation 3
 	- Pokémon Ruby (Partial: E, Missing: FGIJS)
 	- Pokémon Sapphire (Partial: E, Missing: FGIJS)
@@ -73,6 +73,8 @@ Phases 1 - 3 are currently in heavy development, and as a result many things are
 - Change huge enums of offsets and switch statements to structs that contain all of the relevant constants per game
 - Make types a bit more consistent (e.g., unsigned vs. size_t)
 - Run checksums while loading to make sure the save game is correct
+- Big-endian platforms are not currently supported, although it's questionable if this matters
+- shared_ptr palettes would be probably be useful
 
 Credits and Links
 -----------------
