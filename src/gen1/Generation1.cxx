@@ -434,8 +434,8 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 	decomp.decompress();
 	memcpy(rawBackSpriteData, decomp.output(), std::min<size_t>(256, decomp.size()));
 
-	arrangeTiles(rawSpriteData, spriteData, width, height);
-	arrangeTiles(rawBackSpriteData, backSpriteData, 4, 4);
+	arrangeTilesTransposed(rawSpriteData, spriteData, width, height);
+	arrangeTilesTransposed(rawBackSpriteData, backSpriteData, 4, 4);
 	arrangeTiles(menuSpritePointer, menuSpriteData, 2, 2);
 
 	delete [] rawSpriteData;
@@ -538,24 +538,13 @@ void Generation1::prepareSprites() {
 
 	for (unsigned i = 0; i < 11; ++i) {
 		if (i == 2) { // FOSSIL
-			uint8_t buffer[0x10];
-			memcpy(buffer, &m_spriteMemory[0x40 * i + 0x20], 0x10);
-			memcpy(&m_spriteMemory[0x40 * i + 0x20], &m_spriteMemory[0x40 * i + 0x10], 0x10);
-			memcpy(&m_spriteMemory[0x40 * i + 0x10], buffer, 0x10);
-
-			memcpy(buffer, &m_spriteMemory[0x400 + 0x40 * i + 0x20], 0x10);
-			memcpy(&m_spriteMemory[0x400 + 0x40 * i + 0x20], &m_spriteMemory[0x400 + 0x40 * i + 0x10], 0x10);
-			memcpy(&m_spriteMemory[0x400 + 0x40 * i + 0x10], buffer, 0x10);
 			continue;
 		}
-		memcpy(&m_spriteMemory[0x40 * i + 0x10], &m_spriteMemory[0x40 * i + 0x20], 0x10);
-		memcpy(&m_spriteMemory[0x400 + 0x40 * i + 0x10], &m_spriteMemory[0x400 + 0x40 * i + 0x20], 0x10);
-
 		for (unsigned byte = 0; byte < 16; ++byte) {
-			m_spriteMemory[0x40 * i + 0x20 + byte] = mirrorByte(m_spriteMemory[0x40 * i + byte]);
-			m_spriteMemory[0x40 * i + 0x30 + byte] = mirrorByte(m_spriteMemory[0x40 * i + 0x10 + byte]);
-			m_spriteMemory[0x400 + 0x40 * i + 0x20 + byte] = mirrorByte(m_spriteMemory[0x400 + 0x40 * i + byte]);
-			m_spriteMemory[0x400 + 0x40 * i + 0x30 + byte] = mirrorByte(m_spriteMemory[0x400 + 0x40 * i + 0x10 + byte]);
+			m_spriteMemory[0x40 * i + 0x10 + byte] = mirrorByte(m_spriteMemory[0x40 * i + byte]);
+			m_spriteMemory[0x40 * i + 0x30 + byte] = mirrorByte(m_spriteMemory[0x40 * i + 0x20 + byte]);
+			m_spriteMemory[0x400 + 0x40 * i + 0x10 + byte] = mirrorByte(m_spriteMemory[0x400 + 0x40 * i + byte]);
+			m_spriteMemory[0x400 + 0x40 * i + 0x30 + byte] = mirrorByte(m_spriteMemory[0x400 + 0x40 * i + 0x20 + byte]);
 		}
 	}
 }

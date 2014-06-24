@@ -21,6 +21,12 @@ enum {
 	G20E_UNOWN_SPRITE_MAPPING_BASE = 0x07C000,
 	G21E_UNOWN_SPRITE_MAPPING_BASE = 0x124000,
 
+	G20E_MENU_SPRITE_MAPPING = 0x08E975,
+	G21E_MENU_SPRITE_MAPPING = 0x08EAC4,
+
+	G20E_MENU_SPRITES = 0x08EABE,
+	G21E_MENU_SPRITES = 0x08EC0D,
+
 	G20J_PALETTES = 0x00ACCB,
 	G20E_PALETTES = 0x00AD45,
 	G21E_PALETTES = 0x00A8D6,
@@ -183,6 +189,7 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 		uint16_t shinyColorB;
 	} __attribute__((packed))* palette;
 
+	const uint8_t* menuSpritePointer = nullptr;
 	switch (version() & Game::MASK_GAME) {
 	case Game::G20_GOLD:
 	case Game::G20_SILVER:
@@ -199,6 +206,8 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 			break;
 		case Game::ENGLISH:
 			palette = &reinterpret_cast<const Palette*>(&rom()[G20E_PALETTES])[species->id() - 1];
+			menuSpritePointer = &rom()[G20E_MENU_SPRITE_MAPPING];
+			menuSpritePointer = &rom()[G20E_MENU_SPRITES + (menuSpritePointer[species->id() - 1] - 1) * 0x80];
 			break;
 		}
 		break;
@@ -209,6 +218,8 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 			mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_UNOWN_SPRITE_MAPPING_BASE])[species->forme()];
 		}
 		palette = &reinterpret_cast<const Palette*>(&rom()[G21E_PALETTES])[species->id() - 1];
+		menuSpritePointer = &rom()[G21E_MENU_SPRITE_MAPPING];
+		menuSpritePointer = &rom()[G21E_MENU_SPRITES + (menuSpritePointer[species->id() - 1] - 1) * 0x80];
 		break;
 	}
 
@@ -247,10 +258,13 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 	uint8_t* spriteData = new uint8_t[size * size * 16];
 	uint8_t* rawBackSpriteData = new uint8_t[6 * 6 * 16];
 	uint8_t* backSpriteData = new uint8_t[6 * 6 * 16];
+	uint8_t* menuSpriteData = new uint8_t[2 * 2 * 16];
 	uint16_t* paletteData = new uint16_t[16];
 	uint16_t* shinyPaletteData = new uint16_t[16];
 	uint16_t* backPaletteData = new uint16_t[16];
 	uint16_t* shinyBackPaletteData = new uint16_t[16];
+	uint16_t* menuPaletteData = new uint16_t[16];
+	uint16_t* shinyMenuPaletteData = new uint16_t[16];
 
 	paletteData[0] = 0x7FFF;
 	paletteData[1] = palette->colorA;
@@ -268,14 +282,22 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 	shinyBackPaletteData[1] = palette->shinyColorA;
 	shinyBackPaletteData[2] = palette->shinyColorB;
 	shinyBackPaletteData[3] = 0x0000;
+	menuPaletteData[0] = 0x6FFB;
+	menuPaletteData[1] = 0x2A7F;
+	menuPaletteData[2] = 0x10FF;
+	menuPaletteData[3] = 0x0000;
+	shinyMenuPaletteData[0] = 0x6FFB;
+	shinyMenuPaletteData[1] = 0x2A7F;
+	shinyMenuPaletteData[2] = 0x10FF;
+	shinyMenuPaletteData[3] = 0x0000;
 
 	const uint8_t* spritePointer = &rom()[frontAddress & (SIZE_ROM - 1)];
 	const uint8_t* backSpritePointer = &rom()[backAddress & (SIZE_ROM - 1)];
 	lzDecompress(spritePointer, rawSpriteData, size * size * 16);
 	lzDecompress(backSpritePointer, rawBackSpriteData, 6 * 6 * 16);
 
-	arrangeTiles(rawSpriteData, spriteData, size, size);
-	arrangeTiles(rawBackSpriteData, backSpriteData, 6, 6);
+	arrangeTilesTransposed(rawSpriteData, spriteData, size, size);
+	arrangeTilesTransposed(rawBackSpriteData, backSpriteData, 6, 6);
 
 	delete [] rawSpriteData;
 	delete [] rawBackSpriteData;
@@ -287,6 +309,14 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 	sprite = new MultipaletteSprite(6 * 8, 6 * 8, backSpriteData, backPaletteData, Sprite::GB_2);
 	sprite->addPalette(shinyBackPaletteData);
 	species->setBackSprite(sprite);
+
+	if (menuSpritePointer) {
+		arrangeTiles(menuSpritePointer, menuSpriteData, 2, 2);
+
+		sprite = new MultipaletteSprite(16, 16, menuSpriteData, menuPaletteData, Sprite::GB_2);
+		sprite->addPalette(shinyMenuPaletteData);
+		species->setMenuSprite(sprite);
+	}
 }
 
 void Generation2::lzDecompress(const uint8_t* source, uint8_t* dest, size_t maxLength) {

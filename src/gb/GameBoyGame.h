@@ -28,6 +28,7 @@ public:
 	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) const override;
 
 	static void arrangeTiles(const uint8_t* src, uint8_t* dest, unsigned width, unsigned height);
+	static void arrangeTilesTransposed(const uint8_t* src, uint8_t* dest, unsigned width, unsigned height);
 };
 
 struct GBMoveSet {
