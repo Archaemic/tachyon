@@ -68,9 +68,10 @@ Phases 1 - 3 are currently in heavy development, and as a result many things are
 - Abilities in Generation III are currently unsupported
 - Power Points are currently unsupported
 - Glitch Pokémon are not currently handled correctly
+- Loading of Pokémon, Move and Nature names from the games
 
 ### Implementation details
-- Change huge enums of offsets and switch statements to structs that contain all of the relevant constants per game
+- Change huge enums of offsets and switch statements to structs that contain all of the relevant constants per game (done for Generations I and II)
 - Make types a bit more consistent (e.g., unsigned vs. size_t)
 - Run checksums while loading to make sure the save game is correct
 - Big-endian platforms are not currently supported, although it's questionable if this matters
