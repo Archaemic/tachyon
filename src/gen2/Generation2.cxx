@@ -12,7 +12,6 @@ enum {
 	G21_CHECKSUM_2 = 0x1F0D,
 
 	G20J_BASE_STATS = 0x051AA9,
-	G20E_BASE_STATS = 0x051B0B,
 	G21E_BASE_STATS = 0x051424,
 
 	G20E_SPRITE_MAPPING_BASE = 0x048000,
@@ -21,10 +20,12 @@ enum {
 	G20E_UNOWN_SPRITE_MAPPING_BASE = 0x07C000,
 	G21E_UNOWN_SPRITE_MAPPING_BASE = 0x124000,
 
-	G20E_MENU_SPRITE_MAPPING = 0x08E975,
+	G20GF_MENU_SPRITE_MAPPING = 0x08E977,
+	G20SI_MENU_SPRITE_MAPPING = 0x08E973,
 	G21E_MENU_SPRITE_MAPPING = 0x08EAC4,
 
-	G20E_MENU_SPRITES = 0x08EABE,
+	G20GF_MENU_SPRITES = 0x08EAC0,
+	G20SI_MENU_SPRITES = 0x08EABC,
 	G21E_MENU_SPRITES = 0x08EC0D,
 
 	G20J_PALETTES = 0x00ACCB,
@@ -112,11 +113,71 @@ static const Generation2::Offsets G20J1 = {
 };
 
 static const Generation2::Offsets G20E = {
-	.baseStats = G20E_BASE_STATS,
+	.baseStats = 0x051B0B,
 	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
 	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
-	.menuSpriteMapping = G20E_MENU_SPRITE_MAPPING,
-	.menuSprites = G20E_MENU_SPRITES,
+	.menuSpriteMapping = 0x08E975,
+	.menuSprites = 0x08EABE,
+	.palettes = G20E_PALETTES,
+	.partyPokemon = G20E_PARTY_POKEMON,
+	.boxSize = G20E_BOX_SIZE,
+	.boxHigh = G20E_BOX_HIGH_OFFSET,
+	.currentBoxId = G20E_CURRENT_BOX_ID,
+	.boxNames = G20E_BOX_NAMES,
+	.currentBox = G20E_CURRENT_BOX
+};
+
+static const Generation2::Offsets G20G = {
+	.baseStats = 0x051B00,
+	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.menuSpriteMapping = G20GF_MENU_SPRITE_MAPPING,
+	.menuSprites = G20GF_MENU_SPRITES,
+	.palettes = G20E_PALETTES,
+	.partyPokemon = G20E_PARTY_POKEMON,
+	.boxSize = G20E_BOX_SIZE,
+	.boxHigh = G20E_BOX_HIGH_OFFSET,
+	.currentBoxId = G20E_CURRENT_BOX_ID,
+	.boxNames = G20E_BOX_NAMES,
+	.currentBox = G20E_CURRENT_BOX
+};
+
+static const Generation2::Offsets G20F = {
+	.baseStats = 0x051B10,
+	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.menuSpriteMapping = G20GF_MENU_SPRITE_MAPPING,
+	.menuSprites = G20GF_MENU_SPRITES,
+	.palettes = G20E_PALETTES,
+	.partyPokemon = G20E_PARTY_POKEMON,
+	.boxSize = G20E_BOX_SIZE,
+	.boxHigh = G20E_BOX_HIGH_OFFSET,
+	.currentBoxId = G20E_CURRENT_BOX_ID,
+	.boxNames = G20E_BOX_NAMES,
+	.currentBox = G20E_CURRENT_BOX
+};
+
+static const Generation2::Offsets G20S = {
+	.baseStats = 0x051B19,
+	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.menuSpriteMapping = 0x08E973,
+	.menuSprites = G20SI_MENU_SPRITES,
+	.palettes = G20E_PALETTES,
+	.partyPokemon = G20E_PARTY_POKEMON,
+	.boxSize = G20E_BOX_SIZE,
+	.boxHigh = G20E_BOX_HIGH_OFFSET,
+	.currentBoxId = G20E_CURRENT_BOX_ID,
+	.boxNames = G20E_BOX_NAMES,
+	.currentBox = G20E_CURRENT_BOX
+};
+
+static const Generation2::Offsets G20I = {
+	.baseStats = 0x051B19,
+	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.menuSpriteMapping = 0x08E973,
+	.menuSprites = G20SI_MENU_SPRITES,
 	.palettes = G20E_PALETTES,
 	.partyPokemon = G20E_PARTY_POKEMON,
 	.boxSize = G20E_BOX_SIZE,
@@ -145,6 +206,10 @@ const GameBoyGame::ChecksumMapping<Generation2::Offsets> Generation2::s_checksum
 	{ 0x708A, Game::G20_GOLD | Game::JAPANESE, &G20J },
 	{ 0x6084, Game::G20_GOLD | Game::JAPANESE, &G20J1 },
 	{ 0x2D68, Game::G20_GOLD | Game::ENGLISH, &G20E },
+	{ 0x97DC, Game::G20_GOLD | Game::GERMAN, &G20G },
+	{ 0xC66F, Game::G20_GOLD | Game::FRENCH, &G20F },
+	{ 0x5393, Game::G20_GOLD | Game::SPANISH, &G20S },
+	{ 0x0CCE, Game::G20_GOLD | Game::ITALIAN, &G20I },
 	{ 0, Game::INVALID, nullptr }
 };
 
