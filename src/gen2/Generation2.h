@@ -13,12 +13,22 @@ public:
 		SIZE_ROM = 0x200000,
 	};
 
+	struct Offsets {
+		unsigned baseStats;
+		unsigned spriteMapping;
+		unsigned unownSpriteMapping;
+		unsigned menuSpriteMapping;
+		unsigned menuSprites;
+		unsigned palettes;
+	};
+
 	Generation2(uint8_t* memory, const uint8_t* rom);
 
 	virtual unsigned numBoxes() const override;
 
 	virtual Edition version() const override;
 	virtual int generation() const { return 2; }
+	const Offsets* offsets() const;
 
 	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 
@@ -31,7 +41,8 @@ public:
 private:
 	void loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*) const;
 
-	const static ChecksumMapping<void> s_checksums[];
+	const static ChecksumMapping<Offsets> s_checksums[];
+	const Offsets* m_offsets;
 
 	class Loader : public Game::Loader {
 	public:

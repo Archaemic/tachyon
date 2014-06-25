@@ -6,10 +6,10 @@
 
 enum {
 	G20E_TRAINER_NAME = 0x200B,
-	G20E_CHECKSUM_1 = 0x2D69,
-	G20E_CHECKSUM_2 = 0x7E6D,
-	G21E_CHECKSUM_1 = 0x2D0D,
-	G21E_CHECKSUM_2 = 0x1F0D,
+	G20_CHECKSUM_1 = 0x2D69,
+	G20_CHECKSUM_2 = 0x7E6D,
+	G21_CHECKSUM_1 = 0x2D0D,
+	G21_CHECKSUM_2 = 0x1F0D,
 
 	G20J_BASE_STATS = 0x051AA9,
 	G20E_BASE_STATS = 0x051B0B,
@@ -59,15 +59,45 @@ static const Range checksumRegionsG21E[2] = {
 	{ 0x1209, 0x1D83 }
 };
 
-const GameBoyGame::ChecksumMapping<void> Generation2::s_checksums[] = {
-	{ 0x708A, Game::G20_GOLD | Game::JAPANESE },
-	{ 0x2D68, Game::G20_GOLD | Game::ENGLISH },
-	{ 0, Game::INVALID }
+static const Generation2::Offsets G20E = {
+	.baseStats = G20E_BASE_STATS,
+	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.menuSpriteMapping = G20E_MENU_SPRITE_MAPPING,
+	.menuSprites = G20E_MENU_SPRITES,
+	.palettes = G20E_PALETTES
+};
+
+static const Generation2::Offsets G20J = {
+	.baseStats = G20J_BASE_STATS,
+	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.menuSpriteMapping = G20E_MENU_SPRITE_MAPPING,
+	.menuSprites = G20E_MENU_SPRITES,
+	.palettes = G20J_PALETTES
+};
+
+static const Generation2::Offsets G21E = {
+	.baseStats = G21E_BASE_STATS,
+	.spriteMapping = G21E_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G21E_UNOWN_SPRITE_MAPPING_BASE,
+	.menuSpriteMapping = G21E_MENU_SPRITE_MAPPING,
+	.menuSprites = G21E_MENU_SPRITES,
+	.palettes = G21E_PALETTES
+};
+
+const GameBoyGame::ChecksumMapping<Generation2::Offsets> Generation2::s_checksums[] = {
+	{ 0x708A, Game::G20_GOLD | Game::JAPANESE, &G20J },
+	{ 0x6084, Game::G20_GOLD | Game::JAPANESE, &G20J },
+	{ 0x2D68, Game::G20_GOLD | Game::ENGLISH, &G20E },
+	{ 0, Game::INVALID, nullptr }
 };
 
 Generation2::Generation2(uint8_t* memory, const uint8_t* rom)
 	: GameBoyGame(memory, rom)
 {
+	uint16_t checksum = *(uint16_t*) &rom[0x14E];
+	m_offsets = findVersion<Offsets>(Generation2::s_checksums, checksum)->offsets;
 	setTrainerName(gameTextToUTF8(&memory[G20E_TRAINER_NAME], 8));
 	setParty(new G2Party(this));
 	for (unsigned box = 0; box < numBoxes(); ++box) {
@@ -88,7 +118,7 @@ Generation2* Generation2::Loader::load(uint8_t* memory, const uint8_t* rom) cons
 
 Game::Edition Generation2::Loader::detect(const uint8_t* rom) const {
 	uint16_t checksum = *(uint16_t*) &rom[0x14E];
-	return GameBoyGame::findVersion<void>(Generation2::s_checksums, checksum)->version;
+	return GameBoyGame::findVersion<Offsets>(Generation2::s_checksums, checksum)->version;
 }
 
 unsigned Generation2::numBoxes() const {
@@ -97,28 +127,17 @@ unsigned Generation2::numBoxes() const {
 
 Game::Edition Generation2::version() const {
 	uint16_t checksum = *(uint16_t*) &m_rom[0x14E];
-	return GameBoyGame::findVersion<void>(s_checksums, checksum)->version;
+	return GameBoyGame::findVersion<Offsets>(s_checksums, checksum)->version;
+}
+
+const Generation2::Offsets* Generation2::offsets() const {
+	return m_offsets;
 }
 
 const PokemonSpecies* Generation2::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {
 	const PokemonSpecies* species = Game::species(id, forme);
 	if (!species) {
-		const G2PokemonBaseStats* stats;
-		switch (version()) {
-		case Game::G20_GOLD | Game::JAPANESE:
-		case Game::G20_SILVER | Game::JAPANESE:
-			stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20J_BASE_STATS]);
-			break;
-		case Game::G20_GOLD | Game::ENGLISH:
-		case Game::G20_SILVER | Game::ENGLISH:
-			stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20E_BASE_STATS]);
-			break;
-		case Game::G21_CRYSTAL | Game::ENGLISH:
-			stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[G20E_BASE_STATS]);
-			break;
-		default:
-			return nullptr;
-		}
+		const G2PokemonBaseStats* stats = reinterpret_cast<const G2PokemonBaseStats*>(&rom()[m_offsets->baseStats]);
 		if (id <= 251) {
 			stats = &stats[id - 1];
 		} else {
@@ -148,8 +167,8 @@ void Generation2::finalize() {
 				memory[newStart + offset] = memory[start + offset];
 			}
 		}
-		*reinterpret_cast<uint16_t*>(&memory[G20E_CHECKSUM_1]) = checksum;
-		*reinterpret_cast<uint16_t*>(&memory[G20E_CHECKSUM_2]) = checksum;
+		*reinterpret_cast<uint16_t*>(&memory[G20_CHECKSUM_1]) = checksum;
+		*reinterpret_cast<uint16_t*>(&memory[G20_CHECKSUM_2]) = checksum;
 		break;
 	case Game::G21_CRYSTAL:
 		unsigned start = checksumRegionsG21E[0].start;
@@ -159,8 +178,8 @@ void Generation2::finalize() {
 			checksum += memory[start + offset];
 			memory[newStart + offset] = memory[start + offset];
 		}
-		*reinterpret_cast<uint16_t*>(&memory[G21E_CHECKSUM_1]) = checksum;
-		*reinterpret_cast<uint16_t*>(&memory[G21E_CHECKSUM_2]) = checksum;
+		*reinterpret_cast<uint16_t*>(&memory[G21_CHECKSUM_1]) = checksum;
+		*reinterpret_cast<uint16_t*>(&memory[G21_CHECKSUM_2]) = checksum;
 		break;
 	}
 }
@@ -190,38 +209,14 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 	} __attribute__((packed))* palette;
 
 	const uint8_t* menuSpritePointer = nullptr;
-	switch (version() & Game::MASK_GAME) {
-	case Game::G20_GOLD:
-	case Game::G20_SILVER:
-	default:
-		if (species->id() != PokemonSpecies::UNOWN) {
-			mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_SPRITE_MAPPING_BASE])[species->id() - 1];
-		} else {
-			mapping = &reinterpret_cast<const Mapping*>(&rom()[G20E_UNOWN_SPRITE_MAPPING_BASE])[species->forme()];
-		}
-		switch (version() & Game::MASK_LOCALIZATION) {
-		case Game::JAPANESE:
-		default:
-			palette = &reinterpret_cast<const Palette*>(&rom()[G20J_PALETTES])[species->id() - 1];
-			break;
-		case Game::ENGLISH:
-			palette = &reinterpret_cast<const Palette*>(&rom()[G20E_PALETTES])[species->id() - 1];
-			menuSpritePointer = &rom()[G20E_MENU_SPRITE_MAPPING];
-			menuSpritePointer = &rom()[G20E_MENU_SPRITES + (menuSpritePointer[species->id() - 1] - 1) * 0x80];
-			break;
-		}
-		break;
-	case Game::G21_CRYSTAL:
-		if (species->id() != PokemonSpecies::UNOWN) {
-			mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_SPRITE_MAPPING_BASE])[species->id() - 1];
-		} else {
-			mapping = &reinterpret_cast<const Mapping*>(&rom()[G21E_UNOWN_SPRITE_MAPPING_BASE])[species->forme()];
-		}
-		palette = &reinterpret_cast<const Palette*>(&rom()[G21E_PALETTES])[species->id() - 1];
-		menuSpritePointer = &rom()[G21E_MENU_SPRITE_MAPPING];
-		menuSpritePointer = &rom()[G21E_MENU_SPRITES + (menuSpritePointer[species->id() - 1] - 1) * 0x80];
-		break;
+	if (species->id() != PokemonSpecies::UNOWN) {
+		mapping = &reinterpret_cast<const Mapping*>(&rom()[m_offsets->spriteMapping])[species->id() - 1];
+	} else {
+		mapping = &reinterpret_cast<const Mapping*>(&rom()[m_offsets->unownSpriteMapping])[species->forme()];
 	}
+	palette = &reinterpret_cast<const Palette*>(&rom()[m_offsets->palettes])[species->id() - 1];
+	menuSpritePointer = &rom()[m_offsets->menuSpriteMapping];
+	menuSpritePointer = &rom()[m_offsets->menuSprites + (menuSpritePointer[species->id() - 1] - 1) * 0x80];
 
 	unsigned frontBank = mapping->frontBank;
 	unsigned backBank = mapping->backBank;
