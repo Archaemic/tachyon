@@ -20,6 +20,12 @@ public:
 		unsigned menuSpriteMapping;
 		unsigned menuSprites;
 		unsigned palettes;
+		unsigned partyPokemon;
+		unsigned boxSize;
+		unsigned boxHigh;
+		unsigned currentBoxId;
+		unsigned boxNames;
+		unsigned currentBox;
 	};
 
 	Generation2(uint8_t* memory, const uint8_t* rom);

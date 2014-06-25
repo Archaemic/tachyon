@@ -30,6 +30,28 @@ enum {
 	G20J_PALETTES = 0x00ACCB,
 	G20E_PALETTES = 0x00AD45,
 	G21E_PALETTES = 0x00A8D6,
+
+	G20J_PARTY_POKEMON = 0x283E,
+	G20E_PARTY_POKEMON = 0x288A,
+	G21E_PARTY_POKEMON = 0x2865,
+
+	G20J_BOX_SIZE = 1354,
+	G20E_BOX_SIZE = 1104,
+
+	G20J_BOX_HIGH_OFFSET = 6,
+	G20E_BOX_HIGH_OFFSET = 7,
+
+	G20J_CURRENT_BOX_ID = 0x2705,
+	G20E_CURRENT_BOX_ID = 0x2724,
+	G21E_CURRENT_BOX_ID = 0x2700,
+
+	G20J_BOX_NAMES = 0x2708,
+	G20E_BOX_NAMES = 0x2727,
+	G21E_BOX_NAMES = 0x2703,
+
+	G20J_CURRENT_BOX = 0x2D10,
+	G20E_CURRENT_BOX = 0x2D6C,
+	G21E_CURRENT_BOX = 0x2D11,
 };
 
 struct Range {
@@ -59,22 +81,34 @@ static const Range checksumRegionsG21E[2] = {
 	{ 0x1209, 0x1D83 }
 };
 
-static const Generation2::Offsets G20E = {
-	.baseStats = G20E_BASE_STATS,
-	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
-	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
-	.menuSpriteMapping = G20E_MENU_SPRITE_MAPPING,
-	.menuSprites = G20E_MENU_SPRITES,
-	.palettes = G20E_PALETTES
-};
-
 static const Generation2::Offsets G20J = {
 	.baseStats = G20J_BASE_STATS,
 	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
 	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
 	.menuSpriteMapping = G20E_MENU_SPRITE_MAPPING,
 	.menuSprites = G20E_MENU_SPRITES,
-	.palettes = G20J_PALETTES
+	.palettes = G20J_PALETTES,
+	.partyPokemon = G20J_PARTY_POKEMON,
+	.boxSize = G20J_BOX_SIZE,
+	.boxHigh = G20J_BOX_HIGH_OFFSET,
+	.currentBoxId = G20J_CURRENT_BOX_ID,
+	.boxNames = G20J_BOX_NAMES,
+	.currentBox = G20J_CURRENT_BOX
+};
+
+static const Generation2::Offsets G20E = {
+	.baseStats = G20E_BASE_STATS,
+	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.menuSpriteMapping = G20E_MENU_SPRITE_MAPPING,
+	.menuSprites = G20E_MENU_SPRITES,
+	.palettes = G20E_PALETTES,
+	.partyPokemon = G20E_PARTY_POKEMON,
+	.boxSize = G20E_BOX_SIZE,
+	.boxHigh = G20E_BOX_HIGH_OFFSET,
+	.currentBoxId = G20E_CURRENT_BOX_ID,
+	.boxNames = G20E_BOX_NAMES,
+	.currentBox = G20E_CURRENT_BOX
 };
 
 static const Generation2::Offsets G21E = {
@@ -83,7 +117,13 @@ static const Generation2::Offsets G21E = {
 	.unownSpriteMapping = G21E_UNOWN_SPRITE_MAPPING_BASE,
 	.menuSpriteMapping = G21E_MENU_SPRITE_MAPPING,
 	.menuSprites = G21E_MENU_SPRITES,
-	.palettes = G21E_PALETTES
+	.palettes = G21E_PALETTES,
+	.partyPokemon = G21E_PARTY_POKEMON,
+	.boxSize = G20E_BOX_SIZE,
+	.boxHigh = G20E_BOX_HIGH_OFFSET,
+	.currentBoxId = G21E_CURRENT_BOX_ID,
+	.boxNames = G21E_BOX_NAMES,
+	.currentBox = G21E_CURRENT_BOX
 };
 
 const GameBoyGame::ChecksumMapping<Generation2::Offsets> Generation2::s_checksums[] = {
