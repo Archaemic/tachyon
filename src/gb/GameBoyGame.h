@@ -15,12 +15,14 @@ private:
 	const static char** charMapGB[];
 
 protected:
+	template <typename O>
 	struct ChecksumMapping {
 		uint16_t checksum;
 		Game::Edition version;
+		const O* offsets;
 	};
 
-	static Game::Edition findVersion(const ChecksumMapping* checksums, uint16_t checksum);
+	template <typename O> static const ChecksumMapping<O>* findVersion(const ChecksumMapping<O>* checksums, uint16_t checksum);
 
 public:
 	static const Type typeMapping[256];
@@ -37,5 +39,16 @@ struct GBMoveSet {
 	uint8_t move3;
 	uint8_t move4;
 };
+
+template <typename O>
+const GameBoyGame::ChecksumMapping<O>* GameBoyGame::findVersion(const GameBoyGame::ChecksumMapping<O>* mapping, uint16_t checksum) {
+	while (mapping->checksum) {
+		if (mapping->checksum == checksum) {
+			break;
+		}
+		++mapping;
+	}
+	return mapping;
+}
 
 #endif

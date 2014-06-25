@@ -50,7 +50,8 @@ public:
 	enum {
 		MASK_GENERATION = 0xF00,
 		MASK_LOCALIZATION = 0x0F0,
-		MASK_GAME = 0xF0F
+		MASK_GAME = 0xF0F,
+		MASK_VERSION = 0x00F,
 	};
 
 	typedef uint16_t Edition;

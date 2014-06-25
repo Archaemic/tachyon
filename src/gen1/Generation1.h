@@ -12,6 +12,16 @@ public:
 		SIZE_ROM = 0x100000,
 	};
 
+	struct Offsets {
+		unsigned paletteMapping;
+		unsigned paletteBase;
+		unsigned baseStats;
+		unsigned mewStats;
+		unsigned idMapping;
+		unsigned menuSpriteMapping;
+		unsigned menuSpriteCommands;
+	};
+
 	Generation1(uint8_t* memory, const uint8_t* rom);
 	~Generation1();
 
@@ -33,9 +43,10 @@ private:
 	void prepareSprites();
 	static uint8_t mirrorByte(uint8_t byte);
 
-	const static ChecksumMapping s_checksums[];
+	const static ChecksumMapping<Offsets> s_checksums[];
 
 	uint8_t* m_spriteMemory;
+	const Offsets* m_offsets;
 
 	class Loader : public Game::Loader {
 	public:

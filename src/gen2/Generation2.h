@@ -31,7 +31,7 @@ public:
 private:
 	void loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*) const;
 
-	const static ChecksumMapping s_checksums[];
+	const static ChecksumMapping<void> s_checksums[];
 
 	class Loader : public Game::Loader {
 	public:

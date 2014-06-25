@@ -59,7 +59,7 @@ static const Range checksumRegionsG21E[2] = {
 	{ 0x1209, 0x1D83 }
 };
 
-const GameBoyGame::ChecksumMapping Generation2::s_checksums[] = {
+const GameBoyGame::ChecksumMapping<void> Generation2::s_checksums[] = {
 	{ 0x708A, Game::G20_GOLD | Game::JAPANESE },
 	{ 0x2D68, Game::G20_GOLD | Game::ENGLISH },
 	{ 0, Game::INVALID }
@@ -88,7 +88,7 @@ Generation2* Generation2::Loader::load(uint8_t* memory, const uint8_t* rom) cons
 
 Game::Edition Generation2::Loader::detect(const uint8_t* rom) const {
 	uint16_t checksum = *(uint16_t*) &rom[0x14E];
-	return GameBoyGame::findVersion(Generation2::s_checksums, checksum);
+	return GameBoyGame::findVersion<void>(Generation2::s_checksums, checksum)->version;
 }
 
 unsigned Generation2::numBoxes() const {
@@ -97,7 +97,7 @@ unsigned Generation2::numBoxes() const {
 
 Game::Edition Generation2::version() const {
 	uint16_t checksum = *(uint16_t*) &m_rom[0x14E];
-	return GameBoyGame::findVersion(s_checksums, checksum);
+	return GameBoyGame::findVersion<void>(s_checksums, checksum)->version;
 }
 
 const PokemonSpecies* Generation2::species(PokemonSpecies::Id id, PokemonSpecies::Forme forme) {

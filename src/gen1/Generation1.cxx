@@ -12,117 +12,191 @@ enum {
 	G10E_TRAINER_NAME = 0x2598,
 	G10E_CHECKSUM = 0x3523,
 
-	G10J_PALETTE_MAPPING = 0x072A1E,
-	G10E_PALETTE_MAPPING = 0x0725C8,
-	G10G_PALETTE_MAPPING = 0x0725A2,
-	G10F_PALETTE_MAPPING = 0x072599,
-	G10S_PALETTE_MAPPING = 0x0725B8,
-	G10I_PALETTE_MAPPING = 0x072608,
-	G11J_PALETTE_MAPPING = 0x072A0D,
-	G12J_PALETTE_MAPPING = 0x07264F,
-	G12E_PALETTE_MAPPING = 0x072921,
-	G12G_PALETTE_MAPPING = 0x072900,
-	G12F_PALETTE_MAPPING = 0x0728F2,
-	G12S_PALETTE_MAPPING = 0x072911,
-	G12I_PALETTE_MAPPING = 0x072961,
-	G13J_PALETTE_MAPPING = 0x07265A,
-
-	G10J_PALETTES = 0x072AB6,
-	G10E_PALETTES = 0x072660,
-	G10G_PALETTES = 0x07263A,
-	G10F_PALETTES = 0x072631,
-	G10S_PALETTES = 0x072650,
-	G10I_PALETTES = 0x0726A0,
-	G11J_PALETTES = 0x072AA5,
-	G12J_PALETTES = 0x0726E7,
-	G12E_PALETTES = 0x0729B9,
-	G12G_PALETTES = 0x072998,
-	G12F_PALETTES = 0x07298A,
-	G12S_PALETTES = 0x0729A9,
-	G12I_PALETTES = 0x0729F9,
-	G13J_PALETTES = 0x0726F2,
-
 	G10J_BASE_STATS = 0x038000,
 	G10E_BASE_STATS = 0x0383DE,
 	G10J_MEW_STATS = 0x004200,
 	G10E_MEW_STATS = 0x00425B,
 
-	G10J_ID_MAPPING = 0x042799,
-	G10E_ID_MAPPING = 0x041023,
-	G10G_ID_MAPPING = 0x040F95,
-	G10F_ID_MAPPING = 0x040FA9,
-	G10S_ID_MAPPING = 0x040FB3,
-	G10I_ID_MAPPING = 0x040FB5,
-	G11J_ID_MAPPING = 0x042783,
 	G12J_ID_MAPPING = 0x04282C,
-	G12E_ID_MAPPING = 0x0410B0,
-	G12G_ID_MAPPING = 0x041022,
-	G12F_ID_MAPPING = 0x041035,
-	G12S_ID_MAPPING = 0x041040,
-	G12I_ID_MAPPING = 0x041042,
-
-	G10J_MENU_SPRITE_MAPPING = 0x071DD1,
-	G10E_MENU_SPRITE_MAPPING = 0x07190D,
-	G10G_MENU_SPRITE_MAPPING = 0x0718E7,
-	G10F_MENU_SPRITE_MAPPING = 0x0718DE,
-	G10S_MENU_SPRITE_MAPPING = 0x0718FD,
-	G10I_MENU_SPRITE_MAPPING = 0x07194D,
-	G11J_MENU_SPRITE_MAPPING = 0x071DC1,
 	G12J_MENU_SPRITE_MAPPING = 0x071911,
-	G12E_MENU_SPRITE_MAPPING = 0x0719BA,
-	G12G_MENU_SPRITE_MAPPING = 0x071999,
-	G12F_MENU_SPRITE_MAPPING = 0x07198B,
-	G12S_MENU_SPRITE_MAPPING = 0x0719AA,
-	G12I_MENU_SPRITE_MAPPING = 0x0719FA,
-
-	G10J_MENU_SPRITE_COMMANDS = 0x071C84,
-	G10E_MENU_SPRITE_COMMANDS = 0x0717C0,
-	G10G_MENU_SPRITE_COMMANDS = 0x07179A,
-	G10F_MENU_SPRITE_COMMANDS = 0x071791,
-	G10S_MENU_SPRITE_COMMANDS = 0x0717B0,
-	G10I_MENU_SPRITE_COMMANDS = 0x071800,
-	G11J_MENU_SPRITE_COMMANDS = 0x071C74,
 	G12J_MENU_SPRITE_COMMANDS = 0x0717A4,
-	G12E_MENU_SPRITE_COMMANDS = 0x07184E,
-	G12G_MENU_SPRITE_COMMANDS = 0x07182C,
-	G12F_MENU_SPRITE_COMMANDS = 0x07181E,
-	G12S_MENU_SPRITE_COMMANDS = 0x07183D,
-	G12I_MENU_SPRITE_COMMANDS = 0x07188E,
 
 	G10_NUM_MENU_SPRITE_COMMANDS = 0x1C,
 };
 
-const GameBoyGame::ChecksumMapping Generation1::s_checksums[] = {
-	{ 0x66B8, Game::G10_RED | Game::JAPANESE },
-	{ 0xC1A2, Game::G10_RED | Game::JAPANESE },
-	{ 0xE691, Game::G10_RED | Game::ENGLISH },
-	{ 0xDC5C, Game::G10_RED | Game::GERMAN },
-	{ 0xFC7A, Game::G10_RED | Game::FRENCH },
-	{ 0x4A38, Game::G10_RED | Game::SPANISH },
-	{ 0xD289, Game::G10_RED | Game::ITALIAN },
-	{ 0xD5DD, Game::G10_GREEN | Game::JAPANESE },
-	{ 0x47F5, Game::G10_GREEN | Game::JAPANESE },
-	{ 0x0A9D, Game::G10_BLUE | Game::ENGLISH },
-	{ 0xBC2E, Game::G10_BLUE | Game::GERMAN },
-	{ 0xA456, Game::G10_BLUE | Game::FRENCH },
-	{ 0xD714, Game::G10_BLUE | Game::SPANISH },
-	{ 0x9C5E, Game::G10_BLUE | Game::ITALIAN },
-	{ 0x36DC, Game::G11_BLUE | Game::JAPANESE },
-	{ 0x299C, Game::G12_YELLOW | Game::JAPANESE },
-	{ 0x7C04, Game::G12_YELLOW | Game::ENGLISH },
-	{ 0xFB66, Game::G12_YELLOW | Game::GERMAN },
-	{ 0xC1B7, Game::G12_YELLOW | Game::FRENCH },
-	{ 0x3756, Game::G12_YELLOW | Game::SPANISH },
-	{ 0x8F4E, Game::G12_YELLOW | Game::ITALIAN },
-	{ 0x5888, Game::G13_YELLOW | Game::JAPANESE },
-	{ 0xD9ED, Game::G13_YELLOW | Game::JAPANESE },
-	{ 0, Game::INVALID }
+static const Generation1::Offsets G10J = {
+	.paletteMapping = 0x072A1E,
+	.paletteBase = 0x072AB6,
+	.baseStats = G10J_BASE_STATS,
+	.mewStats = G10J_MEW_STATS,
+	.idMapping = 0x042799,
+	.menuSpriteMapping = 0x071DD1,
+	.menuSpriteCommands = 0x071C84
+};
+
+static const Generation1::Offsets G10E = {
+	.paletteMapping = 0x0725C8,
+	.paletteBase = 0x072660,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x041023,
+	.menuSpriteMapping = 0x07190D,
+	.menuSpriteCommands = 0x0717C0,
+};
+
+static const Generation1::Offsets G10F = {
+	.paletteMapping = 0x072599,
+	.paletteBase = 0x072631,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x040FA9,
+	.menuSpriteMapping = 0x0718DE,
+	.menuSpriteCommands = 0x071791,
+};
+
+static const Generation1::Offsets G10G = {
+	.paletteMapping = 0x0725A2,
+	.paletteBase = 0x07263A,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x040F95,
+	.menuSpriteMapping = 0x0718E7,
+	.menuSpriteCommands = 0x07179A,
+};
+
+static const Generation1::Offsets G10I = {
+	.paletteMapping = 0x072608,
+	.paletteBase = 0x0726A0,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x040FB5,
+	.menuSpriteMapping = 0x07194D,
+	.menuSpriteCommands = 0x071800,
+};
+
+static const Generation1::Offsets G10S = {
+	.paletteMapping = 0x072911,
+	.paletteBase = 0x072650,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x040FB3,
+	.menuSpriteMapping = 0x0718FD,
+	.menuSpriteCommands = 0x0717B0,
+};
+
+static const Generation1::Offsets G11J = {
+	.paletteMapping = 0x072A0D,
+	.paletteBase = 0x072AA5,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x042783,
+	.menuSpriteMapping = 0x071DC1,
+	.menuSpriteCommands = 0x071C74,
+};
+
+static const Generation1::Offsets G12J = {
+	.paletteMapping = 0x07264F,
+	.paletteBase = 0x0726E7,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = G12J_ID_MAPPING,
+	.menuSpriteMapping = G12J_MENU_SPRITE_MAPPING,
+	.menuSpriteCommands = G12J_MENU_SPRITE_COMMANDS,
+};
+
+static const Generation1::Offsets G12E = {
+	.paletteMapping = 0x072921,
+	.paletteBase = 0x0729B9,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x0410B0,
+	.menuSpriteMapping = 0x0719BA,
+	.menuSpriteCommands = 0x07184E,
+};
+
+static const Generation1::Offsets G12F = {
+	.paletteMapping = 0x0728F2,
+	.paletteBase = 0x07298A,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x041035,
+	.menuSpriteMapping = 0x07198B,
+	.menuSpriteCommands = 0x07181E,
+};
+
+static const Generation1::Offsets G12G = {
+	.paletteMapping = 0x072900,
+	.paletteBase = 0x072998,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x041022,
+	.menuSpriteMapping = 0x071999,
+	.menuSpriteCommands = 0x07182C,
+};
+
+static const Generation1::Offsets G12I = {
+	.paletteMapping = 0x072961,
+	.paletteBase = 0x0729F9,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x041042,
+	.menuSpriteMapping = 0x0719FA,
+	.menuSpriteCommands = 0x07188E,
+};
+
+static const Generation1::Offsets G12S = {
+	.paletteMapping = 0x072911,
+	.paletteBase = 0x0729A9,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = 0x041040,
+	.menuSpriteMapping = 0x0719AA,
+	.menuSpriteCommands = 0x07183D,
+};
+
+static const Generation1::Offsets G13J = {
+	.paletteMapping = 0x07265A,
+	.paletteBase = 0x0726F2,
+	.baseStats = G10E_BASE_STATS,
+	.mewStats = G10E_MEW_STATS,
+	.idMapping = G12J_ID_MAPPING,
+	.menuSpriteMapping = G12J_MENU_SPRITE_MAPPING,
+	.menuSpriteCommands = G12J_MENU_SPRITE_COMMANDS,
+};
+
+const GameBoyGame::ChecksumMapping<Generation1::Offsets> Generation1::s_checksums[] = {
+	{ 0x66B8, Game::G10_RED | Game::JAPANESE, &G10J },
+	{ 0xC1A2, Game::G10_RED | Game::JAPANESE, &G10J },
+	{ 0xE691, Game::G10_RED | Game::ENGLISH, &G10E },
+	{ 0xDC5C, Game::G10_RED | Game::GERMAN, &G10G },
+	{ 0xFC7A, Game::G10_RED | Game::FRENCH, &G10F },
+	{ 0x4A38, Game::G10_RED | Game::SPANISH, &G10S },
+	{ 0xD289, Game::G10_RED | Game::ITALIAN, &G10I },
+	{ 0xD5DD, Game::G10_GREEN | Game::JAPANESE, &G10J },
+	{ 0x47F5, Game::G10_GREEN | Game::JAPANESE, &G10J },
+	{ 0x0A9D, Game::G10_BLUE | Game::ENGLISH, &G10E },
+	{ 0xBC2E, Game::G10_BLUE | Game::GERMAN, &G10G },
+	{ 0xA456, Game::G10_BLUE | Game::FRENCH, &G10F },
+	{ 0xD714, Game::G10_BLUE | Game::SPANISH, &G10S },
+	{ 0x9C5E, Game::G10_BLUE | Game::ITALIAN, &G10I },
+	{ 0x36DC, Game::G11_BLUE | Game::JAPANESE, &G11J },
+	{ 0x299C, Game::G12_YELLOW | Game::JAPANESE, &G12J },
+	{ 0x7C04, Game::G12_YELLOW | Game::ENGLISH, &G12E },
+	{ 0xFB66, Game::G12_YELLOW | Game::GERMAN, &G12G },
+	{ 0xC1B7, Game::G12_YELLOW | Game::FRENCH, &G12F },
+	{ 0x3756, Game::G12_YELLOW | Game::SPANISH, &G12S },
+	{ 0x8F4E, Game::G12_YELLOW | Game::ITALIAN, &G12I },
+	{ 0x5888, Game::G13_YELLOW | Game::JAPANESE, &G13J },
+	{ 0xD9ED, Game::G13_YELLOW | Game::JAPANESE, &G13J },
+	{ 0, Game::INVALID, nullptr }
 };
 
 Generation1::Generation1(uint8_t* memory, const uint8_t* rom)
 	: GameBoyGame(memory, rom)
 	, m_spriteMemory(nullptr)
 {
+	uint16_t checksum = *(uint16_t*) &rom[0x14E];
+	m_offsets = findVersion<Offsets>(Generation1::s_checksums, checksum)->offsets;
 	setTrainerName(gameTextToUTF8(&memory[G10E_TRAINER_NAME], 8));
 	setParty(new G1Party(this));
 	for (unsigned box = 0; box < numBoxes(); ++box) {
@@ -149,7 +223,7 @@ Generation1* Generation1::Loader::load(uint8_t* memory, const uint8_t* rom) cons
 
 Game::Edition Generation1::Loader::detect(const uint8_t* rom) const {
 	uint16_t checksum = *(uint16_t*) &rom[0x14E];
-	return GameBoyGame::findVersion(Generation1::s_checksums, checksum);
+	return GameBoyGame::findVersion<Offsets>(Generation1::s_checksums, checksum)->version;
 }
 
 unsigned Generation1::numBoxes() const {
@@ -161,27 +235,18 @@ unsigned Generation1::numBoxes() const {
 
 Game::Edition Generation1::version() const {
 	uint16_t checksum = *(uint16_t*) &m_rom[0x14E];
-	return GameBoyGame::findVersion(s_checksums, checksum);
+	return GameBoyGame::findVersion<Offsets>(Generation1::s_checksums, checksum)->version;
 }
 
 const PokemonSpecies* Generation1::species(PokemonSpecies::Id id, PokemonSpecies::Forme) {
 	const PokemonSpecies* species = Game::species(id);
 	if (!species) {
 		const G1PokemonBaseStats* stats;
-		if ((version() & Game::MASK_LOCALIZATION) == Game::JAPANESE && (version() & Game::MASK_GAME) < Game::G11_BLUE) {
-			if (id == PokemonSpecies::MEW && (version() & Game::MASK_GAME) < Game::G12_YELLOW) {
-				stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10J_MEW_STATS]);
-			} else {
-				stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10J_BASE_STATS]);
-				stats = &stats[(id - 1) & 0xFF];
-			}
+		if (id == PokemonSpecies::MEW && (version() & Game::MASK_GAME) < Game::G12_YELLOW) {
+			stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[m_offsets->mewStats]);
 		} else {
-			if (id == PokemonSpecies::MEW && (version() & Game::MASK_GAME) < Game::G12_YELLOW) {
-				stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_MEW_STATS]);
-			} else {
-				stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[G10E_BASE_STATS]);
-				stats = &stats[(id - 1) & 0xFF];
-			}
+			stats = reinterpret_cast<const G1PokemonBaseStats*>(&rom()[m_offsets->baseStats]);
+			stats = &stats[(id - 1) & 0xFF];
 		}
 		PokemonSpecies* newSpecies = new G1PokemonSpecies(stats);
 		loadSprites(newSpecies, stats);
@@ -202,56 +267,7 @@ void Generation1::finalize() {
 
 PokemonSpecies::Id Generation1::mapId(unsigned id) const {
 	const uint8_t* idMapping;
-	switch (version()) {
-	case Game::G10_RED | Game::JAPANESE:
-	case Game::G10_GREEN | Game::JAPANESE:
-		idMapping = &rom()[G10J_ID_MAPPING];
-		break;
-	case Game::G10_RED | ENGLISH:
-	case Game::G10_BLUE | ENGLISH:
-		idMapping = &rom()[G10E_ID_MAPPING];
-		break;
-	case Game::G10_RED | Game::GERMAN:
-	case Game::G10_BLUE | Game::GERMAN:
-		idMapping = &rom()[G10G_ID_MAPPING];
-		break;
-	case Game::G10_RED | Game::FRENCH:
-	case Game::G10_BLUE | Game::FRENCH:
-		idMapping = &rom()[G10F_ID_MAPPING];
-		break;
-	case Game::G10_RED | Game::SPANISH:
-	case Game::G10_BLUE | Game::SPANISH:
-		idMapping = &rom()[G10S_ID_MAPPING];
-		break;
-	case Game::G10_RED | Game::ITALIAN:
-	case Game::G10_BLUE | Game::ITALIAN:
-		idMapping = &rom()[G10I_ID_MAPPING];
-		break;
-	case Game::G11_BLUE | Game::JAPANESE:
-		idMapping = &rom()[G11J_ID_MAPPING];
-		break;
-	case Game::G12_YELLOW | Game::JAPANESE:
-	case Game::G13_YELLOW | Game::JAPANESE:
-		idMapping = &rom()[G12J_ID_MAPPING];
-		break;
-	case Game::G12_YELLOW | Game::ENGLISH:
-		idMapping = &rom()[G12E_ID_MAPPING];
-		break;
-	case Game::G12_YELLOW | Game::GERMAN:
-		idMapping = &rom()[G12G_ID_MAPPING];
-		break;
-	case Game::G12_YELLOW | Game::FRENCH:
-		idMapping = &rom()[G12F_ID_MAPPING];
-		break;
-	case Game::G12_YELLOW | Game::SPANISH:
-		idMapping = &rom()[G12S_ID_MAPPING];
-		break;
-	case Game::G12_YELLOW | Game::ITALIAN:
-		idMapping = &rom()[G12I_ID_MAPPING];
-		break;
-	default:
-		return PokemonSpecies::MISSINGNO;
-	}
+	idMapping = &rom()[m_offsets->idMapping];
 	return static_cast<PokemonSpecies::Id>(idMapping[id]);
 }
 
@@ -260,109 +276,14 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 	unsigned height = data->spriteDim & 0xF;
 
 	// TODO: Handle glitch Pokemon
-	const uint8_t* idMapping;
-	uint8_t mapping;
+	const uint8_t* idMapping = &rom()[m_offsets->idMapping];
+	uint8_t mapping = rom()[m_offsets->paletteMapping + species->id()];
 
-	const uint8_t* menuIdMapping;
+	const uint8_t* menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[m_offsets->menuSpriteMapping]);
 
 	const struct Palette {
 		uint16_t color[4];
-	} __attribute__((packed))* palette;
-
-	switch (version()) {
-	case Game::G10_RED | Game::JAPANESE:
-	case Game::G10_GREEN | Game::JAPANESE:
-		idMapping = &rom()[G10J_ID_MAPPING];
-		mapping = rom()[G10J_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G10J_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10J_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G10_RED | ENGLISH:
-	case Game::G10_BLUE | ENGLISH:
-		idMapping = &rom()[G10E_ID_MAPPING];
-		mapping = rom()[G10E_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G10E_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10E_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G10_RED | Game::GERMAN:
-	case Game::G10_BLUE | Game::GERMAN:
-		idMapping = &rom()[G10G_ID_MAPPING];
-		mapping = rom()[G10G_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G10G_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10G_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G10_RED | Game::FRENCH:
-	case Game::G10_BLUE | Game::FRENCH:
-		idMapping = &rom()[G10F_ID_MAPPING];
-		mapping = rom()[G10F_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G10F_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10F_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G10_RED | Game::SPANISH:
-	case Game::G10_BLUE | Game::SPANISH:
-		idMapping = &rom()[G10S_ID_MAPPING];
-		mapping = rom()[G10S_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G10S_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10S_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G10_RED | Game::ITALIAN:
-	case Game::G10_BLUE | Game::ITALIAN:
-		idMapping = &rom()[G10I_ID_MAPPING];
-		mapping = rom()[G10I_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G10I_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G10I_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G11_BLUE | Game::JAPANESE:
-		idMapping = &rom()[G11J_ID_MAPPING];
-		mapping = rom()[G11J_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G11J_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G11J_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G12_YELLOW | Game::JAPANESE:
-		idMapping = &rom()[G12J_ID_MAPPING];
-		mapping = rom()[G12J_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G12J_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12J_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G12_YELLOW | Game::ENGLISH:
-		idMapping = &rom()[G12E_ID_MAPPING];
-		mapping = rom()[G12E_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G12E_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12E_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G12_YELLOW | Game::GERMAN:
-		idMapping = &rom()[G12G_ID_MAPPING];
-		mapping = rom()[G12G_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G12G_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12G_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G12_YELLOW | Game::FRENCH:
-		idMapping = &rom()[G12F_ID_MAPPING];
-		mapping = rom()[G12F_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G12F_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12F_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G12_YELLOW | Game::SPANISH:
-		idMapping = &rom()[G12S_ID_MAPPING];
-		mapping = rom()[G12S_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G12S_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12S_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G12_YELLOW | Game::ITALIAN:
-		idMapping = &rom()[G12I_ID_MAPPING];
-		mapping = rom()[G12I_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G12I_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12I_MENU_SPRITE_MAPPING]);
-		break;
-	case Game::G13_YELLOW | Game::JAPANESE:
-		idMapping = &rom()[G12J_ID_MAPPING];
-		mapping = rom()[G13J_PALETTE_MAPPING + species->id()];
-		palette = &reinterpret_cast<const Palette*>(&rom()[G13J_PALETTES])[mapping];
-		menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[G12J_MENU_SPRITE_MAPPING]);
-		break;
-	default:
-		return;
-	}
+	} __attribute__((packed))* palette = &reinterpret_cast<const Palette*>(&rom()[m_offsets->paletteBase])[mapping];
 
 	int gameId;
 	for (gameId = 0; gameId < 256; ++gameId) {
@@ -457,72 +378,8 @@ void Generation1::prepareSprites() {
 		uint8_t size;
 		uint8_t bank;
 		uint16_t offset;
-	}* commands;
-	unsigned numCommands;
-
-	switch (version()) {
-	case Game::G10_RED | JAPANESE:
-	case Game::G10_GREEN | JAPANESE:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10J_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G10_RED | ENGLISH:
-	case Game::G10_BLUE | ENGLISH:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10E_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G10_RED | GERMAN:
-	case Game::G10_BLUE | GERMAN:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10G_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G10_RED | FRENCH:
-	case Game::G10_BLUE | FRENCH:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10F_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G10_RED | SPANISH:
-	case Game::G10_BLUE | SPANISH:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10S_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G10_RED | ITALIAN:
-	case Game::G10_BLUE | ITALIAN:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G10I_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G11_BLUE | JAPANESE:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G11J_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G12_YELLOW | JAPANESE:
-	case Game::G13_YELLOW | JAPANESE:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12J_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G12_YELLOW | ENGLISH:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12E_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G12_YELLOW | GERMAN:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12G_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G12_YELLOW | FRENCH:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12F_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G12_YELLOW | SPANISH:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12S_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	case Game::G12_YELLOW | ITALIAN:
-		commands = reinterpret_cast<const LoaderCommand*>(&rom()[G12I_MENU_SPRITE_COMMANDS]);
-		numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
-		break;
-	default:
-		return;
-	}
+	}* commands = reinterpret_cast<const LoaderCommand*>(&rom()[m_offsets->menuSpriteCommands]);
+	unsigned numCommands = G10_NUM_MENU_SPRITE_COMMANDS;
 
 	m_spriteMemory = new uint8_t[2048];
 

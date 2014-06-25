@@ -332,16 +332,6 @@ void GameBoyGame::stringToGameText(uint8_t* gameText, size_t len, const std::str
 	stringToMappedText(charMapGB[(version() & MASK_LOCALIZATION) >> 4], 0x50, gameText, len, string);
 }
 
-Game::Edition GameBoyGame::findVersion(const ChecksumMapping* mapping, uint16_t checksum) {
-	while (mapping->checksum) {
-		if (mapping->checksum == checksum) {
-			break;
-		}
-		++mapping;
-	}
-	return mapping->version;
-}
-
 void GameBoyGame::arrangeTiles(const uint8_t* source, uint8_t* dest, unsigned width, unsigned height) {
 	for (unsigned tile = 0; tile < width * height; ++tile) {
 		for (unsigned y = 0; y < 8; ++y) {
