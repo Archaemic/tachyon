@@ -5,7 +5,7 @@
 #include "gen2/G2PokemonSpecies.h"
 
 enum {
-	G20E_TRAINER_NAME = 0x200B,
+	G20_TRAINER_NAME = 0x200B,
 	G20_CHECKSUM_1 = 0x2D69,
 	G20_CHECKSUM_2 = 0x7E6D,
 	G21_CHECKSUM_1 = 0x2D0D,
@@ -14,11 +14,11 @@ enum {
 	G20J_BASE_STATS = 0x051AA9,
 	G21E_BASE_STATS = 0x051424,
 
-	G20E_SPRITE_MAPPING_BASE = 0x048000,
-	G21E_SPRITE_MAPPING_BASE = 0x120000,
+	G20_SPRITE_MAPPING_BASE = 0x048000,
+	G21_SPRITE_MAPPING_BASE = 0x120000,
 
-	G20E_UNOWN_SPRITE_MAPPING_BASE = 0x07C000,
-	G21E_UNOWN_SPRITE_MAPPING_BASE = 0x124000,
+	G20_UNOWN_SPRITE_MAPPING_BASE = 0x07C000,
+	G21_UNOWN_SPRITE_MAPPING_BASE = 0x124000,
 
 	G20GF_MENU_SPRITE_MAPPING = 0x08E977,
 	G20SI_MENU_SPRITE_MAPPING = 0x08E973,
@@ -29,29 +29,29 @@ enum {
 	G21E_MENU_SPRITES = 0x08EC0D,
 
 	G20J_PALETTES = 0x00ACCB,
-	G20E_PALETTES = 0x00AD45,
+	G20X_PALETTES = 0x00AD45,
 	G21E_PALETTES = 0x00A8D6,
 
 	G20J_PARTY_POKEMON = 0x283E,
-	G20E_PARTY_POKEMON = 0x288A,
+	G20X_PARTY_POKEMON = 0x288A,
 	G21E_PARTY_POKEMON = 0x2865,
 
 	G20J_BOX_SIZE = 1354,
-	G20E_BOX_SIZE = 1104,
+	G20X_BOX_SIZE = 1104,
 
 	G20J_BOX_HIGH_OFFSET = 6,
-	G20E_BOX_HIGH_OFFSET = 7,
+	G20X_BOX_HIGH_OFFSET = 7,
 
 	G20J_CURRENT_BOX_ID = 0x2705,
-	G20E_CURRENT_BOX_ID = 0x2724,
+	G20X_CURRENT_BOX_ID = 0x2724,
 	G21E_CURRENT_BOX_ID = 0x2700,
 
 	G20J_BOX_NAMES = 0x2708,
-	G20E_BOX_NAMES = 0x2727,
+	G20X_BOX_NAMES = 0x2727,
 	G21E_BOX_NAMES = 0x2703,
 
 	G20J_CURRENT_BOX = 0x2D10,
-	G20E_CURRENT_BOX = 0x2D6C,
+	G20X_CURRENT_BOX = 0x2D6C,
 	G21E_CURRENT_BOX = 0x2D11,
 };
 
@@ -84,8 +84,8 @@ static const Range checksumRegionsG21E[2] = {
 
 static const Generation2::Offsets G20J = {
 	.baseStats = G20J_BASE_STATS,
-	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
-	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.spriteMapping = G20_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20_UNOWN_SPRITE_MAPPING_BASE,
 	.menuSpriteMapping = 0x08E795,
 	.menuSprites = 0x08E8DE,
 	.palettes = G20J_PALETTES,
@@ -99,8 +99,8 @@ static const Generation2::Offsets G20J = {
 
 static const Generation2::Offsets G20J1 = {
 	.baseStats = G20J_BASE_STATS,
-	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
-	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.spriteMapping = G20_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20_UNOWN_SPRITE_MAPPING_BASE,
 	.menuSpriteMapping = 0x08E79A,
 	.menuSprites = 0x08E8E3,
 	.palettes = G20J_PALETTES,
@@ -114,89 +114,89 @@ static const Generation2::Offsets G20J1 = {
 
 static const Generation2::Offsets G20E = {
 	.baseStats = 0x051B0B,
-	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
-	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.spriteMapping = G20_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20_UNOWN_SPRITE_MAPPING_BASE,
 	.menuSpriteMapping = 0x08E975,
 	.menuSprites = 0x08EABE,
-	.palettes = G20E_PALETTES,
-	.partyPokemon = G20E_PARTY_POKEMON,
-	.boxSize = G20E_BOX_SIZE,
-	.boxHigh = G20E_BOX_HIGH_OFFSET,
-	.currentBoxId = G20E_CURRENT_BOX_ID,
-	.boxNames = G20E_BOX_NAMES,
-	.currentBox = G20E_CURRENT_BOX
+	.palettes = G20X_PALETTES,
+	.partyPokemon = G20X_PARTY_POKEMON,
+	.boxSize = G20X_BOX_SIZE,
+	.boxHigh = G20X_BOX_HIGH_OFFSET,
+	.currentBoxId = G20X_CURRENT_BOX_ID,
+	.boxNames = G20X_BOX_NAMES,
+	.currentBox = G20X_CURRENT_BOX
 };
 
 static const Generation2::Offsets G20G = {
 	.baseStats = 0x051B00,
-	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
-	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.spriteMapping = G20_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20_UNOWN_SPRITE_MAPPING_BASE,
 	.menuSpriteMapping = G20GF_MENU_SPRITE_MAPPING,
 	.menuSprites = G20GF_MENU_SPRITES,
-	.palettes = G20E_PALETTES,
-	.partyPokemon = G20E_PARTY_POKEMON,
-	.boxSize = G20E_BOX_SIZE,
-	.boxHigh = G20E_BOX_HIGH_OFFSET,
-	.currentBoxId = G20E_CURRENT_BOX_ID,
-	.boxNames = G20E_BOX_NAMES,
-	.currentBox = G20E_CURRENT_BOX
+	.palettes = G20X_PALETTES,
+	.partyPokemon = G20X_PARTY_POKEMON,
+	.boxSize = G20X_BOX_SIZE,
+	.boxHigh = G20X_BOX_HIGH_OFFSET,
+	.currentBoxId = G20X_CURRENT_BOX_ID,
+	.boxNames = G20X_BOX_NAMES,
+	.currentBox = G20X_CURRENT_BOX
 };
 
 static const Generation2::Offsets G20F = {
 	.baseStats = 0x051B10,
-	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
-	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.spriteMapping = G20_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20_UNOWN_SPRITE_MAPPING_BASE,
 	.menuSpriteMapping = G20GF_MENU_SPRITE_MAPPING,
 	.menuSprites = G20GF_MENU_SPRITES,
-	.palettes = G20E_PALETTES,
-	.partyPokemon = G20E_PARTY_POKEMON,
-	.boxSize = G20E_BOX_SIZE,
-	.boxHigh = G20E_BOX_HIGH_OFFSET,
-	.currentBoxId = G20E_CURRENT_BOX_ID,
-	.boxNames = G20E_BOX_NAMES,
-	.currentBox = G20E_CURRENT_BOX
+	.palettes = G20X_PALETTES,
+	.partyPokemon = G20X_PARTY_POKEMON,
+	.boxSize = G20X_BOX_SIZE,
+	.boxHigh = G20X_BOX_HIGH_OFFSET,
+	.currentBoxId = G20X_CURRENT_BOX_ID,
+	.boxNames = G20X_BOX_NAMES,
+	.currentBox = G20X_CURRENT_BOX
 };
 
 static const Generation2::Offsets G20S = {
 	.baseStats = 0x051B19,
-	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
-	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.spriteMapping = G20_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20_UNOWN_SPRITE_MAPPING_BASE,
 	.menuSpriteMapping = 0x08E973,
 	.menuSprites = G20SI_MENU_SPRITES,
-	.palettes = G20E_PALETTES,
-	.partyPokemon = G20E_PARTY_POKEMON,
-	.boxSize = G20E_BOX_SIZE,
-	.boxHigh = G20E_BOX_HIGH_OFFSET,
-	.currentBoxId = G20E_CURRENT_BOX_ID,
-	.boxNames = G20E_BOX_NAMES,
-	.currentBox = G20E_CURRENT_BOX
+	.palettes = G20X_PALETTES,
+	.partyPokemon = G20X_PARTY_POKEMON,
+	.boxSize = G20X_BOX_SIZE,
+	.boxHigh = G20X_BOX_HIGH_OFFSET,
+	.currentBoxId = G20X_CURRENT_BOX_ID,
+	.boxNames = G20X_BOX_NAMES,
+	.currentBox = G20X_CURRENT_BOX
 };
 
 static const Generation2::Offsets G20I = {
 	.baseStats = 0x051B19,
-	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
-	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.spriteMapping = G20_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20_UNOWN_SPRITE_MAPPING_BASE,
 	.menuSpriteMapping = 0x08E973,
 	.menuSprites = G20SI_MENU_SPRITES,
-	.palettes = G20E_PALETTES,
-	.partyPokemon = G20E_PARTY_POKEMON,
-	.boxSize = G20E_BOX_SIZE,
-	.boxHigh = G20E_BOX_HIGH_OFFSET,
-	.currentBoxId = G20E_CURRENT_BOX_ID,
-	.boxNames = G20E_BOX_NAMES,
-	.currentBox = G20E_CURRENT_BOX
+	.palettes = G20X_PALETTES,
+	.partyPokemon = G20X_PARTY_POKEMON,
+	.boxSize = G20X_BOX_SIZE,
+	.boxHigh = G20X_BOX_HIGH_OFFSET,
+	.currentBoxId = G20X_CURRENT_BOX_ID,
+	.boxNames = G20X_BOX_NAMES,
+	.currentBox = G20X_CURRENT_BOX
 };
 
 static const Generation2::Offsets G21E = {
 	.baseStats = G21E_BASE_STATS,
-	.spriteMapping = G21E_SPRITE_MAPPING_BASE,
-	.unownSpriteMapping = G21E_UNOWN_SPRITE_MAPPING_BASE,
+	.spriteMapping = G21_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G21_UNOWN_SPRITE_MAPPING_BASE,
 	.menuSpriteMapping = G21E_MENU_SPRITE_MAPPING,
 	.menuSprites = G21E_MENU_SPRITES,
 	.palettes = G21E_PALETTES,
 	.partyPokemon = G21E_PARTY_POKEMON,
-	.boxSize = G20E_BOX_SIZE,
-	.boxHigh = G20E_BOX_HIGH_OFFSET,
+	.boxSize = G20X_BOX_SIZE,
+	.boxHigh = G20X_BOX_HIGH_OFFSET,
 	.currentBoxId = G21E_CURRENT_BOX_ID,
 	.boxNames = G21E_BOX_NAMES,
 	.currentBox = G21E_CURRENT_BOX
@@ -218,7 +218,7 @@ Generation2::Generation2(uint8_t* memory, const uint8_t* rom)
 {
 	uint16_t checksum = *(uint16_t*) &rom[0x14E];
 	m_offsets = findVersion<Offsets>(Generation2::s_checksums, checksum)->offsets;
-	setTrainerName(gameTextToUTF8(&memory[G20E_TRAINER_NAME], 8));
+	setTrainerName(gameTextToUTF8(&memory[G20_TRAINER_NAME], 8));
 	setParty(new G2Party(this));
 	for (unsigned box = 0; box < numBoxes(); ++box) {
 		addBox(new G2Box(this, box));

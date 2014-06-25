@@ -6,31 +6,31 @@
 #include "gen1/G1SpriteDecompressor.h"
 
 enum {
-	G10E_SUM_REGION_START = 0x2598,
-	G10E_SUM_REGION_END = 0x3523,
+	G10_SUM_REGION_START = 0x2598,
+	G10_SUM_REGION_END = 0x3523,
 
-	G10E_TRAINER_NAME = 0x2598,
-	G10E_CHECKSUM = 0x3523,
+	G10_TRAINER_NAME = 0x2598,
+	G10_CHECKSUM = 0x3523,
 
 	G10J_BASE_STATS = 0x038000,
-	G10E_BASE_STATS = 0x0383DE,
+	G10X_BASE_STATS = 0x0383DE,
 	G10J_MEW_STATS = 0x004200,
-	G10E_MEW_STATS = 0x00425B,
+	G10X_MEW_STATS = 0x00425B,
 
 	G10J_PARTY_POKEMON = 0x2ED5,
-	G10E_PARTY_POKEMON = 0x2F2C,
+	G10X_PARTY_POKEMON = 0x2F2C,
 
 	G10J_BOX_SIZE = 1382,
-	G10E_BOX_SIZE = 1122,
+	G10X_BOX_SIZE = 1122,
 
 	G10J_BOX_HIGH_OFFSET = 4,
-	G10E_BOX_HIGH_OFFSET = 6,
+	G10X_BOX_HIGH_OFFSET = 6,
 
 	G10J_CURRENT_BOX_ID = 0x2842,
 	G10J_CURRENT_BOX = 0x302D,
 
-	G10E_CURRENT_BOX_ID = 0x284C,
-	G10E_CURRENT_BOX = 0x30C0,
+	G10X_CURRENT_BOX_ID = 0x284C,
+	G10X_CURRENT_BOX = 0x30C0,
 
 	G12J_ID_MAPPING = 0x04282C,
 	G12J_MENU_SPRITE_MAPPING = 0x071911,
@@ -57,83 +57,83 @@ static const Generation1::Offsets G10J = {
 static const Generation1::Offsets G10E = {
 	.paletteMapping = 0x0725C8,
 	.paletteBase = 0x072660,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x041023,
 	.menuSpriteMapping = 0x07190D,
 	.menuSpriteCommands = 0x0717C0,
-	.partyPokemon = G10E_PARTY_POKEMON,
-	.boxSize = G10E_BOX_SIZE,
-	.boxHigh = G10E_BOX_HIGH_OFFSET,
-	.currentBox = G10E_CURRENT_BOX,
-	.currentBoxId = G10E_CURRENT_BOX_ID
+	.partyPokemon = G10X_PARTY_POKEMON,
+	.boxSize = G10X_BOX_SIZE,
+	.boxHigh = G10X_BOX_HIGH_OFFSET,
+	.currentBox = G10X_CURRENT_BOX,
+	.currentBoxId = G10X_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G10F = {
 	.paletteMapping = 0x072599,
 	.paletteBase = 0x072631,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x040FA9,
 	.menuSpriteMapping = 0x0718DE,
 	.menuSpriteCommands = 0x071791,
-	.partyPokemon = G10E_PARTY_POKEMON,
-	.boxSize = G10E_BOX_SIZE,
-	.boxHigh = G10E_BOX_HIGH_OFFSET,
-	.currentBox = G10E_CURRENT_BOX,
-	.currentBoxId = G10E_CURRENT_BOX_ID
+	.partyPokemon = G10X_PARTY_POKEMON,
+	.boxSize = G10X_BOX_SIZE,
+	.boxHigh = G10X_BOX_HIGH_OFFSET,
+	.currentBox = G10X_CURRENT_BOX,
+	.currentBoxId = G10X_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G10G = {
 	.paletteMapping = 0x0725A2,
 	.paletteBase = 0x07263A,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x040F95,
 	.menuSpriteMapping = 0x0718E7,
 	.menuSpriteCommands = 0x07179A,
-	.partyPokemon = G10E_PARTY_POKEMON,
-	.boxSize = G10E_BOX_SIZE,
-	.boxHigh = G10E_BOX_HIGH_OFFSET,
-	.currentBox = G10E_CURRENT_BOX,
-	.currentBoxId = G10E_CURRENT_BOX_ID
+	.partyPokemon = G10X_PARTY_POKEMON,
+	.boxSize = G10X_BOX_SIZE,
+	.boxHigh = G10X_BOX_HIGH_OFFSET,
+	.currentBox = G10X_CURRENT_BOX,
+	.currentBoxId = G10X_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G10I = {
 	.paletteMapping = 0x072608,
 	.paletteBase = 0x0726A0,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x040FB5,
 	.menuSpriteMapping = 0x07194D,
 	.menuSpriteCommands = 0x071800,
-	.partyPokemon = G10E_PARTY_POKEMON,
-	.boxSize = G10E_BOX_SIZE,
-	.boxHigh = G10E_BOX_HIGH_OFFSET,
-	.currentBox = G10E_CURRENT_BOX,
-	.currentBoxId = G10E_CURRENT_BOX_ID
+	.partyPokemon = G10X_PARTY_POKEMON,
+	.boxSize = G10X_BOX_SIZE,
+	.boxHigh = G10X_BOX_HIGH_OFFSET,
+	.currentBox = G10X_CURRENT_BOX,
+	.currentBoxId = G10X_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G10S = {
 	.paletteMapping = 0x072911,
 	.paletteBase = 0x072650,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x040FB3,
 	.menuSpriteMapping = 0x0718FD,
 	.menuSpriteCommands = 0x0717B0,
-	.partyPokemon = G10E_PARTY_POKEMON,
-	.boxSize = G10E_BOX_SIZE,
-	.boxHigh = G10E_BOX_HIGH_OFFSET,
-	.currentBox = G10E_CURRENT_BOX,
-	.currentBoxId = G10E_CURRENT_BOX_ID
+	.partyPokemon = G10X_PARTY_POKEMON,
+	.boxSize = G10X_BOX_SIZE,
+	.boxHigh = G10X_BOX_HIGH_OFFSET,
+	.currentBox = G10X_CURRENT_BOX,
+	.currentBoxId = G10X_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G11J = {
 	.paletteMapping = 0x072A0D,
 	.paletteBase = 0x072AA5,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x042783,
 	.menuSpriteMapping = 0x071DC1,
 	.menuSpriteCommands = 0x071C74,
@@ -147,8 +147,8 @@ static const Generation1::Offsets G11J = {
 static const Generation1::Offsets G12J = {
 	.paletteMapping = 0x07264F,
 	.paletteBase = 0x0726E7,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = G12J_ID_MAPPING,
 	.menuSpriteMapping = G12J_MENU_SPRITE_MAPPING,
 	.menuSpriteCommands = G12J_MENU_SPRITE_COMMANDS,
@@ -162,83 +162,83 @@ static const Generation1::Offsets G12J = {
 static const Generation1::Offsets G12E = {
 	.paletteMapping = 0x072921,
 	.paletteBase = 0x0729B9,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x0410B0,
 	.menuSpriteMapping = 0x0719BA,
 	.menuSpriteCommands = 0x07184E,
-	.partyPokemon = G10E_PARTY_POKEMON,
-	.boxSize = G10E_BOX_SIZE,
-	.boxHigh = G10E_BOX_HIGH_OFFSET,
-	.currentBox = G10E_CURRENT_BOX,
-	.currentBoxId = G10E_CURRENT_BOX_ID
+	.partyPokemon = G10X_PARTY_POKEMON,
+	.boxSize = G10X_BOX_SIZE,
+	.boxHigh = G10X_BOX_HIGH_OFFSET,
+	.currentBox = G10X_CURRENT_BOX,
+	.currentBoxId = G10X_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12F = {
 	.paletteMapping = 0x0728F2,
 	.paletteBase = 0x07298A,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x041035,
 	.menuSpriteMapping = 0x07198B,
 	.menuSpriteCommands = 0x07181E,
-	.partyPokemon = G10E_PARTY_POKEMON,
-	.boxSize = G10E_BOX_SIZE,
-	.boxHigh = G10E_BOX_HIGH_OFFSET,
-	.currentBox = G10E_CURRENT_BOX,
-	.currentBoxId = G10E_CURRENT_BOX_ID
+	.partyPokemon = G10X_PARTY_POKEMON,
+	.boxSize = G10X_BOX_SIZE,
+	.boxHigh = G10X_BOX_HIGH_OFFSET,
+	.currentBox = G10X_CURRENT_BOX,
+	.currentBoxId = G10X_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12G = {
 	.paletteMapping = 0x072900,
 	.paletteBase = 0x072998,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x041022,
 	.menuSpriteMapping = 0x071999,
 	.menuSpriteCommands = 0x07182C,
-	.partyPokemon = G10E_PARTY_POKEMON,
-	.boxSize = G10E_BOX_SIZE,
-	.boxHigh = G10E_BOX_HIGH_OFFSET,
-	.currentBox = G10E_CURRENT_BOX,
-	.currentBoxId = G10E_CURRENT_BOX_ID
+	.partyPokemon = G10X_PARTY_POKEMON,
+	.boxSize = G10X_BOX_SIZE,
+	.boxHigh = G10X_BOX_HIGH_OFFSET,
+	.currentBox = G10X_CURRENT_BOX,
+	.currentBoxId = G10X_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12I = {
 	.paletteMapping = 0x072961,
 	.paletteBase = 0x0729F9,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x041042,
 	.menuSpriteMapping = 0x0719FA,
 	.menuSpriteCommands = 0x07188E,
-	.partyPokemon = G10E_PARTY_POKEMON,
-	.boxSize = G10E_BOX_SIZE,
-	.boxHigh = G10E_BOX_HIGH_OFFSET,
-	.currentBox = G10E_CURRENT_BOX,
-	.currentBoxId = G10E_CURRENT_BOX_ID
+	.partyPokemon = G10X_PARTY_POKEMON,
+	.boxSize = G10X_BOX_SIZE,
+	.boxHigh = G10X_BOX_HIGH_OFFSET,
+	.currentBox = G10X_CURRENT_BOX,
+	.currentBoxId = G10X_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12S = {
 	.paletteMapping = 0x072911,
 	.paletteBase = 0x0729A9,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = 0x041040,
 	.menuSpriteMapping = 0x0719AA,
 	.menuSpriteCommands = 0x07183D,
-	.partyPokemon = G10E_PARTY_POKEMON,
-	.boxSize = G10E_BOX_SIZE,
-	.boxHigh = G10E_BOX_HIGH_OFFSET,
-	.currentBox = G10E_CURRENT_BOX,
-	.currentBoxId = G10E_CURRENT_BOX_ID
+	.partyPokemon = G10X_PARTY_POKEMON,
+	.boxSize = G10X_BOX_SIZE,
+	.boxHigh = G10X_BOX_HIGH_OFFSET,
+	.currentBox = G10X_CURRENT_BOX,
+	.currentBoxId = G10X_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12J1 = {
 	.paletteMapping = 0x07265A,
 	.paletteBase = 0x0726F2,
-	.baseStats = G10E_BASE_STATS,
-	.mewStats = G10E_MEW_STATS,
+	.baseStats = G10X_BASE_STATS,
+	.mewStats = G10X_MEW_STATS,
 	.idMapping = G12J_ID_MAPPING,
 	.menuSpriteMapping = G12J_MENU_SPRITE_MAPPING,
 	.menuSpriteCommands = G12J_MENU_SPRITE_COMMANDS,
@@ -282,7 +282,7 @@ Generation1::Generation1(uint8_t* memory, const uint8_t* rom)
 {
 	uint16_t checksum = *(uint16_t*) &rom[0x14E];
 	m_offsets = findVersion<Offsets>(Generation1::s_checksums, checksum)->offsets;
-	setTrainerName(gameTextToUTF8(&memory[G10E_TRAINER_NAME], 8));
+	setTrainerName(gameTextToUTF8(&memory[G10_TRAINER_NAME], 8));
 	setParty(new G1Party(this));
 	for (unsigned box = 0; box < numBoxes(); ++box) {
 		addBox(new G1Box(this, box));
@@ -348,10 +348,10 @@ const PokemonSpecies* Generation1::species(PokemonSpecies::Id id, PokemonSpecies
 void Generation1::finalize() {
 	uint8_t checksum = 0xFF;
 	uint8_t* memory = ram();
-	for (unsigned i = G10E_SUM_REGION_START; i < G10E_SUM_REGION_END; ++i) {
+	for (unsigned i = G10_SUM_REGION_START; i < G10_SUM_REGION_END; ++i) {
 		checksum -= memory[i];
 	}
-	memory[G10E_CHECKSUM] = checksum;
+	memory[G10_CHECKSUM] = checksum;
 }
 
 PokemonSpecies::Id Generation1::mapId(unsigned id) const {
