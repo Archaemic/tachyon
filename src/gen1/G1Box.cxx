@@ -5,15 +5,6 @@
 #include <sstream>
 
 enum {
-	G10J_BOX_SIZE = 1382,
-	G10E_BOX_SIZE = 1122,
-
-	G10J_CURRENT_BOX_ID = 0x2842,
-	G10J_CURRENT_BOX = 0x302D,
-
-	G10E_CURRENT_BOX_ID = 0x284C,
-	G10E_CURRENT_BOX = 0x30C0,
-
 	G10_BOX_LOW = 0x4000,
 	G10_BOX_HIGH = 0x6000,
 };
@@ -23,27 +14,17 @@ G1Box::G1Box(Generation1* gen, unsigned box)
 	, m_box(box)
 {
 	uint8_t* start = gen->ram();
-	if ((gen->version() & Game::MASK_LOCALIZATION) == Game::JAPANESE) {
-		if (box == (start[G10J_CURRENT_BOX_ID] & 0xF)) {
-			start += G10J_CURRENT_BOX;
-		} else if (box < 4) {
-			start += G10_BOX_LOW + box * G10J_BOX_SIZE;
-		} else if (box < gen->numBoxes()) {
-			start += G10_BOX_HIGH + (box - 4) * G10J_BOX_SIZE;
-		} else {
-			start += G10J_CURRENT_BOX;
-		}
-		setNameLength(6);
+	if (box == (start[gen->offsets()->currentBoxId] & 0xF)) {
+		start += gen->offsets()->currentBox;
+	} else if (box < gen->offsets()->boxHigh) {
+		start += G10_BOX_LOW + box * gen->offsets()->boxSize;
+	} else if (box < gen->numBoxes()) {
+		start += G10_BOX_HIGH + (box - gen->offsets()->boxHigh) * gen->offsets()->boxSize;
 	} else {
-		if (box == (start[G10E_CURRENT_BOX_ID] & 0xF)) {
-			start += G10E_CURRENT_BOX;
-		} else if (box < 6) {
-			start += G10_BOX_LOW + box * G10E_BOX_SIZE;
-		} else if (box < gen->numBoxes()) {
-			start += G10_BOX_HIGH + (box - 6) * G10E_BOX_SIZE;
-		} else {
-			start += G10E_CURRENT_BOX;
-		}
+		start += gen->offsets()->currentBox;
+	}
+	if ((gen->version() & Game::MASK_LOCALIZATION) == Game::JAPANESE) {
+		setNameLength(6);
 	}
 	setStart(start);
 }

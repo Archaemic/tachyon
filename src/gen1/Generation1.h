@@ -20,6 +20,11 @@ public:
 		unsigned idMapping;
 		unsigned menuSpriteMapping;
 		unsigned menuSpriteCommands;
+		unsigned partyPokemon;
+		unsigned boxSize;
+		unsigned boxHigh;
+		unsigned currentBox;
+		unsigned currentBoxId;
 	};
 
 	Generation1(uint8_t* memory, const uint8_t* rom);
@@ -29,6 +34,7 @@ public:
 
 	virtual Edition version() const override;
 	virtual int generation() const { return 1; }
+	const Offsets* offsets() const;
 
 	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 

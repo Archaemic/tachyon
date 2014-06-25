@@ -17,6 +17,21 @@ enum {
 	G10J_MEW_STATS = 0x004200,
 	G10E_MEW_STATS = 0x00425B,
 
+	G10J_PARTY_POKEMON = 0x2ED5,
+	G10E_PARTY_POKEMON = 0x2F2C,
+
+	G10J_BOX_SIZE = 1382,
+	G10E_BOX_SIZE = 1122,
+
+	G10J_BOX_HIGH_OFFSET = 4,
+	G10E_BOX_HIGH_OFFSET = 6,
+
+	G10J_CURRENT_BOX_ID = 0x2842,
+	G10J_CURRENT_BOX = 0x302D,
+
+	G10E_CURRENT_BOX_ID = 0x284C,
+	G10E_CURRENT_BOX = 0x30C0,
+
 	G12J_ID_MAPPING = 0x04282C,
 	G12J_MENU_SPRITE_MAPPING = 0x071911,
 	G12J_MENU_SPRITE_COMMANDS = 0x0717A4,
@@ -31,7 +46,12 @@ static const Generation1::Offsets G10J = {
 	.mewStats = G10J_MEW_STATS,
 	.idMapping = 0x042799,
 	.menuSpriteMapping = 0x071DD1,
-	.menuSpriteCommands = 0x071C84
+	.menuSpriteCommands = 0x071C84,
+	.partyPokemon = G10J_PARTY_POKEMON,
+	.boxSize = G10J_BOX_SIZE,
+	.boxHigh = G10J_BOX_HIGH_OFFSET,
+	.currentBox = G10J_CURRENT_BOX,
+	.currentBoxId = G10J_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G10E = {
@@ -42,6 +62,11 @@ static const Generation1::Offsets G10E = {
 	.idMapping = 0x041023,
 	.menuSpriteMapping = 0x07190D,
 	.menuSpriteCommands = 0x0717C0,
+	.partyPokemon = G10E_PARTY_POKEMON,
+	.boxSize = G10E_BOX_SIZE,
+	.boxHigh = G10E_BOX_HIGH_OFFSET,
+	.currentBox = G10E_CURRENT_BOX,
+	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G10F = {
@@ -52,6 +77,11 @@ static const Generation1::Offsets G10F = {
 	.idMapping = 0x040FA9,
 	.menuSpriteMapping = 0x0718DE,
 	.menuSpriteCommands = 0x071791,
+	.partyPokemon = G10E_PARTY_POKEMON,
+	.boxSize = G10E_BOX_SIZE,
+	.boxHigh = G10E_BOX_HIGH_OFFSET,
+	.currentBox = G10E_CURRENT_BOX,
+	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G10G = {
@@ -62,6 +92,11 @@ static const Generation1::Offsets G10G = {
 	.idMapping = 0x040F95,
 	.menuSpriteMapping = 0x0718E7,
 	.menuSpriteCommands = 0x07179A,
+	.partyPokemon = G10E_PARTY_POKEMON,
+	.boxSize = G10E_BOX_SIZE,
+	.boxHigh = G10E_BOX_HIGH_OFFSET,
+	.currentBox = G10E_CURRENT_BOX,
+	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G10I = {
@@ -72,6 +107,11 @@ static const Generation1::Offsets G10I = {
 	.idMapping = 0x040FB5,
 	.menuSpriteMapping = 0x07194D,
 	.menuSpriteCommands = 0x071800,
+	.partyPokemon = G10E_PARTY_POKEMON,
+	.boxSize = G10E_BOX_SIZE,
+	.boxHigh = G10E_BOX_HIGH_OFFSET,
+	.currentBox = G10E_CURRENT_BOX,
+	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G10S = {
@@ -82,6 +122,11 @@ static const Generation1::Offsets G10S = {
 	.idMapping = 0x040FB3,
 	.menuSpriteMapping = 0x0718FD,
 	.menuSpriteCommands = 0x0717B0,
+	.partyPokemon = G10E_PARTY_POKEMON,
+	.boxSize = G10E_BOX_SIZE,
+	.boxHigh = G10E_BOX_HIGH_OFFSET,
+	.currentBox = G10E_CURRENT_BOX,
+	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G11J = {
@@ -92,6 +137,11 @@ static const Generation1::Offsets G11J = {
 	.idMapping = 0x042783,
 	.menuSpriteMapping = 0x071DC1,
 	.menuSpriteCommands = 0x071C74,
+	.partyPokemon = G10J_PARTY_POKEMON,
+	.boxSize = G10J_BOX_SIZE,
+	.boxHigh = G10J_BOX_HIGH_OFFSET,
+	.currentBox = G10J_CURRENT_BOX,
+	.currentBoxId = G10J_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12J = {
@@ -102,6 +152,11 @@ static const Generation1::Offsets G12J = {
 	.idMapping = G12J_ID_MAPPING,
 	.menuSpriteMapping = G12J_MENU_SPRITE_MAPPING,
 	.menuSpriteCommands = G12J_MENU_SPRITE_COMMANDS,
+	.partyPokemon = G10J_PARTY_POKEMON,
+	.boxSize = G10J_BOX_SIZE,
+	.boxHigh = G10J_BOX_HIGH_OFFSET,
+	.currentBox = G10J_CURRENT_BOX,
+	.currentBoxId = G10J_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12E = {
@@ -112,6 +167,11 @@ static const Generation1::Offsets G12E = {
 	.idMapping = 0x0410B0,
 	.menuSpriteMapping = 0x0719BA,
 	.menuSpriteCommands = 0x07184E,
+	.partyPokemon = G10E_PARTY_POKEMON,
+	.boxSize = G10E_BOX_SIZE,
+	.boxHigh = G10E_BOX_HIGH_OFFSET,
+	.currentBox = G10E_CURRENT_BOX,
+	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12F = {
@@ -122,6 +182,11 @@ static const Generation1::Offsets G12F = {
 	.idMapping = 0x041035,
 	.menuSpriteMapping = 0x07198B,
 	.menuSpriteCommands = 0x07181E,
+	.partyPokemon = G10E_PARTY_POKEMON,
+	.boxSize = G10E_BOX_SIZE,
+	.boxHigh = G10E_BOX_HIGH_OFFSET,
+	.currentBox = G10E_CURRENT_BOX,
+	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12G = {
@@ -132,6 +197,11 @@ static const Generation1::Offsets G12G = {
 	.idMapping = 0x041022,
 	.menuSpriteMapping = 0x071999,
 	.menuSpriteCommands = 0x07182C,
+	.partyPokemon = G10E_PARTY_POKEMON,
+	.boxSize = G10E_BOX_SIZE,
+	.boxHigh = G10E_BOX_HIGH_OFFSET,
+	.currentBox = G10E_CURRENT_BOX,
+	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12I = {
@@ -142,6 +212,11 @@ static const Generation1::Offsets G12I = {
 	.idMapping = 0x041042,
 	.menuSpriteMapping = 0x0719FA,
 	.menuSpriteCommands = 0x07188E,
+	.partyPokemon = G10E_PARTY_POKEMON,
+	.boxSize = G10E_BOX_SIZE,
+	.boxHigh = G10E_BOX_HIGH_OFFSET,
+	.currentBox = G10E_CURRENT_BOX,
+	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G12S = {
@@ -152,6 +227,11 @@ static const Generation1::Offsets G12S = {
 	.idMapping = 0x041040,
 	.menuSpriteMapping = 0x0719AA,
 	.menuSpriteCommands = 0x07183D,
+	.partyPokemon = G10E_PARTY_POKEMON,
+	.boxSize = G10E_BOX_SIZE,
+	.boxHigh = G10E_BOX_HIGH_OFFSET,
+	.currentBox = G10E_CURRENT_BOX,
+	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
 static const Generation1::Offsets G13J = {
@@ -162,6 +242,11 @@ static const Generation1::Offsets G13J = {
 	.idMapping = G12J_ID_MAPPING,
 	.menuSpriteMapping = G12J_MENU_SPRITE_MAPPING,
 	.menuSpriteCommands = G12J_MENU_SPRITE_COMMANDS,
+	.partyPokemon = G10J_PARTY_POKEMON,
+	.boxSize = G10J_BOX_SIZE,
+	.boxHigh = G10J_BOX_HIGH_OFFSET,
+	.currentBox = G10J_CURRENT_BOX,
+	.currentBoxId = G10J_CURRENT_BOX_ID
 };
 
 const GameBoyGame::ChecksumMapping<Generation1::Offsets> Generation1::s_checksums[] = {
@@ -236,6 +321,10 @@ unsigned Generation1::numBoxes() const {
 Game::Edition Generation1::version() const {
 	uint16_t checksum = *(uint16_t*) &m_rom[0x14E];
 	return GameBoyGame::findVersion<Offsets>(Generation1::s_checksums, checksum)->version;
+}
+
+const Generation1::Offsets* Generation1::offsets() const {
+	return m_offsets;
 }
 
 const PokemonSpecies* Generation1::species(PokemonSpecies::Id id, PokemonSpecies::Forme) {
