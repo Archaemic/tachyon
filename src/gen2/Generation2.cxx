@@ -21,11 +21,9 @@ enum {
 	G20E_UNOWN_SPRITE_MAPPING_BASE = 0x07C000,
 	G21E_UNOWN_SPRITE_MAPPING_BASE = 0x124000,
 
-	G20J_MENU_SPRITE_MAPPING = 0x08E795,
 	G20E_MENU_SPRITE_MAPPING = 0x08E975,
 	G21E_MENU_SPRITE_MAPPING = 0x08EAC4,
 
-	G20J_MENU_SPRITES = 0x08E8DE,
 	G20E_MENU_SPRITES = 0x08EABE,
 	G21E_MENU_SPRITES = 0x08EC0D,
 
@@ -87,8 +85,23 @@ static const Generation2::Offsets G20J = {
 	.baseStats = G20J_BASE_STATS,
 	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
 	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
-	.menuSpriteMapping = G20J_MENU_SPRITE_MAPPING,
-	.menuSprites = G20J_MENU_SPRITES,
+	.menuSpriteMapping = 0x08E795,
+	.menuSprites = 0x08E8DE,
+	.palettes = G20J_PALETTES,
+	.partyPokemon = G20J_PARTY_POKEMON,
+	.boxSize = G20J_BOX_SIZE,
+	.boxHigh = G20J_BOX_HIGH_OFFSET,
+	.currentBoxId = G20J_CURRENT_BOX_ID,
+	.boxNames = G20J_BOX_NAMES,
+	.currentBox = G20J_CURRENT_BOX
+};
+
+static const Generation2::Offsets G20J1 = {
+	.baseStats = G20J_BASE_STATS,
+	.spriteMapping = G20E_SPRITE_MAPPING_BASE,
+	.unownSpriteMapping = G20E_UNOWN_SPRITE_MAPPING_BASE,
+	.menuSpriteMapping = 0x08E79A,
+	.menuSprites = 0x08E8E3,
 	.palettes = G20J_PALETTES,
 	.partyPokemon = G20J_PARTY_POKEMON,
 	.boxSize = G20J_BOX_SIZE,
@@ -130,7 +143,7 @@ static const Generation2::Offsets G21E = {
 
 const GameBoyGame::ChecksumMapping<Generation2::Offsets> Generation2::s_checksums[] = {
 	{ 0x708A, Game::G20_GOLD | Game::JAPANESE, &G20J },
-	{ 0x6084, Game::G20_GOLD | Game::JAPANESE, &G20J },
+	{ 0x6084, Game::G20_GOLD | Game::JAPANESE, &G20J1 },
 	{ 0x2D68, Game::G20_GOLD | Game::ENGLISH, &G20E },
 	{ 0, Game::INVALID, nullptr }
 };

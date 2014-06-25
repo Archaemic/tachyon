@@ -234,7 +234,7 @@ static const Generation1::Offsets G12S = {
 	.currentBoxId = G10E_CURRENT_BOX_ID
 };
 
-static const Generation1::Offsets G13J = {
+static const Generation1::Offsets G12J1 = {
 	.paletteMapping = 0x07265A,
 	.paletteBase = 0x0726F2,
 	.baseStats = G10E_BASE_STATS,
@@ -266,13 +266,13 @@ const GameBoyGame::ChecksumMapping<Generation1::Offsets> Generation1::s_checksum
 	{ 0x9C5E, Game::G10_BLUE | Game::ITALIAN, &G10I },
 	{ 0x36DC, Game::G11_BLUE | Game::JAPANESE, &G11J },
 	{ 0x299C, Game::G12_YELLOW | Game::JAPANESE, &G12J },
+	{ 0x5888, Game::G12_YELLOW | Game::JAPANESE, &G12J1 },
+	{ 0xD9ED, Game::G12_YELLOW | Game::JAPANESE, &G12J1 },
 	{ 0x7C04, Game::G12_YELLOW | Game::ENGLISH, &G12E },
 	{ 0xFB66, Game::G12_YELLOW | Game::GERMAN, &G12G },
 	{ 0xC1B7, Game::G12_YELLOW | Game::FRENCH, &G12F },
 	{ 0x3756, Game::G12_YELLOW | Game::SPANISH, &G12S },
 	{ 0x8F4E, Game::G12_YELLOW | Game::ITALIAN, &G12I },
-	{ 0x5888, Game::G13_YELLOW | Game::JAPANESE, &G13J },
-	{ 0xD9ED, Game::G13_YELLOW | Game::JAPANESE, &G13J },
 	{ 0, Game::INVALID, nullptr }
 };
 
