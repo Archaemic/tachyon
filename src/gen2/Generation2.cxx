@@ -122,6 +122,9 @@ Game::Edition Generation2::Loader::detect(const uint8_t* rom) const {
 }
 
 unsigned Generation2::numBoxes() const {
+	if ((version() & Game::MASK_LOCALIZATION) == Game::JAPANESE) {
+		return 9;
+	}
 	return 14;
 }
 
