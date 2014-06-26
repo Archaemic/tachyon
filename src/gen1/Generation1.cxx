@@ -6,11 +6,11 @@
 #include "gen1/G1SpriteDecompressor.h"
 
 enum {
-	G10_SUM_REGION_START = 0x2598,
-	G10_SUM_REGION_END = 0x3523,
+	G10X_SUM_REGION_START = 0x2598,
+	G10J_SUM_REGION_END = 0x3594,
+	G10X_SUM_REGION_END = 0x3523,
 
 	G10_TRAINER_NAME = 0x2598,
-	G10_CHECKSUM = 0x3523,
 
 	G10J_BASE_STATS = 0x038000,
 	G10X_BASE_STATS = 0x0383DE,
@@ -47,6 +47,8 @@ static const Generation1::Offsets G10J = {
 	.idMapping = 0x042799,
 	.menuSpriteMapping = 0x071DD1,
 	.menuSpriteCommands = 0x071C84,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10J_SUM_REGION_END,
 	.partyPokemon = G10J_PARTY_POKEMON,
 	.boxSize = G10J_BOX_SIZE,
 	.boxHigh = G10J_BOX_HIGH_OFFSET,
@@ -62,6 +64,8 @@ static const Generation1::Offsets G10E = {
 	.idMapping = 0x041023,
 	.menuSpriteMapping = 0x07190D,
 	.menuSpriteCommands = 0x0717C0,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10X_SUM_REGION_END,
 	.partyPokemon = G10X_PARTY_POKEMON,
 	.boxSize = G10X_BOX_SIZE,
 	.boxHigh = G10X_BOX_HIGH_OFFSET,
@@ -77,6 +81,8 @@ static const Generation1::Offsets G10F = {
 	.idMapping = 0x040FA9,
 	.menuSpriteMapping = 0x0718DE,
 	.menuSpriteCommands = 0x071791,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10X_SUM_REGION_END,
 	.partyPokemon = G10X_PARTY_POKEMON,
 	.boxSize = G10X_BOX_SIZE,
 	.boxHigh = G10X_BOX_HIGH_OFFSET,
@@ -92,6 +98,8 @@ static const Generation1::Offsets G10G = {
 	.idMapping = 0x040F95,
 	.menuSpriteMapping = 0x0718E7,
 	.menuSpriteCommands = 0x07179A,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10X_SUM_REGION_END,
 	.partyPokemon = G10X_PARTY_POKEMON,
 	.boxSize = G10X_BOX_SIZE,
 	.boxHigh = G10X_BOX_HIGH_OFFSET,
@@ -107,6 +115,8 @@ static const Generation1::Offsets G10I = {
 	.idMapping = 0x040FB5,
 	.menuSpriteMapping = 0x07194D,
 	.menuSpriteCommands = 0x071800,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10X_SUM_REGION_END,
 	.partyPokemon = G10X_PARTY_POKEMON,
 	.boxSize = G10X_BOX_SIZE,
 	.boxHigh = G10X_BOX_HIGH_OFFSET,
@@ -122,6 +132,8 @@ static const Generation1::Offsets G10S = {
 	.idMapping = 0x040FB3,
 	.menuSpriteMapping = 0x0718FD,
 	.menuSpriteCommands = 0x0717B0,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10X_SUM_REGION_END,
 	.partyPokemon = G10X_PARTY_POKEMON,
 	.boxSize = G10X_BOX_SIZE,
 	.boxHigh = G10X_BOX_HIGH_OFFSET,
@@ -137,6 +149,8 @@ static const Generation1::Offsets G11J = {
 	.idMapping = 0x042783,
 	.menuSpriteMapping = 0x071DC1,
 	.menuSpriteCommands = 0x071C74,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10J_SUM_REGION_END,
 	.partyPokemon = G10J_PARTY_POKEMON,
 	.boxSize = G10J_BOX_SIZE,
 	.boxHigh = G10J_BOX_HIGH_OFFSET,
@@ -152,6 +166,8 @@ static const Generation1::Offsets G12J = {
 	.idMapping = G12J_ID_MAPPING,
 	.menuSpriteMapping = G12J_MENU_SPRITE_MAPPING,
 	.menuSpriteCommands = G12J_MENU_SPRITE_COMMANDS,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10J_SUM_REGION_END,
 	.partyPokemon = G10J_PARTY_POKEMON,
 	.boxSize = G10J_BOX_SIZE,
 	.boxHigh = G10J_BOX_HIGH_OFFSET,
@@ -167,6 +183,8 @@ static const Generation1::Offsets G12E = {
 	.idMapping = 0x0410B0,
 	.menuSpriteMapping = 0x0719BA,
 	.menuSpriteCommands = 0x07184E,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10X_SUM_REGION_END,
 	.partyPokemon = G10X_PARTY_POKEMON,
 	.boxSize = G10X_BOX_SIZE,
 	.boxHigh = G10X_BOX_HIGH_OFFSET,
@@ -182,6 +200,8 @@ static const Generation1::Offsets G12F = {
 	.idMapping = 0x041035,
 	.menuSpriteMapping = 0x07198B,
 	.menuSpriteCommands = 0x07181E,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10X_SUM_REGION_END,
 	.partyPokemon = G10X_PARTY_POKEMON,
 	.boxSize = G10X_BOX_SIZE,
 	.boxHigh = G10X_BOX_HIGH_OFFSET,
@@ -197,6 +217,8 @@ static const Generation1::Offsets G12G = {
 	.idMapping = 0x041022,
 	.menuSpriteMapping = 0x071999,
 	.menuSpriteCommands = 0x07182C,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10X_SUM_REGION_END,
 	.partyPokemon = G10X_PARTY_POKEMON,
 	.boxSize = G10X_BOX_SIZE,
 	.boxHigh = G10X_BOX_HIGH_OFFSET,
@@ -212,6 +234,8 @@ static const Generation1::Offsets G12I = {
 	.idMapping = 0x041042,
 	.menuSpriteMapping = 0x0719FA,
 	.menuSpriteCommands = 0x07188E,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10X_SUM_REGION_END,
 	.partyPokemon = G10X_PARTY_POKEMON,
 	.boxSize = G10X_BOX_SIZE,
 	.boxHigh = G10X_BOX_HIGH_OFFSET,
@@ -227,6 +251,8 @@ static const Generation1::Offsets G12S = {
 	.idMapping = 0x041040,
 	.menuSpriteMapping = 0x0719AA,
 	.menuSpriteCommands = 0x07183D,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10X_SUM_REGION_END,
 	.partyPokemon = G10X_PARTY_POKEMON,
 	.boxSize = G10X_BOX_SIZE,
 	.boxHigh = G10X_BOX_HIGH_OFFSET,
@@ -240,6 +266,8 @@ static const Generation1::Offsets G12J1 = {
 	.baseStats = G10X_BASE_STATS,
 	.mewStats = G10X_MEW_STATS,
 	.idMapping = G12J_ID_MAPPING,
+	.checksumStart = G10X_SUM_REGION_START,
+	.checksumEnd = G10J_SUM_REGION_END,
 	.menuSpriteMapping = G12J_MENU_SPRITE_MAPPING,
 	.menuSpriteCommands = G12J_MENU_SPRITE_COMMANDS,
 	.partyPokemon = G10J_PARTY_POKEMON,
@@ -346,12 +374,20 @@ const PokemonSpecies* Generation1::species(PokemonSpecies::Id id, PokemonSpecies
 }
 
 void Generation1::finalize() {
+	ram()[m_offsets->checksumEnd] = checksum();
+}
+
+bool Generation1::testChecksum() const {
+	return ram()[m_offsets->checksumEnd] == checksum();
+}
+
+uint8_t Generation1::checksum() const {
 	uint8_t checksum = 0xFF;
-	uint8_t* memory = ram();
-	for (unsigned i = G10_SUM_REGION_START; i < G10_SUM_REGION_END; ++i) {
+	const uint8_t* memory = ram();
+	for (unsigned i = m_offsets->checksumStart; i < m_offsets->checksumEnd; ++i) {
 		checksum -= memory[i];
 	}
-	memory[G10_CHECKSUM] = checksum;
+	return checksum;
 }
 
 PokemonSpecies::Id Generation1::mapId(unsigned id) const {

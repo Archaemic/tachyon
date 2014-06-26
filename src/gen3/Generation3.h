@@ -49,8 +49,10 @@ public:
 	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 
 	virtual void finalize() override;
+	virtual bool testChecksum() const override;
 
 	Section* section(Section::ID sectionID);
+	const Section* section(Section::ID sectionID) const;
 
 	static void registerLoader();
 
@@ -71,6 +73,7 @@ private:
 	uint32_t m_version;
 
 	void loadSprites(PokemonSpecies* species) const;
+	uint16_t checksum(Section::ID) const;
 
 	static Edition version(const struct NameMapping* names, uint32_t name);
 	virtual void stringToGameText(uint8_t* gameText, size_t len, const std::string&) const override;

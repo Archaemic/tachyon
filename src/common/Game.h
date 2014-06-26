@@ -74,7 +74,9 @@ public:
 
 	virtual Edition version() const = 0;
 	uint8_t* ram() { return m_memory; }
+	const uint8_t* ram() const { return m_memory; }
 	virtual void finalize() = 0;
+	virtual bool testChecksum() const = 0;
 
 	virtual PokemonSpecies::Id mapId(unsigned id) const { return static_cast<PokemonSpecies::Id>(id); }
 

@@ -20,6 +20,8 @@ public:
 		unsigned menuSpriteMapping;
 		unsigned menuSprites;
 		unsigned palettes;
+		unsigned checksum1;
+		unsigned checksum2;
 		unsigned partyPokemon;
 		unsigned boxSize;
 		unsigned boxHigh;
@@ -39,6 +41,7 @@ public:
 	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 
 	virtual void finalize() override;
+	virtual bool testChecksum() const override;
 
 	static void registerLoader();
 
@@ -46,6 +49,7 @@ public:
 
 private:
 	void loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*) const;
+	uint16_t checksum() const;
 
 	const static ChecksumMapping<Offsets> s_checksums[];
 	const Offsets* m_offsets;

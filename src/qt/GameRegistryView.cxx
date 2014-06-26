@@ -6,6 +6,7 @@
 
 #include <QFileDialog>
 #include <QHBoxLayout>
+#include <QMessageBox>
 
 GameRegistryView::GameRegistryView(QWidget* parent)
 	: QWidget(parent)
@@ -35,6 +36,11 @@ void GameRegistryView::openSavegame(const QModelIndex& index) {
 	PokemonSelector* selector = new PokemonSelector;
 	selector->setAttribute(Qt::WA_DeleteOnClose);
 	Cartridge* cart = new Cartridge(info.rom, sramPath, selector);
+	if (!cart->game()->testChecksum()) {
+		QMessageBox::critical(this, tr("Bad checksum"), tr("Could not open game, as it has a bad checksum and may be corrupted"));
+		delete selector;
+		return;
+	}
 	selector->load(cart);
 	selector->show();
 }

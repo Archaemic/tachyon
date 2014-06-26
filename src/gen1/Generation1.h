@@ -20,6 +20,8 @@ public:
 		unsigned idMapping;
 		unsigned menuSpriteMapping;
 		unsigned menuSpriteCommands;
+		unsigned checksumStart;
+		unsigned checksumEnd;
 		unsigned partyPokemon;
 		unsigned boxSize;
 		unsigned boxHigh;
@@ -39,6 +41,7 @@ public:
 	virtual const PokemonSpecies* species(PokemonSpecies::Id, PokemonSpecies::Forme = PokemonSpecies::FORME_NORMAL) override;
 
 	virtual void finalize() override;
+	virtual bool testChecksum() const override;
 
 	virtual PokemonSpecies::Id mapId(unsigned id) const override;
 
@@ -48,6 +51,7 @@ private:
 	void loadSprites(PokemonSpecies* species, const G1PokemonBaseStats* data) const;
 	void prepareSprites();
 	static uint8_t mirrorByte(uint8_t byte);
+	uint8_t checksum() const;
 
 	const static ChecksumMapping<Offsets> s_checksums[];
 

@@ -6,8 +6,10 @@
 
 enum {
 	G20_TRAINER_NAME = 0x200B,
-	G20_CHECKSUM_1 = 0x2D69,
-	G20_CHECKSUM_2 = 0x7E6D,
+	G20J_CHECKSUM_1 = 0x2D0D,
+	G20X_CHECKSUM_1 = 0x2D69,
+	G20J_CHECKSUM_2 = 0x7F0D,
+	G20X_CHECKSUM_2 = 0x7E6D,
 	G21_CHECKSUM_1 = 0x2D0D,
 	G21_CHECKSUM_2 = 0x1F0D,
 
@@ -89,6 +91,8 @@ static const Generation2::Offsets G20J = {
 	.menuSpriteMapping = 0x08E795,
 	.menuSprites = 0x08E8DE,
 	.palettes = G20J_PALETTES,
+	.checksum1 = G20J_CHECKSUM_1,
+	.checksum2 = G20J_CHECKSUM_2,
 	.partyPokemon = G20J_PARTY_POKEMON,
 	.boxSize = G20J_BOX_SIZE,
 	.boxHigh = G20J_BOX_HIGH_OFFSET,
@@ -104,6 +108,8 @@ static const Generation2::Offsets G20J1 = {
 	.menuSpriteMapping = 0x08E79A,
 	.menuSprites = 0x08E8E3,
 	.palettes = G20J_PALETTES,
+	.checksum1 = G20J_CHECKSUM_1,
+	.checksum2 = G20J_CHECKSUM_2,
 	.partyPokemon = G20J_PARTY_POKEMON,
 	.boxSize = G20J_BOX_SIZE,
 	.boxHigh = G20J_BOX_HIGH_OFFSET,
@@ -119,6 +125,8 @@ static const Generation2::Offsets G20E = {
 	.menuSpriteMapping = 0x08E975,
 	.menuSprites = 0x08EABE,
 	.palettes = G20X_PALETTES,
+	.checksum1 = G20X_CHECKSUM_1,
+	.checksum2 = G20X_CHECKSUM_2,
 	.partyPokemon = G20X_PARTY_POKEMON,
 	.boxSize = G20X_BOX_SIZE,
 	.boxHigh = G20X_BOX_HIGH_OFFSET,
@@ -134,6 +142,8 @@ static const Generation2::Offsets G20G = {
 	.menuSpriteMapping = G20GF_MENU_SPRITE_MAPPING,
 	.menuSprites = G20GF_MENU_SPRITES,
 	.palettes = G20X_PALETTES,
+	.checksum1 = G20X_CHECKSUM_1,
+	.checksum2 = G20X_CHECKSUM_2,
 	.partyPokemon = G20X_PARTY_POKEMON,
 	.boxSize = G20X_BOX_SIZE,
 	.boxHigh = G20X_BOX_HIGH_OFFSET,
@@ -149,6 +159,8 @@ static const Generation2::Offsets G20F = {
 	.menuSpriteMapping = G20GF_MENU_SPRITE_MAPPING,
 	.menuSprites = G20GF_MENU_SPRITES,
 	.palettes = G20X_PALETTES,
+	.checksum1 = G20X_CHECKSUM_1,
+	.checksum2 = G20X_CHECKSUM_2,
 	.partyPokemon = G20X_PARTY_POKEMON,
 	.boxSize = G20X_BOX_SIZE,
 	.boxHigh = G20X_BOX_HIGH_OFFSET,
@@ -164,6 +176,8 @@ static const Generation2::Offsets G20S = {
 	.menuSpriteMapping = 0x08E973,
 	.menuSprites = G20SI_MENU_SPRITES,
 	.palettes = G20X_PALETTES,
+	.checksum1 = G20X_CHECKSUM_1,
+	.checksum2 = G20X_CHECKSUM_2,
 	.partyPokemon = G20X_PARTY_POKEMON,
 	.boxSize = G20X_BOX_SIZE,
 	.boxHigh = G20X_BOX_HIGH_OFFSET,
@@ -179,6 +193,8 @@ static const Generation2::Offsets G20I = {
 	.menuSpriteMapping = 0x08E973,
 	.menuSprites = G20SI_MENU_SPRITES,
 	.palettes = G20X_PALETTES,
+	.checksum1 = G20X_CHECKSUM_1,
+	.checksum2 = G20X_CHECKSUM_2,
 	.partyPokemon = G20X_PARTY_POKEMON,
 	.boxSize = G20X_BOX_SIZE,
 	.boxHigh = G20X_BOX_HIGH_OFFSET,
@@ -194,6 +210,8 @@ static const Generation2::Offsets G21E = {
 	.menuSpriteMapping = G21E_MENU_SPRITE_MAPPING,
 	.menuSprites = G21E_MENU_SPRITES,
 	.palettes = G21E_PALETTES,
+	.checksum1 = G21_CHECKSUM_1,
+	.checksum2 = G21_CHECKSUM_2,
 	.partyPokemon = G21E_PARTY_POKEMON,
 	.boxSize = G20X_BOX_SIZE,
 	.boxHigh = G20X_BOX_HIGH_OFFSET,
@@ -275,35 +293,66 @@ const PokemonSpecies* Generation2::species(PokemonSpecies::Id id, PokemonSpecies
 }
 
 void Generation2::finalize() {
-	uint16_t checksum = 0;
+	uint16_t sum = checksum();
 	uint8_t* memory = ram();
+	switch (version() & Game::MASK_GAME) {
+	case Game::G20_GOLD:
+	case Game::G20_SILVER:
+	default:
+		*reinterpret_cast<uint16_t*>(&memory[m_offsets->checksum1]) = sum;
+		*reinterpret_cast<uint16_t*>(&memory[m_offsets->checksum2]) = sum;
+		for (unsigned i = 0; i < 5; ++i) {
+			unsigned start = checksumRegionsG20E[0][i].start;
+			unsigned newStart = checksumRegionsG20E[1][i].start;
+			unsigned end = checksumRegionsG20E[0][i].end;
+			memmove(&memory[newStart], &memory[start], end - start);
+		}
+		break;
+	case Game::G21_CRYSTAL:
+		*reinterpret_cast<uint16_t*>(&memory[m_offsets->checksum1]) = sum;
+		*reinterpret_cast<uint16_t*>(&memory[m_offsets->checksum2]) = sum;
+		unsigned start = checksumRegionsG21E[0].start;
+		unsigned newStart = checksumRegionsG21E[1].start;
+		unsigned end = checksumRegionsG21E[0].end;
+		memmove(&memory[newStart], &memory[start], end - start);
+		break;
+	}
+}
+
+bool Generation2::testChecksum() const {
+	uint16_t sum = checksum();
+	const uint8_t* memory = ram();
+	if (*reinterpret_cast<const uint16_t*>(&memory[m_offsets->checksum1]) == sum) {
+		return true;
+	}
+	if (*reinterpret_cast<const uint16_t*>(&memory[m_offsets->checksum2]) == sum) {
+		return true;
+	}
+	return false;
+}
+
+uint16_t Generation2::checksum() const {
+	uint16_t checksum = 0;
+	const uint8_t* memory = ram();
 	switch (version() & Game::MASK_GAME) {
 	case Game::G20_GOLD:
 	case Game::G20_SILVER:
 	default:
 		for (unsigned i = 0; i < 5; ++i) {
 			unsigned start = checksumRegionsG20E[0][i].start;
-			unsigned newStart = checksumRegionsG20E[1][i].start;
 			unsigned end = checksumRegionsG20E[0][i].end;
 			for (unsigned offset = 0; offset < end - start; ++offset) {
 				checksum += memory[start + offset];
-				memory[newStart + offset] = memory[start + offset];
 			}
 		}
-		*reinterpret_cast<uint16_t*>(&memory[G20_CHECKSUM_1]) = checksum;
-		*reinterpret_cast<uint16_t*>(&memory[G20_CHECKSUM_2]) = checksum;
-		break;
+		return checksum;
 	case Game::G21_CRYSTAL:
 		unsigned start = checksumRegionsG21E[0].start;
-		unsigned newStart = checksumRegionsG21E[1].start;
 		unsigned end = checksumRegionsG21E[0].end;
 		for (unsigned offset = 0; offset < end - start; ++offset) {
 			checksum += memory[start + offset];
-			memory[newStart + offset] = memory[start + offset];
 		}
-		*reinterpret_cast<uint16_t*>(&memory[G21_CHECKSUM_1]) = checksum;
-		*reinterpret_cast<uint16_t*>(&memory[G21_CHECKSUM_2]) = checksum;
-		break;
+		return checksum;
 	}
 }
 

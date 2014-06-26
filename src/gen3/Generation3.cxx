@@ -670,6 +670,13 @@ Generation3::Section* Generation3::section(Section::ID sectionID) {
 	return m_sections[sectionID];
 }
 
+const Generation3::Section* Generation3::section(Section::ID sectionID) const {
+	if (sectionID >= Section::MAX_SECTIONS) {
+		return nullptr;
+	}
+	return m_sections[sectionID];
+}
+
 void Generation3::finalize() {
 	unsigned remaining = sizeof(G3BasePokemonData) * G3_BOXES * G3_POKEMON_PER_BOX;
 	uint8_t* boxData = reinterpret_cast<uint8_t*>(m_boxes.get());
@@ -686,14 +693,29 @@ void Generation3::finalize() {
 	}
 
 	for (int sid = 0; sid < Section::MAX_SECTIONS; ++sid) {
-		uint32_t checksum = 0;
 		Section* s = section(static_cast<Section::ID>(sid));
-		uint32_t* memory = reinterpret_cast<uint32_t*>(s->data);
-		for (unsigned offset = 0; offset < sizeof(s->data) / sizeof(uint32_t); ++offset) {
-			checksum += memory[offset];
-		}
-		s->checksum = checksum + (checksum >> 16);
+		s->checksum = checksum(static_cast<Section::ID>(sid));
 	}
+}
+
+bool Generation3::testChecksum() const {
+	for (int sid = 0; sid < Section::MAX_SECTIONS; ++sid) {
+		const Section* s = section(static_cast<Section::ID>(sid));
+		if (s->checksum != checksum(static_cast<Section::ID>(sid))) {
+			return false;
+		}
+	}
+	return true;
+}
+
+uint16_t Generation3::checksum(Section::ID sid) const {
+	uint32_t checksum = 0;
+	const Section* s = section(sid);
+	const uint32_t* memory = reinterpret_cast<const uint32_t*>(s->data);
+	for (unsigned offset = 0; offset < sizeof(s->data) / sizeof(uint32_t); ++offset) {
+		checksum += memory[offset];
+	}
+	return checksum + (checksum >> 16);
 }
 
 void Generation3::loadSprites(PokemonSpecies* species) const {
