@@ -14,14 +14,24 @@ public:
 	};
 
 	struct Offsets {
+		struct Range {
+			unsigned start;
+			unsigned end;
+		};
+
+		struct ChecksumRegion {
+			unsigned offset;
+			Range regions[5];
+		};
+
 		unsigned baseStats;
 		unsigned spriteMapping;
 		unsigned unownSpriteMapping;
 		unsigned menuSpriteMapping;
 		unsigned menuSprites;
 		unsigned palettes;
-		unsigned checksum1;
-		unsigned checksum2;
+		unsigned checksumRegionsCount;
+		ChecksumRegion checksumRegions[2];
 		unsigned partyPokemon;
 		unsigned boxSize;
 		unsigned boxHigh;
