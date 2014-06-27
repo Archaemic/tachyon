@@ -57,6 +57,8 @@ private:
 
 	uint8_t* m_spriteMemory;
 	const Offsets* m_offsets;
+	std::shared_ptr<const Palette> m_menuPalette;
+	std::vector<std::shared_ptr<const Palette>> m_palettes;
 
 	class Loader : public Game::Loader {
 	public:

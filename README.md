@@ -75,7 +75,6 @@ Phases 1 - 3 are currently in heavy development, and as a result many things are
 - Make types a bit more consistent (e.g., unsigned vs. size_t)
 - Run checksums while loading to make sure the save game is correct
 - Big-endian platforms are not currently supported, although it's questionable if this matters
-- shared_ptr palettes would be probably be useful
 
 Credits and Links
 -----------------

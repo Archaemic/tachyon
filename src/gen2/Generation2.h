@@ -53,6 +53,7 @@ private:
 
 	const static ChecksumMapping<Offsets> s_checksums[];
 	const Offsets* m_offsets;
+	std::shared_ptr<const Palette> m_menuPalette;
 
 	class Loader : public Game::Loader {
 	public:

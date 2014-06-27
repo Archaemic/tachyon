@@ -1,7 +1,10 @@
 #ifndef PTXN_SPRITE_H
 #define PTXN_SPRITE_H
 
+#include "Palette.h"
+
 #include <cstdint>
+#include <memory>
 
 class Sprite {
 public:
@@ -11,20 +14,20 @@ public:
 	};
 
 	Sprite(unsigned width, unsigned height, uint8_t* pixelData, Format format);
-	Sprite(unsigned width, unsigned height, uint8_t* pixelData, uint16_t* palette, Format format);
+	Sprite(unsigned width, unsigned height, uint8_t* pixelData, std::shared_ptr<const Palette>, Format format);
 	virtual ~Sprite();
 
 	unsigned width() const;
 	unsigned height() const;
 	const uint8_t* pixelData() const;
-	const uint16_t* palette() const;
+	std::shared_ptr<const Palette> palette() const;
 	Format format() const;
 
 private:
 	unsigned m_width;
 	unsigned m_height;
 	uint8_t* m_pixelData;
-	uint16_t* m_palette;
+	std::shared_ptr<const Palette> m_palette;
 	Format m_format;
 };
 

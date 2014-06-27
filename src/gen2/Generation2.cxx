@@ -241,6 +241,13 @@ Generation2::Generation2(uint8_t* memory, const uint8_t* rom)
 	for (unsigned box = 0; box < numBoxes(); ++box) {
 		addBox(new G2Box(this, box));
 	}
+
+	uint16_t menuPaletteData[4];
+	menuPaletteData[0] = 0x6FFB;
+	menuPaletteData[1] = 0x2A7F;
+	menuPaletteData[2] = 0x10FF;
+	menuPaletteData[3] = 0x0000;
+	m_menuPalette = std::make_shared<const Palette>(menuPaletteData, 4);
 }
 
 void Generation2::registerLoader() {
@@ -373,12 +380,12 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 		uint16_t backPointer;
 	} __attribute__((packed))* mapping;
 
-	const struct Palette {
+	const struct PaletteInfo {
 		uint16_t colorA;
 		uint16_t colorB;
 		uint16_t shinyColorA;
 		uint16_t shinyColorB;
-	} __attribute__((packed))* palette;
+	} __attribute__((packed))* paletteMemory;
 
 	const uint8_t* menuSpritePointer = nullptr;
 	if (species->id() != PokemonSpecies::UNOWN) {
@@ -386,7 +393,7 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 	} else {
 		mapping = &reinterpret_cast<const Mapping*>(&rom()[m_offsets->unownSpriteMapping])[species->forme()];
 	}
-	palette = &reinterpret_cast<const Palette*>(&rom()[m_offsets->palettes])[species->id() - 1];
+	paletteMemory = &reinterpret_cast<const PaletteInfo*>(&rom()[m_offsets->palettes])[species->id() - 1];
 	menuSpritePointer = &rom()[m_offsets->menuSpriteMapping];
 	menuSpritePointer = &rom()[m_offsets->menuSprites + (menuSpritePointer[species->id() - 1] - 1) * 0x80];
 
@@ -421,42 +428,25 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 	unsigned backAddress = mapping->backPointer;
 	backAddress = backBank * 0x4000 + (backAddress & 0x3FFF);
 
-	uint8_t* rawSpriteData = new uint8_t[size * size * 16];
+	uint8_t rawSpriteData[size * size * 16];
 	uint8_t* spriteData = new uint8_t[size * size * 16];
-	uint8_t* rawBackSpriteData = new uint8_t[6 * 6 * 16];
+	uint8_t rawBackSpriteData[6 * 6 * 16];
 	uint8_t* backSpriteData = new uint8_t[6 * 6 * 16];
 	uint8_t* menuSpriteData = new uint8_t[2 * 2 * 16];
-	uint16_t* paletteData = new uint16_t[16];
-	uint16_t* shinyPaletteData = new uint16_t[16];
-	uint16_t* backPaletteData = new uint16_t[16];
-	uint16_t* shinyBackPaletteData = new uint16_t[16];
-	uint16_t* menuPaletteData = new uint16_t[16];
-	uint16_t* shinyMenuPaletteData = new uint16_t[16];
+	uint16_t paletteData[4];
+	uint16_t shinyPaletteData[4];
 
 	paletteData[0] = 0x7FFF;
-	paletteData[1] = palette->colorA;
-	paletteData[2] = palette->colorB;
+	paletteData[1] = paletteMemory->colorA;
+	paletteData[2] = paletteMemory->colorB;
 	paletteData[3] = 0x0000;
 	shinyPaletteData[0] = 0x7FFF;
-	shinyPaletteData[1] = palette->shinyColorA;
-	shinyPaletteData[2] = palette->shinyColorB;
+	shinyPaletteData[1] = paletteMemory->shinyColorA;
+	shinyPaletteData[2] = paletteMemory->shinyColorB;
 	shinyPaletteData[3] = 0x0000;
-	backPaletteData[0] = 0x7FFF;
-	backPaletteData[1] = palette->colorA;
-	backPaletteData[2] = palette->colorB;
-	backPaletteData[3] = 0x0000;
-	shinyBackPaletteData[0] = 0x7FFF;
-	shinyBackPaletteData[1] = palette->shinyColorA;
-	shinyBackPaletteData[2] = palette->shinyColorB;
-	shinyBackPaletteData[3] = 0x0000;
-	menuPaletteData[0] = 0x6FFB;
-	menuPaletteData[1] = 0x2A7F;
-	menuPaletteData[2] = 0x10FF;
-	menuPaletteData[3] = 0x0000;
-	shinyMenuPaletteData[0] = 0x6FFB;
-	shinyMenuPaletteData[1] = 0x2A7F;
-	shinyMenuPaletteData[2] = 0x10FF;
-	shinyMenuPaletteData[3] = 0x0000;
+
+	std::shared_ptr<const Palette> palette = std::make_shared<const Palette>(paletteData, 4);
+	std::shared_ptr<const Palette> shinyPalette = std::make_shared<const Palette>(shinyPaletteData, 4);
 
 	const uint8_t* spritePointer = &rom()[frontAddress & (SIZE_ROM - 1)];
 	const uint8_t* backSpritePointer = &rom()[backAddress & (SIZE_ROM - 1)];
@@ -466,22 +456,19 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 	arrangeTilesTransposed(rawSpriteData, spriteData, size, size);
 	arrangeTilesTransposed(rawBackSpriteData, backSpriteData, 6, 6);
 
-	delete [] rawSpriteData;
-	delete [] rawBackSpriteData;
-
-	MultipaletteSprite* sprite = new MultipaletteSprite(size * 8, size * 8, spriteData, paletteData, Sprite::GB_2);
-	sprite->addPalette(shinyPaletteData);
+	MultipaletteSprite* sprite = new MultipaletteSprite(size * 8, size * 8, spriteData, palette, Sprite::GB_2);
+	sprite->addPalette(shinyPalette);
 	species->setFrontSprite(sprite);
 
-	sprite = new MultipaletteSprite(6 * 8, 6 * 8, backSpriteData, backPaletteData, Sprite::GB_2);
-	sprite->addPalette(shinyBackPaletteData);
+	sprite = new MultipaletteSprite(6 * 8, 6 * 8, backSpriteData, palette, Sprite::GB_2);
+	sprite->addPalette(shinyPalette);
 	species->setBackSprite(sprite);
 
 	if (menuSpritePointer) {
 		arrangeTiles(menuSpritePointer, menuSpriteData, 2, 2);
 
-		sprite = new MultipaletteSprite(16, 16, menuSpriteData, menuPaletteData, Sprite::GB_2);
-		sprite->addPalette(shinyMenuPaletteData);
+		sprite = new MultipaletteSprite(16, 16, menuSpriteData, m_menuPalette, Sprite::GB_2);
+		sprite->addPalette(m_menuPalette);
 		species->setMenuSprite(sprite);
 	}
 }

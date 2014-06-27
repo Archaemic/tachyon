@@ -9,7 +9,7 @@ Sprite::Sprite(unsigned width, unsigned height, uint8_t* pixelData, Format forma
 {
 }
 
-Sprite::Sprite(unsigned width, unsigned height, uint8_t* pixelData, uint16_t* palette, Format format)
+Sprite::Sprite(unsigned width, unsigned height, uint8_t* pixelData, std::shared_ptr<const Palette> palette, Format format)
 	: m_width(width)
 	, m_height(height)
 	, m_pixelData(pixelData)
@@ -20,7 +20,6 @@ Sprite::Sprite(unsigned width, unsigned height, uint8_t* pixelData, uint16_t* pa
 
 Sprite::~Sprite() {
 	delete [] m_pixelData;
-	delete [] m_palette;
 }
 
 unsigned Sprite::width() const {
@@ -35,7 +34,7 @@ const uint8_t* Sprite::pixelData() const {
 	return m_pixelData;
 }
 
-const uint16_t* Sprite::palette() const {
+std::shared_ptr<const Palette> Sprite::palette() const {
 	return m_palette;
 }
 

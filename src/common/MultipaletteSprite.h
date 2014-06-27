@@ -7,15 +7,14 @@
 
 class MultipaletteSprite : public Sprite {
 public:
-	MultipaletteSprite(unsigned width, unsigned height, uint8_t* pixelData, uint16_t* palette, Format format);
-	virtual ~MultipaletteSprite();
+	MultipaletteSprite(unsigned width, unsigned height, uint8_t* pixelData, std::shared_ptr<const Palette> palette, Format format);
 
-	void addPalette(uint16_t* palette);
+	void addPalette(std::shared_ptr<const Palette> palette);
 	unsigned numPalettes() const;
-	const uint16_t* paletteById(unsigned id) const;
+	std::shared_ptr<const Palette> paletteById(unsigned id) const;
 
 private:
-	std::vector<uint16_t*> m_additionalPalettes;
+	std::vector<std::shared_ptr<const Palette>> m_additionalPalettes;
 };
 
 #endif

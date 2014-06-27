@@ -5,10 +5,9 @@
 QImage spriteToQImage(const MultipaletteSprite& sprite, unsigned paletteId) {
 	QImage image(QSize(sprite.width(), sprite.height()), QImage::Format_Indexed8);
 	image.setColor(0, qRgba(0, 0, 0, 0));
-	const uint16_t* palette;
-	palette = sprite.paletteById(paletteId);
-	for (unsigned p = 1; p < 16; ++p) {
-		uint16_t paletteEntry = palette[p];
+	std::shared_ptr<const Palette> palette = sprite.paletteById(paletteId);
+	for (size_t p = 1; p < palette->size(); ++p) {
+		uint16_t paletteEntry = (*palette)[p];
 		image.setColor(p, qRgb((paletteEntry & 0x1F) << 3, (paletteEntry >> 2) & 0xF8, (paletteEntry >> 7) & 0xF8));
 	}
 

@@ -406,10 +406,6 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 
 	const uint8_t* menuIdMapping = reinterpret_cast<const uint8_t*>(&rom()[m_offsets->menuSpriteMapping]);
 
-	const struct Palette {
-		uint16_t color[4];
-	} __attribute__((packed))* palette = &reinterpret_cast<const Palette*>(&rom()[m_offsets->paletteBase])[mapping];
-
 	int gameId;
 	for (gameId = 0; gameId < 256; ++gameId) {
 		if (idMapping[gameId] == species->id()) {
@@ -435,27 +431,13 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 		bank = 0x0D;
 	}
 
-	uint8_t* rawSpriteData = new uint8_t[width * height * 16];
+	uint8_t rawSpriteData[width * height * 16];
 	uint8_t* spriteData = new uint8_t[width * height * 16];
 	uint8_t* menuSpriteData = new uint8_t[16 * 4];
-	uint8_t* rawBackSpriteData = new uint8_t[256];
+	uint8_t rawBackSpriteData[256];
 	uint8_t* backSpriteData = new uint8_t[256];
-	uint16_t* paletteData = new uint16_t[16];
-	uint16_t* backPaletteData = new uint16_t[16];
-	uint16_t* menuPaletteData = new uint16_t[16];
 
-	paletteData[0] = palette->color[0];
-	paletteData[1] = palette->color[1];
-	paletteData[2] = palette->color[2];
-	paletteData[3] = palette->color[3];
-	backPaletteData[0] = palette->color[0];
-	backPaletteData[1] = palette->color[1];
-	backPaletteData[2] = palette->color[2];
-	backPaletteData[3] = palette->color[3];
-	menuPaletteData[0] = palette[0x10 - mapping].color[0];
-	menuPaletteData[1] = palette[0x10 - mapping].color[0];
-	menuPaletteData[2] = palette[0x10 - mapping].color[1];
-	menuPaletteData[3] = palette[0x10 - mapping].color[3];
+	std::shared_ptr<const Palette> palette = m_palettes[mapping - 0x10];
 
 	unsigned frontAddress = data->frontSprite;
 	frontAddress = bank * 0x4000 + (frontAddress & 0x3FFF);
@@ -484,16 +466,13 @@ void Generation1::loadSprites(PokemonSpecies* species, const G1PokemonBaseStats*
 	arrangeTilesTransposed(rawBackSpriteData, backSpriteData, 4, 4);
 	arrangeTiles(menuSpritePointer, menuSpriteData, 2, 2);
 
-	delete [] rawSpriteData;
-	delete [] rawBackSpriteData;
-
-	MultipaletteSprite* sprite = new MultipaletteSprite(width * 8, height * 8, spriteData, paletteData, Sprite::GB_2);
+	MultipaletteSprite* sprite = new MultipaletteSprite(width * 8, height * 8, spriteData, palette, Sprite::GB_2);
 	species->setFrontSprite(sprite);
 
-	sprite = new MultipaletteSprite(32, 32, backSpriteData, backPaletteData, Sprite::GB_2);
+	sprite = new MultipaletteSprite(32, 32, backSpriteData, palette, Sprite::GB_2);
 	species->setBackSprite(sprite);
 
-	sprite = new MultipaletteSprite(16, 16, menuSpriteData, menuPaletteData, Sprite::GB_2);
+	sprite = new MultipaletteSprite(16, 16, menuSpriteData, m_menuPalette, Sprite::GB_2);
 	species->setMenuSprite(sprite);
 }
 
@@ -528,6 +507,17 @@ void Generation1::prepareSprites() {
 			m_spriteMemory[0x400 + 0x40 * i + 0x10 + byte] = mirrorByte(m_spriteMemory[0x400 + 0x40 * i + byte]);
 			m_spriteMemory[0x400 + 0x40 * i + 0x30 + byte] = mirrorByte(m_spriteMemory[0x400 + 0x40 * i + 0x20 + byte]);
 		}
+	}
+
+	const struct GBPalette {
+		uint16_t color[4];
+	} __attribute__((packed))* palette = reinterpret_cast<const GBPalette*>(&rom()[m_offsets->paletteBase]);
+
+	m_menuPalette = std::make_shared<const Palette>(palette->color, 4);
+
+	m_palettes.clear();
+	for (unsigned i = 0x10; i < 0x1A; ++i) {
+		m_palettes.push_back(std::make_shared<const Palette>(palette[i].color, 4));
 	}
 }
 
