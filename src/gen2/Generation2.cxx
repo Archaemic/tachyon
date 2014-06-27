@@ -245,6 +245,13 @@ const GameBoyGame::ChecksumMapping<Generation2::Offsets> Generation2::s_checksum
 	{ 0xC66F, Game::G20_GOLD | Game::FRENCH, &G20F },
 	{ 0x5393, Game::G20_GOLD | Game::SPANISH, &G20S },
 	{ 0x0CCE, Game::G20_GOLD | Game::ITALIAN, &G20I },
+	{ 0x9176, Game::G20_SILVER | Game::JAPANESE, &G20J },
+	{ 0x341D, Game::G20_SILVER | Game::JAPANESE, &G20J1 },
+	{ 0xAE0D, Game::G20_SILVER | Game::ENGLISH, &G20E },
+	{ 0x6ECD, Game::G20_SILVER | Game::GERMAN, &G20G },
+	{ 0x8CFB, Game::G20_SILVER | Game::FRENCH, &G20F },
+	{ 0x4B06, Game::G20_SILVER | Game::SPANISH, &G20S },
+	{ 0x5073, Game::G20_SILVER | Game::ITALIAN, &G20I },
 	{ 0, Game::INVALID, nullptr }
 };
 

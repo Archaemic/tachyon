@@ -29,9 +29,9 @@ Most games are currently only partially supported. All games are intended to hav
 	- Pokémon Green
 	- Pokémon Yellow
 - Generation 2
-	- Pokémon Gold (Full: E, Partial: FGIJS, Missing: K)
-	- Pokémon Silver (Partial: EJG, Missing: FIKS)
-	- Pokémon Crystal (Partial: E, Missing: FGIJKS)
+	- Pokémon Gold (Full: EFGIJS, Missing: K)
+	- Pokémon Silver (Partial: EFGIJS, Missing: K)
+	- Pokémon Crystal (Partial: E, Missing: FGIJS)
 - Generation 3
 	- Pokémon Ruby (Partial: E, Missing: FGIJS)
 	- Pokémon Sapphire (Partial: E, Missing: FGIJS)
