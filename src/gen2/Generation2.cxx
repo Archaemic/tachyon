@@ -48,7 +48,6 @@ enum {
 
 	G20J_CURRENT_BOX = 0x2D10,
 	G20X_CURRENT_BOX = 0x2D6C,
-	G21E_CURRENT_BOX = 0x2D11,
 };
 
 static const Generation2::Offsets::ChecksumRegion G20J_CHECKSUM_1 = {
@@ -234,7 +233,7 @@ static const Generation2::Offsets G21E = {
 	.boxHigh = G20X_BOX_HIGH_OFFSET,
 	.currentBoxId = G21E_CURRENT_BOX_ID,
 	.boxNames = G21E_BOX_NAMES,
-	.currentBox = G21E_CURRENT_BOX
+	.currentBox = G20J_CURRENT_BOX
 };
 
 const GameBoyGame::ChecksumMapping<Generation2::Offsets> Generation2::s_checksums[] = {
@@ -252,6 +251,7 @@ const GameBoyGame::ChecksumMapping<Generation2::Offsets> Generation2::s_checksum
 	{ 0x8CFB, Game::G20_SILVER | Game::FRENCH, &G20F },
 	{ 0x4B06, Game::G20_SILVER | Game::SPANISH, &G20S },
 	{ 0x5073, Game::G20_SILVER | Game::ITALIAN, &G20I },
+	{ 0x9F12, Game::G21_CRYSTAL | Game::ENGLISH, &G21E },
 	{ 0, Game::INVALID, nullptr }
 };
 
@@ -399,6 +399,7 @@ void Generation2::loadSprites(PokemonSpecies* species, const G2PokemonBaseStats*
 	unsigned backBank = mapping->backBank;
 	if ((version() & MASK_GAME) == Game::G21_CRYSTAL) {
 		frontBank += 0x36;
+		backBank += 0x36;
 	}
 
 	switch (frontBank) {
