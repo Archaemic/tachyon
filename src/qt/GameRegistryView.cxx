@@ -33,6 +33,10 @@ void GameRegistryView::openSavegame(const QModelIndex& index) {
 	}
 
 	QString sramPath = QFileDialog::getOpenFileName(this, tr("Open Savegame"));
+	if (sramPath.isNull()) {
+		return;
+	}
+
 	PokemonSelector* selector = new PokemonSelector;
 	selector->setAttribute(Qt::WA_DeleteOnClose);
 	Cartridge* cart = new Cartridge(info.rom, sramPath, selector);
