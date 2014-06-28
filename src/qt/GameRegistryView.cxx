@@ -41,7 +41,9 @@ void GameRegistryView::openSavegame(const QModelIndex& index) {
 	selector->setAttribute(Qt::WA_DeleteOnClose);
 	Cartridge* cart = new Cartridge(info.rom, sramPath, selector);
 	if (!cart->game()->testChecksum()) {
-		QMessageBox::critical(this, tr("Bad checksum"), tr("Could not open game, as it has a bad checksum and may be corrupted"));
+		QMessageBox* error = new QMessageBox(QMessageBox::Critical, tr("Could not open game"), tr("Could not open game"), QMessageBox::Close, this);
+		error->setInformativeText(tr("The save game had an incorrect checksum. You may have tried to open the wrong save game, or it may be corrupted."));
+		error->show();
 		delete selector;
 		return;
 	}
