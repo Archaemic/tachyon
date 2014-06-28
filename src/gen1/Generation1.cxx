@@ -513,7 +513,12 @@ void Generation1::prepareSprites() {
 		uint16_t color[4];
 	} __attribute__((packed))* palette = reinterpret_cast<const GBPalette*>(&rom()[m_offsets->paletteBase]);
 
-	m_menuPalette = std::make_shared<const Palette>(palette->color, 4);
+	uint16_t menuPalette[4];
+	menuPalette[0] = palette[0x10].color[0];
+	menuPalette[1] = palette[0x10].color[0];
+	menuPalette[2] = palette[0x10].color[1];
+	menuPalette[3] = palette[0x10].color[3];
+	m_menuPalette = std::make_shared<const Palette>(menuPalette, 4);
 
 	m_palettes.clear();
 	for (unsigned i = 0x10; i < 0x1A; ++i) {
