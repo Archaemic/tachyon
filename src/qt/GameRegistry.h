@@ -3,18 +3,20 @@
 
 #include "common/Game.h"
 
-#include <QAbstractListModel>
+#include <QAbstractTableModel>
 
 class GameRegistry;
 class QFile;
 
-class GameRegistryListModel : public QAbstractListModel {
+class GameRegistryListModel : public QAbstractTableModel {
 Q_OBJECT
 public:
 	GameRegistryListModel(GameRegistry* parent);
 
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+	virtual QVariant headerData(int section, Qt::Orientation, int role = Qt::DisplayRole) const override;
 
 private:
 	GameRegistry* m_parent;
@@ -43,6 +45,9 @@ public:
 
 	GameRegistryListModel* listModel() { return m_listModel; }
 	const GameRegistryListModel* listModel() const { return m_listModel; }
+
+	static QString versionReadable(Game::Edition);
+	static QString localizationReadable(Game::Edition);
 
 private:
 	std::vector<GameInfo> m_info;

@@ -1,10 +1,10 @@
 #ifndef PTXN_Q_GAME_REGISTRY_VIEW_H
 #define PTXN_Q_GAME_REGISTRY_VIEW_H
 
-#include <QListView>
 #include <QWidget>
 
 class GameRegistry;
+class QTreeView;
 
 class GameRegistryView : public QWidget {
 Q_OBJECT
@@ -14,7 +14,7 @@ public:
 	void setRegistry(GameRegistry* registry);
 
 private:
-	QListView* m_listView;
+	QTreeView* m_listView;
 	GameRegistry* m_registry;
 
 private slots:

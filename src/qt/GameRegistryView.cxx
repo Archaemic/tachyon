@@ -7,11 +7,15 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QMessageBox>
+#include <QTreeView>
 
 GameRegistryView::GameRegistryView(QWidget* parent)
 	: QWidget(parent)
-	, m_listView(new QListView(this))
+	, m_listView(new QTreeView(this))
 {
+	m_listView->setItemsExpandable(false);
+	m_listView->setIndentation(0);
+	m_listView->setTextElideMode(Qt::ElideLeft);
 	QHBoxLayout* hbox = new QHBoxLayout;
 	hbox->addWidget(m_listView);
 	setLayout(hbox);
