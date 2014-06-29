@@ -12,6 +12,7 @@
 
 PokemonStatus::PokemonStatus(QWidget* parent)
 	: QWidget(parent)
+	, m_entered(false)
 {
 	m_ui.setupUi(this);
 
@@ -72,21 +73,11 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 			m_ui.menuSprite->setMinimumSize(QSize(16, 16));
 		}
 
-		m_ui.hp->setText(QString("%1/%2").arg(m_activePokemon->currentHp()).arg(m_activePokemon->maxHp()));
-		m_ui.level->setText(QString::number(m_activePokemon->level()));
-		m_ui.attack->setText(QString::number(m_activePokemon->attack()));
-		m_ui.defense->setText(QString::number(m_activePokemon->defense()));
-		m_ui.speed->setText(QString::number(m_activePokemon->speed()));
-		m_ui.specialAttack->setText(QString::number(m_activePokemon->specialAttack()));
-		m_ui.specialDefense->setText(QString::number(m_activePokemon->specialDefense()));
 		m_ui.ot->setText(tr("%1 (%2/%3)")
 			.arg(QString::fromUtf8(m_activePokemon->otName().c_str()))
 			.arg(QString::number(m_activePokemon->otId()), 5, '0')
 			.arg(QString::number(m_activePokemon->otSecretId()), 5, '0'));
 
-		m_ui.exp->setValue(m_activePokemon->xp());
-		m_ui.expProgress->setMaximum(m_activePokemon->species()->expToLevel(m_activePokemon->level() + 1) - m_activePokemon->species()->expToLevel(m_activePokemon->level()));
-		m_ui.expProgress->setValue(m_activePokemon->xp() - m_activePokemon->species()->expToLevel(m_activePokemon->level()));
 
 		m_ui.type1->setText(QString::fromUtf8(TypeReadable(m_activePokemon->type1())));
 		if (m_activePokemon->type1() != m_activePokemon->type2()) {
@@ -96,23 +87,14 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 		}
 		m_ui.nature->setText(QString::fromUtf8(m_activePokemon->natureReadable()));
 
-		m_ui.ivHp->setValue(m_activePokemon->ivHp());
-		m_ui.ivAttack->setValue(m_activePokemon->ivAttack());
-		m_ui.ivDefense->setValue(m_activePokemon->ivDefense());
-		m_ui.ivSpeed->setValue(m_activePokemon->ivSpeed());
-		m_ui.ivSpecialAttack->setValue(m_activePokemon->ivSpecialAttack());
-		m_ui.ivSpecialDefense->setValue(m_activePokemon->ivSpecialDefense());
-		m_ui.evHp->setValue(m_activePokemon->evHp());
-		m_ui.evAttack->setValue(m_activePokemon->evAttack());
-		m_ui.evDefense->setValue(m_activePokemon->evDefense());
-		m_ui.evSpeed->setValue(m_activePokemon->evSpeed());
-		m_ui.evSpecialAttack->setValue(m_activePokemon->evSpecialAttack());
-		m_ui.evSpecialDefense->setValue(m_activePokemon->evSpecialDefense());
-
 		m_ui.move1->setText(QString::fromUtf8(MoveReadable(m_activePokemon->move1())));
 		m_ui.move2->setText(QString::fromUtf8(MoveReadable(m_activePokemon->move2())));
 		m_ui.move3->setText(QString::fromUtf8(MoveReadable(m_activePokemon->move3())));
 		m_ui.move4->setText(QString::fromUtf8(MoveReadable(m_activePokemon->move4())));
+
+		m_ui.exp->setMaximum(m_activePokemon->species()->expToLevel(100));
+
+		updateStats();
 	} else {
 		setWindowTitle(tr("Pokémon"));
 		m_ui.name->setText(tr("(No selection)"));
@@ -159,4 +141,155 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 		m_ui.move3->setText(tr("-"));
 		m_ui.move4->setText(tr("-"));
 	}
+}
+
+void PokemonStatus::updateStats() {
+	if (!m_activePokemon) {
+		return;
+	}
+
+	m_entered = true;
+	m_ui.hp->setText(QString("%1/%2").arg(m_activePokemon->currentHp()).arg(m_activePokemon->maxHp()));
+	m_ui.level->setText(QString::number(m_activePokemon->level()));
+	m_ui.attack->setText(QString::number(m_activePokemon->attack()));
+	m_ui.defense->setText(QString::number(m_activePokemon->defense()));
+	m_ui.speed->setText(QString::number(m_activePokemon->speed()));
+	m_ui.specialAttack->setText(QString::number(m_activePokemon->specialAttack()));
+	m_ui.specialDefense->setText(QString::number(m_activePokemon->specialDefense()));
+
+	m_ui.exp->setValue(m_activePokemon->xp());
+	m_ui.expProgress->setMaximum(m_activePokemon->species()->expToLevel(m_activePokemon->level() + 1) - m_activePokemon->species()->expToLevel(m_activePokemon->level()));
+	m_ui.expProgress->setValue(m_activePokemon->xp() - m_activePokemon->species()->expToLevel(m_activePokemon->level()));
+
+	m_ui.ivHp->setValue(m_activePokemon->ivHp());
+	m_ui.ivAttack->setValue(m_activePokemon->ivAttack());
+	m_ui.ivDefense->setValue(m_activePokemon->ivDefense());
+	m_ui.ivSpeed->setValue(m_activePokemon->ivSpeed());
+	m_ui.ivSpecialAttack->setValue(m_activePokemon->ivSpecialAttack());
+	m_ui.ivSpecialDefense->setValue(m_activePokemon->ivSpecialDefense());
+	m_ui.evHp->setValue(m_activePokemon->evHp());
+	m_ui.evAttack->setValue(m_activePokemon->evAttack());
+	m_ui.evDefense->setValue(m_activePokemon->evDefense());
+	m_ui.evSpeed->setValue(m_activePokemon->evSpeed());
+	m_ui.evSpecialAttack->setValue(m_activePokemon->evSpecialAttack());
+	m_ui.evSpecialDefense->setValue(m_activePokemon->evSpecialDefense());
+	m_entered = false;
+}
+
+void PokemonStatus::setExp(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setXp(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setIvHp(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setIvHp(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setIvAttack(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setIvAttack(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setIvDefense(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setIvDefense(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setIvSpeed(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setIvSpeed(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setIvSpecialAttack(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setIvSpecialAttack(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setIvSpecialDefense(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setIvSpecialDefense(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setEvHp(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setEvHp(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setEvAttack(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setEvAttack(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setEvDefense(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setEvDefense(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setEvSpeed(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setEvSpeed(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setEvSpecialAttack(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setEvSpecialAttack(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
+}
+void PokemonStatus::setEvSpecialDefense(int stat) {
+	if (!m_activePokemon || m_entered) {
+		return;
+	}
+
+	m_activePokemon->setEvSpecialDefense(stat);
+	m_activePokemon->recalculateStats();
+	updateStats();
 }

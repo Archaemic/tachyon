@@ -20,10 +20,27 @@ public:
 
 	void setPokemon(std::unique_ptr<Pokemon> pokemon);
 
+public slots:
+	void updateStats();
+	void setExp(int);
+	void setIvHp(int);
+	void setIvAttack(int);
+	void setIvDefense(int);
+	void setIvSpeed(int);
+	void setIvSpecialAttack(int);
+	void setIvSpecialDefense(int);
+	void setEvHp(int);
+	void setEvAttack(int);
+	void setEvDefense(int);
+	void setEvSpeed(int);
+	void setEvSpecialAttack(int);
+	void setEvSpecialDefense(int);
+
 private:
 	Ui::PokemonStatus m_ui;
 
 	std::unique_ptr<Pokemon> m_activePokemon;
+	bool m_entered;
 };
 
 #endif
