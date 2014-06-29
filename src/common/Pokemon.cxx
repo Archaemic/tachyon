@@ -40,7 +40,7 @@ unsigned Pokemon::level() const {
 			return i - 1;
 		}
 	}
-	return 1;
+	return 100;
 }
 
 Pokemon::Gender Pokemon::gender() const {
