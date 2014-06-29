@@ -1,6 +1,8 @@
 #ifndef PTXN_Q_GAME_REGISTRY_VIEW_H
 #define PTXN_Q_GAME_REGISTRY_VIEW_H
 
+#include "ui_GameRegistryView.h"
+
 #include <QWidget>
 
 class GameRegistry;
@@ -14,11 +16,15 @@ public:
 	void setRegistry(GameRegistry* registry);
 
 private:
-	QTreeView* m_listView;
+	Ui::GameRegistryView m_ui;
+
 	GameRegistry* m_registry;
 
 private slots:
+	void openSavegame();
 	void openSavegame(const QModelIndex&);
+	void addFile();
+	void addDirectory();
 };
 
 #endif

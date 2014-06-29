@@ -11,25 +11,28 @@
 
 GameRegistryView::GameRegistryView(QWidget* parent)
 	: QWidget(parent)
-	, m_listView(new QTreeView(this))
 {
-	m_listView->setItemsExpandable(false);
-	m_listView->setIndentation(0);
-	m_listView->setTextElideMode(Qt::ElideLeft);
-	QHBoxLayout* hbox = new QHBoxLayout;
-	hbox->addWidget(m_listView);
-	setLayout(hbox);
-
-	connect(m_listView, SIGNAL(activated(const QModelIndex&)), this, SLOT(openSavegame(const QModelIndex&)));
+	m_ui.setupUi(this);
+	connect(m_ui.treeView, SIGNAL(activated(const QModelIndex&)), this, SLOT(openSavegame(const QModelIndex&)));
+	connect(m_ui.loadSave, SIGNAL(clicked()), this, SLOT(openSavegame()));
+	connect(m_ui.addFile, SIGNAL(clicked()), this, SLOT(addFile()));
+	connect(m_ui.addDirectory, SIGNAL(clicked()), this, SLOT(addDirectory()));
 }
 
 void GameRegistryView::setRegistry(GameRegistry* registry) {
 	m_registry = registry;
-	m_listView->setModel(registry->listModel());
+	m_ui.treeView->setModel(registry->listModel());
+}
+
+void GameRegistryView::openSavegame() {
+	QModelIndexList indices = m_ui.treeView->selectionModel()->selectedRows();
+	for (auto selection : indices) {
+		openSavegame(selection);
+	}
 }
 
 void GameRegistryView::openSavegame(const QModelIndex& index) {
-	GameRegistry::Id id = m_listView->model()->data(index, Qt::UserRole).toInt();
+	GameRegistry::Id id = m_ui.treeView->model()->data(index, Qt::UserRole).toInt();
 	GameRegistry::GameInfo info = m_registry->getInfo(id);
 
 	if (!info.version) {
@@ -53,4 +56,19 @@ void GameRegistryView::openSavegame(const QModelIndex& index) {
 	}
 	selector->load(cart);
 	selector->show();
+}
+
+void GameRegistryView::addFile() {
+	QStringList paths = QFileDialog::getOpenFileNames(nullptr, QObject::tr("Register ROM files"));
+	for (auto file : paths) {
+		m_registry->addRom(file);
+	}
+}
+
+void GameRegistryView::addDirectory() {
+	QString path = QFileDialog::getExistingDirectory(nullptr, QObject::tr("Register ROM directory"));
+	QDir dir(path);
+	for (auto file : dir.entryInfoList(QDir::Files)) {
+		m_registry->addRom(file.absoluteFilePath());
+	}
 }

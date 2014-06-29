@@ -24,6 +24,7 @@ set(SRC
 )
 
 qt5_wrap_ui(UI_SRC
+	GameRegistryView.ui
 	PokemonStatus.ui
 )
 

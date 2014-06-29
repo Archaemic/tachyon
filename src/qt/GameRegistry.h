@@ -18,6 +18,9 @@ public:
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 	virtual QVariant headerData(int section, Qt::Orientation, int role = Qt::DisplayRole) const override;
 
+	using QAbstractItemModel::beginResetModel;
+	using QAbstractItemModel::endResetModel;
+
 private:
 	GameRegistry* m_parent;
 };

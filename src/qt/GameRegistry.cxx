@@ -88,7 +88,10 @@ GameRegistry::Id GameRegistry::addRom(const QString& path) {
 	}
 	++m_maxId;
 	info.id = m_maxId;
+
+	m_listModel->beginResetModel();
 	m_info.push_back(info);
+	m_listModel->endResetModel();
 	return m_maxId;
 }
 
