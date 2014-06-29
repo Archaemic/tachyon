@@ -64,6 +64,11 @@ bool G3PartyPokemon::copy(const Pokemon& other) {
 	}
 
 	G3Pokemon<G3PartyPokemonData>::m_data->currentHp = other.currentHp();
+	recalculateStats();
+	return true;
+}
+
+void G3PartyPokemon::recalculateStats() {
 	G3Pokemon<G3PartyPokemonData>::m_data->level = G3Pokemon<G3PartyPokemonData>::level();
 	G3Pokemon<G3PartyPokemonData>::m_data->maxHp = G3Pokemon<G3PartyPokemonData>::maxHp();
 	G3Pokemon<G3PartyPokemonData>::m_data->attack = G3Pokemon<G3PartyPokemonData>::attack();
@@ -72,5 +77,4 @@ bool G3PartyPokemon::copy(const Pokemon& other) {
 	G3Pokemon<G3PartyPokemonData>::m_data->specialAttack = G3Pokemon<G3PartyPokemonData>::specialAttack();
 	G3Pokemon<G3PartyPokemonData>::m_data->specialDefense = G3Pokemon<G3PartyPokemonData>::specialDefense();
 	G3Pokemon<G3PartyPokemonData>::m_data->pokerus = G3Pokemon<G3PartyPokemonData>::pokerusDays();
-	return true;
 }

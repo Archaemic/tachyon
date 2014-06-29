@@ -150,12 +150,21 @@ public:
 	virtual void setOtId(uint16_t) override;
 	virtual void setOtSecretId(uint16_t) override;
 
+	virtual void setXp(unsigned) override;
+
 	virtual void setIvHp(unsigned) override;
 	virtual void setIvAttack(unsigned) override;
 	virtual void setIvDefense(unsigned) override;
 	virtual void setIvSpeed(unsigned) override;
 	virtual void setIvSpecialAttack(unsigned) override;
 	virtual void setIvSpecialDefense(unsigned) override;
+
+	virtual void setEvHp(unsigned) override;
+	virtual void setEvAttack(unsigned) override;
+	virtual void setEvDefense(unsigned) override;
+	virtual void setEvSpeed(unsigned) override;
+	virtual void setEvSpecialAttack(unsigned) override;
+	virtual void setEvSpecialDefense(unsigned) override;
 
 	virtual const uint8_t* data(unsigned* size) const override;
 	virtual bool copy(const Pokemon& other) override;
@@ -464,6 +473,11 @@ void G3Pokemon<T>::setOtSecretId(uint16_t id) {
 }
 
 template <typename T>
+void G3Pokemon<T>::setXp(unsigned xp) {
+	m_data->growth()->xp = xp;
+}
+
+template <typename T>
 void G3Pokemon<T>::setIvHp(unsigned iv) {
 	m_data->misc()->ivHp = iv;
 }
@@ -491,6 +505,36 @@ void G3Pokemon<T>::setIvSpecialAttack(unsigned iv) {
 template <typename T>
 void G3Pokemon<T>::setIvSpecialDefense(unsigned iv) {
 	m_data->misc()->ivSpecialDefense = iv;
+}
+
+template <typename T>
+void G3Pokemon<T>::setEvHp(unsigned ev) {
+	m_data->evs()->hp = ev;
+}
+
+template <typename T>
+void G3Pokemon<T>::setEvAttack(unsigned ev) {
+	m_data->evs()->attack = ev;
+}
+
+template <typename T>
+void G3Pokemon<T>::setEvDefense(unsigned ev) {
+	m_data->evs()->defense = ev;
+}
+
+template <typename T>
+void G3Pokemon<T>::setEvSpeed(unsigned ev) {
+	m_data->evs()->speed = ev;
+}
+
+template <typename T>
+void G3Pokemon<T>::setEvSpecialAttack(unsigned ev) {
+	m_data->evs()->specialAttack = ev;
+}
+
+template <typename T>
+void G3Pokemon<T>::setEvSpecialDefense(unsigned ev) {
+	m_data->evs()->specialDefense = ev;
 }
 
 template <typename T>

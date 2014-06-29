@@ -19,6 +19,8 @@ public:
 	virtual unsigned specialAttack() const override;
 	virtual unsigned specialDefense() const override;
 
+	virtual void recalculateStats() override;
+
 	virtual bool copy(const Pokemon& other) override;
 
 private:
@@ -93,6 +95,12 @@ bool GBPartyPokemon<T>::copy(const Pokemon& other) {
 	}
 
 	GBPokemon<T>::m_data->currentHp = R16(other.currentHp());
+	recalculateStats();
+	return true;
+}
+
+template <typename T>
+void GBPartyPokemon<T>::recalculateStats() {
 	GBPokemon<T>::m_data->level = GBPokemon<T>::level();
 	GBPokemon<T>::m_data->maxHp = R16(GBPokemon<T>::maxHp());
 	GBPokemon<T>::m_data->attack = R16(GBPokemon<T>::attack());
@@ -100,7 +108,6 @@ bool GBPartyPokemon<T>::copy(const Pokemon& other) {
 	GBPokemon<T>::m_data->speed = R16(GBPokemon<T>::speed());
 	GBPokemon<T>::m_data->specialAttack = R16(GBPokemon<T>::specialAttack());
 	GBPokemon<T>::m_data->specialDefense = R16(GBPokemon<T>::specialDefense());
-	return true;
 }
 
 #endif

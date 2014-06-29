@@ -101,6 +101,8 @@ public:
 	virtual void setOtId(uint16_t) = 0;
 	virtual void setOtSecretId(uint16_t) = 0;
 
+	virtual void setXp(unsigned) = 0;
+
 	virtual void setIvHp(unsigned) = 0;
 	virtual void setIvAttack(unsigned) = 0;
 	virtual void setIvDefense(unsigned) = 0;
@@ -108,8 +110,16 @@ public:
 	virtual void setIvSpecialAttack(unsigned) = 0;
 	virtual void setIvSpecialDefense(unsigned) = 0;
 
+	virtual void setEvHp(unsigned) = 0;
+	virtual void setEvAttack(unsigned) = 0;
+	virtual void setEvDefense(unsigned) = 0;
+	virtual void setEvSpeed(unsigned) = 0;
+	virtual void setEvSpecialAttack(unsigned) = 0;
+	virtual void setEvSpecialDefense(unsigned) = 0;
+
 	virtual const uint8_t* data(unsigned* size) const = 0;
 	virtual bool copy(const Pokemon& other) = 0;
+	virtual void recalculateStats() { };
 
 protected:
 	virtual uint8_t genderDeterminer() const = 0;
