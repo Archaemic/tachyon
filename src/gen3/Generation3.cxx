@@ -553,22 +553,33 @@ Generation3::Generation3(uint8_t* memory, const uint8_t* rom)
 	unsigned remaining = sizeof(G3BasePokemonData) * G3_BOXES * G3_POKEMON_PER_BOX;
 	uint8_t* boxData = reinterpret_cast<uint8_t*>(m_boxes.get());
 	for (unsigned i = Section::PC_0; i < Section::MAX_SECTIONS; ++i) {
-		uint8_t* data = this->section(static_cast<Section::ID>(i))->data;
+		section = this->section(static_cast<Section::ID>(i));
+		uint8_t* data = nullptr;
+		if (section) {
+			data = section->data;
+		}
 		unsigned thisBox = std::min<unsigned>(remaining, 3968);
 		if (i == Section::PC_0) {
-			data += 4;
+			if (data) {
+				data += 4;
+			}
 			thisBox -= 4;
 		}
-		memcpy(boxData, data, thisBox);
+		if (data) {
+			memcpy(boxData, data, thisBox);
+		}
 		remaining -= thisBox;
 		boxData += thisBox;
 	}
 
 	setTrainerName(gameTextToUTF8(&m_sections[0]->data[G30E_TRAINER_NAME], 8));
 	setParty(new G3Party(this));
-	for (unsigned box = 0; box < numBoxes(); ++box) {
-		uint8_t* boxName = &this->section(Section::PC_8)->data[G30E_BOX_NAMES + box * 9];
-		addBox(new G3Box(this, &m_boxes[G3_POKEMON_PER_BOX * box], gameTextToUTF8(boxName, 9)));
+	section = this->section(Section::PC_8);
+	if (section) {
+		for (unsigned box = 0; box < numBoxes(); ++box) {
+			uint8_t* boxName = &section->data[G30E_BOX_NAMES + box * 9];
+			addBox(new G3Box(this, &m_boxes[G3_POKEMON_PER_BOX * box], gameTextToUTF8(boxName, 9)));
+		}
 	}
 }
 
