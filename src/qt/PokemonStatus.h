@@ -21,6 +21,7 @@ public:
 	void setPokemon(std::unique_ptr<Pokemon> pokemon);
 
 public slots:
+	void resetPokemon();
 	void updateStats();
 	void setExp(int);
 	void setIvHp(int);
@@ -43,6 +44,7 @@ private:
 	Ui::PokemonStatus m_ui;
 
 	std::unique_ptr<Pokemon> m_activePokemon;
+	std::unique_ptr<Pokemon> m_pristinePokemon;
 	bool m_entered;
 };
 

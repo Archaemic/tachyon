@@ -20,7 +20,12 @@ PokemonStatus::PokemonStatus(QWidget* parent)
 }
 
 void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
-	m_activePokemon = std::move(pokemon);
+	m_pristinePokemon = std::move(pokemon);
+	if (m_pristinePokemon) {
+		m_activePokemon = std::unique_ptr<Pokemon>(m_pristinePokemon->clone());
+	} else {
+		m_activePokemon = nullptr;
+	}
 
 	QPixmap nullPixmap(SPRITE_SIZE, SPRITE_SIZE);
 	nullPixmap.fill(Qt::transparent);
@@ -141,6 +146,11 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 		m_ui.move3->setText(tr("-"));
 		m_ui.move4->setText(tr("-"));
 	}
+}
+
+void PokemonStatus::resetPokemon() {
+	m_activePokemon = std::unique_ptr<Pokemon>(m_pristinePokemon->clone());
+	updateStats();
 }
 
 void PokemonStatus::updateStats() {
@@ -299,6 +309,9 @@ void PokemonStatus::buttonPressed(QAbstractButton* button) {
 	switch (buttonType) {
 	case QDialogButtonBox::Close:
 		hide();
+		break;
+	case QDialogButtonBox::Reset:
+		resetPokemon();
 		break;
 	default:
 		break;
