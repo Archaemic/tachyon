@@ -78,6 +78,10 @@ public:
 
 	virtual const uint8_t* data(unsigned* size) const override;
 	virtual bool copy(const Pokemon& other) override;
+	virtual std::unique_ptr<Pokemon> clone() override;
+
+protected:
+	GameBoyGame* game();
 
 private:
 	GBPokemon(const GBPokemon<T>& other);
@@ -123,6 +127,11 @@ std::unique_ptr<GBPokemon<T>> GBPokemon<T>::copy(GameBoyGame* gen, const Pokemon
 
 template <typename T>
 const GameBoyGame* GBPokemon<T>::game() const {
+	return m_gen;
+}
+
+template <typename T>
+GameBoyGame* GBPokemon<T>::game() {
 	return m_gen;
 }
 
@@ -424,6 +433,13 @@ const uint8_t* GBPokemon<T>::data(unsigned* size) const {
 		*size = sizeof(T);
 	}
 	return reinterpret_cast<uint8_t*>(m_data.get());
+}
+
+template <typename T>
+std::unique_ptr<Pokemon> GBPokemon<T>::clone() {
+	Pokemon* pokemon = new GBPokemon<T>(m_gen);
+	pokemon->copy(*this);
+	return std::unique_ptr<Pokemon>(pokemon);
 }
 
 template <typename T>

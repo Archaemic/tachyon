@@ -58,6 +58,12 @@ unsigned G3PartyPokemon::pokerusDays() const {
 	return m_data->pokerus & 0xF;
 }
 
+std::unique_ptr<Pokemon> G3PartyPokemon::clone() {
+	Pokemon* pokemon = new G3PartyPokemon(game());
+	pokemon->copy(*this);
+	return std::unique_ptr<Pokemon>(pokemon);
+}
+
 bool G3PartyPokemon::copy(const Pokemon& other) {
 	if (!G3Pokemon<G3PartyPokemonData>::copy(other)) {
 		return false;

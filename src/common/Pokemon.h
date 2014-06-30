@@ -119,6 +119,7 @@ public:
 
 	virtual const uint8_t* data(unsigned* size) const = 0;
 	virtual bool copy(const Pokemon& other) = 0;
+	virtual std::unique_ptr<Pokemon> clone() = 0;
 	virtual void recalculateStats() { };
 
 protected:

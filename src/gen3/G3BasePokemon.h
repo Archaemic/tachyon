@@ -168,8 +168,12 @@ public:
 
 	virtual const uint8_t* data(unsigned* size) const override;
 	virtual bool copy(const Pokemon& other) override;
+	virtual std::unique_ptr<Pokemon> clone();
 	void crypt();
 	void checksum();
+
+protected:
+	Generation3* game();
 
 private:
 	virtual uint8_t genderDeterminer() const override;
@@ -215,6 +219,11 @@ std::unique_ptr<G3Pokemon<T>> G3Pokemon<T>::copy(Generation3* gen, const Pokemon
 
 template <typename T>
 const Generation3* G3Pokemon<T>::game() const {
+	return m_gen;
+}
+
+template <typename T>
+Generation3* G3Pokemon<T>::game() {
 	return m_gen;
 }
 
@@ -580,6 +589,13 @@ const uint8_t* G3Pokemon<T>::data(unsigned* size) const {
 		*size = sizeof(G3BasePokemonData);
 	}
 	return reinterpret_cast<uint8_t*>(m_data.get());
+}
+
+template <typename T>
+std::unique_ptr<Pokemon> G3Pokemon<T>::clone() {
+	Pokemon* pokemon = new G3Pokemon<T>(m_gen);
+	pokemon->copy(*this);
+	return std::unique_ptr<Pokemon>(pokemon);
 }
 
 template <typename T>

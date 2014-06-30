@@ -22,6 +22,7 @@ public:
 	virtual void recalculateStats() override;
 
 	virtual bool copy(const Pokemon& other) override;
+	virtual std::unique_ptr<Pokemon> clone() override;
 
 private:
 	GBPartyPokemon(const GBPartyPokemon<T>& other);
@@ -86,6 +87,13 @@ unsigned GBPartyPokemon<T>::specialAttack() const {
 template <typename T>
 unsigned GBPartyPokemon<T>::specialDefense() const {
 	return R16(GBPokemon<T>::m_data->specialDefense);
+}
+
+template <typename T>
+std::unique_ptr<Pokemon> GBPartyPokemon<T>::clone() {
+	Pokemon* pokemon = new GBPartyPokemon<T>(this->game());
+	pokemon->copy(*this);
+	return std::unique_ptr<Pokemon>(pokemon);
 }
 
 template <typename T>

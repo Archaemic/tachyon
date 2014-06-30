@@ -34,6 +34,7 @@ public:
 	virtual unsigned pokerusDays() const override;
 
 	virtual bool copy(const Pokemon& other) override;
+	virtual std::unique_ptr<Pokemon> clone() override;
 	virtual void recalculateStats() override;
 };
 
