@@ -67,6 +67,9 @@ void GameRegistryView::addFile() {
 
 void GameRegistryView::addDirectory() {
 	QString path = QFileDialog::getExistingDirectory(nullptr, QObject::tr("Register ROM directory"));
+	if (path.isNull()) {
+		return;
+	}
 	QDir dir(path);
 	for (auto file : dir.entryInfoList(QDir::Files)) {
 		m_registry->addRom(file.absoluteFilePath());
