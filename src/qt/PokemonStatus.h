@@ -36,6 +36,9 @@ public slots:
 	void setEvSpecialAttack(int);
 	void setEvSpecialDefense(int);
 
+private slots:
+	void buttonPressed(QAbstractButton*);
+
 private:
 	Ui::PokemonStatus m_ui;
 

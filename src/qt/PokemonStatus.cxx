@@ -293,3 +293,14 @@ void PokemonStatus::setEvSpecialDefense(int stat) {
 	m_activePokemon->recalculateStats();
 	updateStats();
 }
+
+void PokemonStatus::buttonPressed(QAbstractButton* button) {
+	QDialogButtonBox::StandardButtons buttonType = m_ui.buttonBox->standardButton(button);
+	switch (buttonType) {
+	case QDialogButtonBox::Close:
+		hide();
+		break;
+	default:
+		break;
+	}
+}
