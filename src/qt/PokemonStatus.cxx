@@ -27,46 +27,11 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 		m_activePokemon = nullptr;
 	}
 
-	QPixmap nullPixmap(SPRITE_SIZE, SPRITE_SIZE);
-	nullPixmap.fill(Qt::transparent);
-
 	if (m_activePokemon) {
 		setWindowTitle(QString::fromUtf8(m_activePokemon->name().c_str()));
 		m_ui.name->setText(QString::fromUtf8(m_activePokemon->name().c_str()));
 		m_ui.species->setText(QString::fromUtf8(m_activePokemon->species()->readable()));
 		m_ui.speciesNo->setText(tr("#%1").arg(QString::number(m_activePokemon->species()->id()), 3, '0'));
-		switch (m_activePokemon->gender()) {
-		case Pokemon::MALE:
-			m_ui.gender->setText(tr("♂"));
-			break;
-		case Pokemon::FEMALE:
-			m_ui.gender->setText(tr("♀"));
-			break;
-		case Pokemon::GENDERLESS:
-			m_ui.gender->clear();
-			break;
-		}
-		if (m_activePokemon->shiny()) {
-			m_ui.shiny->setText(tr("⁂"));
-		} else {
-			m_ui.shiny->clear();
-		}
-
-		const MultipaletteSprite* frontSprite = m_activePokemon->species()->frontSprite();
-		if (frontSprite) {
-			QImage frontSpriteImage = spriteToQImage(*frontSprite, m_activePokemon->shiny() ? 1 : 0);
-			m_ui.frontSprite->setPixmap(QPixmap::fromImage(fitToMargins(frontSpriteImage, SPRITE_SIZE, SPRITE_SIZE)));
-		} else {
-			m_ui.frontSprite->setPixmap(nullPixmap);
-		}
-
-		const MultipaletteSprite* backSprite = m_activePokemon->species()->backSprite();
-		if (backSprite) {
-			QImage backSpriteImage = spriteToQImage(*backSprite, m_activePokemon->shiny() ? 1 : 0);
-			m_ui.backSprite->setPixmap(QPixmap::fromImage(fitToMargins(backSpriteImage, SPRITE_SIZE, SPRITE_SIZE)));
-		} else {
-			m_ui.backSprite->setPixmap(nullPixmap);
-		}
 
 		const MultipaletteSprite* menuSprite = m_activePokemon->species()->menuSprite();
 		if (menuSprite) {
@@ -107,6 +72,9 @@ void PokemonStatus::setPokemon(std::unique_ptr<Pokemon> pokemon) {
 		m_ui.speciesNo->clear();
 		m_ui.gender->clear();
 		m_ui.shiny->clear();
+
+		QPixmap nullPixmap(SPRITE_SIZE, SPRITE_SIZE);
+		nullPixmap.fill(Qt::transparent);
 
 		m_ui.frontSprite->setPixmap(nullPixmap);
 		m_ui.backSprite->setPixmap(nullPixmap);
@@ -158,6 +126,9 @@ void PokemonStatus::updateStats() {
 		return;
 	}
 
+	QPixmap nullPixmap(SPRITE_SIZE, SPRITE_SIZE);
+	nullPixmap.fill(Qt::transparent);
+
 	m_entered = true;
 	m_ui.hp->setText(QString("%1/%2").arg(m_activePokemon->currentHp()).arg(m_activePokemon->maxHp()));
 	m_ui.level->setText(QString::number(m_activePokemon->level()));
@@ -183,6 +154,39 @@ void PokemonStatus::updateStats() {
 	m_ui.evSpeed->setValue(m_activePokemon->evSpeed());
 	m_ui.evSpecialAttack->setValue(m_activePokemon->evSpecialAttack());
 	m_ui.evSpecialDefense->setValue(m_activePokemon->evSpecialDefense());
+
+	switch (m_activePokemon->gender()) {
+	case Pokemon::MALE:
+		m_ui.gender->setText(tr("♂"));
+		break;
+	case Pokemon::FEMALE:
+		m_ui.gender->setText(tr("♀"));
+		break;
+	case Pokemon::GENDERLESS:
+		m_ui.gender->clear();
+		break;
+	}
+	if (m_activePokemon->shiny()) {
+		m_ui.shiny->setText(tr("⁂"));
+	} else {
+		m_ui.shiny->clear();
+	}
+
+	const MultipaletteSprite* frontSprite = m_activePokemon->species()->frontSprite();
+	if (frontSprite) {
+		QImage frontSpriteImage = spriteToQImage(*frontSprite, m_activePokemon->shiny() ? 1 : 0);
+		m_ui.frontSprite->setPixmap(QPixmap::fromImage(fitToMargins(frontSpriteImage, SPRITE_SIZE, SPRITE_SIZE)));
+	} else {
+		m_ui.frontSprite->setPixmap(nullPixmap);
+	}
+
+	const MultipaletteSprite* backSprite = m_activePokemon->species()->backSprite();
+	if (backSprite) {
+		QImage backSpriteImage = spriteToQImage(*backSprite, m_activePokemon->shiny() ? 1 : 0);
+		m_ui.backSprite->setPixmap(QPixmap::fromImage(fitToMargins(backSpriteImage, SPRITE_SIZE, SPRITE_SIZE)));
+	} else {
+		m_ui.backSprite->setPixmap(nullPixmap);
+	}
 	m_entered = false;
 }
 
