@@ -604,6 +604,10 @@ bool G3Pokemon<T>::copy(const Pokemon& other) {
 		return false;
 	}
 
+	if (!Pokemon::copy(other)) {
+		return false;
+	}
+
 	unsigned size;
 	const uint8_t* oldData = other.data(&size);
 	memcpy(m_data.get(), oldData, std::min<unsigned>(size, sizeof(T)));

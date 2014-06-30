@@ -86,3 +86,10 @@ const std::string& Pokemon::otName() const {
 void Pokemon::setOtName(const std::string& otName) {
 	m_otName = otName;
 }
+
+bool Pokemon::copy(const Pokemon& other) {
+	setName(other.name());
+	setOtName(other.otName());
+
+	return true;
+}
